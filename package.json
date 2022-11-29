@@ -1,0 +1,41 @@
+{
+  "name": "ffmpeg-docker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "development": "nodemon index",
+    "production": "node index"
+  },
+  "author": "Ryan McCartney",
+  "license": "MIT",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.18.1",
+    "express-async-handler": "^1.2.0",
+    "express-fileupload": "^1.2.1",
+    "fluent-ffmpeg": "^2.1.2",
+    "helmet": "^5.0.1",
+    "md5": "^2.3.0",
+    "module-alias": "^2.2.2",
+    "morgan": "^1.10.0",
+    "serve-favicon": "^2.5.0",
+    "swagger-jsdoc": "^6.0.2",
+    "swagger-ui-express": "^4.3.0",
+    "uuid": "^8.3.2",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.5",
+    "winston-mongodb": "^5.0.7"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.16"
+  },
+  "_moduleAliases": {
+    "@root": ".",
+    "@bin": "./bin/",
+    "@routes": "./routes/",
+    "@utils": "./utils/",
+    "@services": "./services/"
+  }
+}
