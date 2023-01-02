@@ -1,29 +1,14 @@
-FROM node:18-alpine
+FROM ubuntu:lunar
 
-ARG DESKTOP_VIDEO_DRIVER_URL="https://sw.blackmagicdesign.com/DesktopVideo/v12.3/Blackmagic_Desktop_Video_Linux_12.3.tar.gz"
 ARG DEKSTOP_VIDEO_SDK_URL="https://sw.blackmagicdesign.com/DeckLink/v12.3/Blackmagic_DeckLink_SDK_12.3.zip"
 ARG DECKLINK_SUPPORT="false"
+ENV DEBIAN_FRONTEND=noninteractive
 
 # Create folder structure
 RUN mkdir $HOME/ffmpeg_sources
 RUN mkdir $HOME/bin
 
 RUN if [ "$DECKLINK_SUPPORT" = "true" ] ; then \
-        # Get Blackmagic Desktop Video Install Files (Link expires... You'll need to get a new one)
-        wget -c $DESKTOP_VIDEO_DRIVER_URL -O desktopvideo.tar.gz\
-        # Install Blackmagic Desktop Video Dependencies
-        apt-get update\
-        apt-get install -y \
-            libgl1-mesa-glx \
-            dkms \
-            linux-headers-generic \
-            libarchive-tools\
-        # Get Blackmagic Desktop Video Install Files
-        mkdir desktopvideo && tar xf desktopvideo.tar.gz -C desktopvideo --strip-components 1\
-        dpkg -i ./desktopvideo/deb/x86_64/desktopvideo_12.3a10_amd64.deb\
-        apt install -y\
-        # Check for Blackmagic Decklink Devices
-        #RUN BlackmagicFirmwareUpdater status
         # Get Blackmagic Desktop Video Install Files (Link expires... You'll need to get a new one)
         wget -c $DEKSTOP_VIDEO_SDK_URL -O desktopvideoSDK.zip\
         bsdtar -xf desktopvideoSDK.zip -s'|[^/]*/|./desktopvideoSDK/|'\
@@ -96,10 +81,10 @@ RUN git -C srt pull 2> /dev/null || git clone --depth 1 https://github.com/Haivi
     mkdir -p srt/build && \
     cd srt && \
     ./configure --prefix="$HOME/ffmpeg_build" --bindir="$HOME/bin" --disable-shared && \
+    cmake -DCMAKE_INSTALL_PREFIX="$HOME/ffmpeg_build" -DENABLE_C_DEPS=ON -DENABLE_SHARED=OFF -DENABLE_STATIC=ON && \
     make && \
     make install && \
     ldconfig
-
 
 RUN wget -O ffmpeg-snapshot.tar.bz2 https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
 RUN tar xjvf ffmpeg-snapshot.tar.bz2
@@ -107,6 +92,7 @@ RUN tar xjvf ffmpeg-snapshot.tar.bz2
 WORKDIR $HOME/ffmpeg_sources/ffmpeg
 
 ENV PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig"
+ENV PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/ffmpeg_sources/srt
 
 RUN ./configure \
         --prefix="$HOME/ffmpeg_build" \
@@ -130,13 +116,19 @@ RUN ./configure \
         --enable-libx265 \
         --enable-nonfree \
 #       --enable-decklink \
-#       --enable-libsrt \
+        --enable-libsrt \
         --disable-libaom \
         --disable-libsvtav1
 
 RUN make && \
     make install && \
     hash -r
+
+#Install Node.js
+WORKDIR $HOME
+RUN wget -c https://deb.nodesource.com/setup_18.x | bash -
+RUN apt -y install nodejs
+RUN apt -y install npm
 
 #Install Node.js API
 WORKDIR $HOME/home/node/app

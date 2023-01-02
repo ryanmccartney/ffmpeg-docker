@@ -5,7 +5,6 @@ const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
 
 module.exports = async () => {
-    console.log(ffmpeg);
     const command = ffmpeg({ logger: logger })
         .addInput("smptehdbars=rate=25:size=1920x1080")
         .inputOptions(["-f lavfi", "-re"])
