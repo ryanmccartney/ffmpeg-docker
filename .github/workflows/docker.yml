@@ -1,5 +1,5 @@
 # .github/workflows/docker.yml
-name: FFMPEG Docker Deploy
+name: Docker Deploy
 
 env:
     regsitry: "ghcr.io"
