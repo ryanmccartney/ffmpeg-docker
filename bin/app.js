@@ -15,6 +15,7 @@ const nodeEnv = process.env.NODE_ENV || "production";
 const documentation = require("@utils/documentation");
 const systemRouter = require("@routes/system");
 const streamRouter = require("@routes/stream");
+const filesRouter = require("@routes/files");
 
 const app = express();
 
@@ -54,6 +55,7 @@ app.use(cookieParser());
 app.use("/documentation", documentation);
 app.use("/api/system", systemRouter);
 app.use("/api/stream", streamRouter);
+app.use("/api/files", filesRouter);
 
 // Redirect /api to /documentation
 app.use("/api", function (req, res, next) {

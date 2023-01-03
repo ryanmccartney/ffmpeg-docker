@@ -1,7 +1,7 @@
 {
   "name": "ffmpeg-docker",
   "version": "1.0.0",
-  "description": "",
+  "description": "FFMPEG compiled in a docker container with an API for control",
   "main": "index.js",
   "scripts": {
     "development": "nodemon index",
@@ -20,6 +20,8 @@
     "md5": "^2.3.0",
     "module-alias": "^2.2.2",
     "morgan": "^1.10.0",
+    "nanoid": "^4.0.0",
+    "node-cache": "^5.1.2",
     "serve-favicon": "^2.5.0",
     "swagger-jsdoc": "^6.0.2",
     "swagger-ui-express": "^4.3.0",
