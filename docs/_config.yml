@@ -1,0 +1,8 @@
+title: FFMPEG in Docker
+description: FFMPEG in Docker with a RESTful API for control
+theme: just-the-docs
+
+url: https://ryan.mccartney.info/ffmpeg-docker
+
+aux_links:
+    Template Repository: https://github.com/just-the-docs/just-the-docs-template
