@@ -9,6 +9,27 @@ layout: home
 
 FFMPEG compiled with additional libraries and running inside a Docker container. A RESTful API runs alongside written in Node.js utilsing `fluent-ffmpeg`.
 
+## Exmaple
+
+Get comand to the following enpoint `http://localhost/api/stream/rtmp/bars` with the JSON body
+
+```json
+{
+    "address": "a.rtmp.youtube.com/live2",
+    "key": "YOUTUBE_STREAM_KEY",
+    "bitrate": "1000k",
+    "line1": "Test RTMP Stream",
+    "line2": "FFMPEG in Docker",
+    "font": "swansea-bold.ttf"
+}
+```
+
+This renders the following output.
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/A7HQat68nfw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+Try it with file inputs, decklink inputs and RIST, SRT or RTMP output.
+
 ## Installation
 
 `docker pull ghcr.io/ryanmccartney/ffmpeg-api:latest`
@@ -24,3 +45,7 @@ Mount media in `/home/node/app/data/media` directory for use.
 1. Install Decklink Driver on your host machine.
 2. Check device is connected and update any firmware
 3. Determine the Blackmagic device mapping on the host. Expect something like - `dev/blackmagic/dv0`.
+
+```
+
+```
