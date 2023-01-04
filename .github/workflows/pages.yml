@@ -23,6 +23,9 @@ concurrency:
 jobs:
     # Build job
     build:
+        defaults:
+            run:
+                working-directory: /
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
