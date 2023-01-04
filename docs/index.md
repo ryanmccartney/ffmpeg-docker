@@ -3,28 +3,26 @@ title: Home
 layout: home
 ---
 
-This is a _bare-minimum_ template to create a Jekyll site that uses the [Just the Docs] theme. You can easily set the created site to be published on [GitHub Pages] – the [README] file explains how to do that, along with other details.
+# FFMPEG in Docker
 
-If [Jekyll] is installed on your computer, you can also build and preview the created site _locally_. This lets you test changes before committing them, and avoids waiting for GitHub Pages.[^1] And you will be able to deploy your local build to a different platform than GitHub Pages.
+[![Docker Deploy](https://github.com/ryanmccartney/ffmpeg-docker/actions/workflows/docker.yml/badge.svg)](https://github.com/ryanmccartney/ffmpeg-docker/actions/workflows/docker.yml)
 
-More specifically, the created site:
+[![Pages Deploy](https://github.com/ryanmccartney/ffmpeg-docker/actions/workflows/pages.yml/badge.svg)](https://github.com/ryanmccartney/ffmpeg-docker/actions/workflows/pages.yml)
 
--   uses a gem-based approach, i.e. uses a `Gemfile` and loads the `just-the-docs` gem
--   uses the [GitHub Pages / Actions workflow] to build and publish the site on GitHub Pages
+FFMPEG compiled with additional libraries and running inside a Docker container. A RESTful API runs alongside written in Node.js utilsing `fluent-ffmpeg`.
 
-Other than that, you're free to customize sites that you create with this template, however you like. You can easily change the versions of `just-the-docs` and Jekyll it uses, as well as adding further plugins.
+## Installation
 
-[Browse our documentation][just the docs] to learn more about how to use this theme.
+`docker pull ghcr.io/ryanmccartney/ffmpeg-api:latest`
 
-To get started with creating a site, just click "[use this template]"!
+### Media Passthrough
 
----
+Mounting media from your host machine directly into the running container allows FFMPEG to scan and analyse it in the background. It can then be directly used when running FFMPEG commands.
 
-[^1]: [It can take up to 10 minutes for changes to your site to publish after you push the changes to GitHub](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/creating-a-github-pages-site-with-jekyll#creating-your-site).
+Mount media in `/home/node/app/data/media` directory for use.
 
-[just the docs]: https://just-the-docs.github.io/just-the-docs/
-[github pages]: https://docs.github.com/en/pages
-[readme]: https://github.com/just-the-docs/just-the-docs-template/blob/main/README.md
-[jekyll]: https://jekyllrb.com
-[github pages / actions workflow]: https://github.blog/changelog/2022-07-27-github-pages-custom-github-actions-workflows-beta/
-[use this template]: https://github.com/just-the-docs/just-the-docs-template/generate
+### With Decklink Support
+
+1. Install Decklink Driver on your host machine.
+2. Check device is connected and update any firmware
+3. Determine the Blackmagic device mapping on the host. Expect something like - `dev/blackmagic/dv0`.
