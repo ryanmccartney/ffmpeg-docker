@@ -11,9 +11,9 @@ services:
         build:
             context: "."
             args:
-                DECKLINK_SUPPORT: "false"
-                DESKTOP_VIDEO_DRIVER_URL: "https://sw.blackmagicdesign.com/DesktopVideo/v12.3/Blackmagic_Desktop_Video_Linux_12.3.tar.gz?Key-Pair-Id=APKAJTKA3ZJMJRQITVEA&Signature=lCdWVI7h6M6kMXrNALp9medt3lz6BQSsNQWjFokavzhq8D/p7T2S2yU3CSJ0hmIAwUedRPsKmDKFH3LqxFz/YGd7AuSi7c0dPDFUVnI5t8c9Z3jZX4SizvKhq00tQSXUs5RBVbRkApnnUbxqgw6LBVPDOe5zfb22Ps4NbRwSEl89GTqc7+et0AO5b+Adm+UOWNwF9ZdO3lSfgDrgtEduqyi9iU202amwMKK9UMPSaT7MeNJjvRlRPccGoN/bc12vDfFNF7SuytWwtKeYmN56rVBgQWSWOu9fQwMf8Otu3fU2vTx8hzC7UCzoIuXPGjJCx8r2STQm3/eq7T9zRJMBlQ==&Expires=1655854962"
-                DEKSTOP_VIDEO_SDK_URL: "https://sw.blackmagicdesign.com/DeckLink/v12.3/Blackmagic_DeckLink_SDK_12.3.zip?Key-Pair-Id=APKAJTKA3ZJMJRQITVEA&Signature=ciEvjFk8uAOsrgdafU0IwtHM4pUX68cR51lNn6x2gVsosfbYct7t9/xjo4ztvFWW7adohvGgUHKg4yLhIVljJXV55WF6yQtV5pyRgf5I1+BhH7fRtmzBNZ+22V7Mck92yIX5k0xSLvax04ZXcVLvW2az2jDrf8Wlzpg0ZpIw/2+l3kBOQC1n9qxdXWq0/+LTGYqgNgxzfyMTinbKKxLDHwZ8Xb7x7de1lR6A6SRctRrwfV410jCR7GeqFa8eR2rUYCCalKDP4cw/w12UFSOXGk9pobx2oGz2CdPnflm+iBYXvB7V4IVThhpmd1IC7EGOig7eMKojrWEvG2Vl2xmw4w==&Expires=1655854993"
+                DECKLINK_SUPPORT: "true"
+                DESKTOP_VIDEO_SDK_URL: "https://sw.blackmagicdesign.com/DeckLink/v12.4.2/Blackmagic_DeckLink_SDK_12.4.2.zip?Key-Pair-Id=APKAJTKA3ZJMJRQITVEA&Signature=ShqJ+Hjwzp3X7hunTSEoW5s7hE6h2E7O3G4XJUizof6whDpAeD+HlBVjPPi0wVeObCIfq+bdTuVnvNJx2AI6E3EoXd0hi485Z96JRo7vEG8sJ3Skhva/hOQw8c02XNp2hQKqk5/MJzByC2J/Q4b3Luh4+sLQY3kACirIUFVm801uvFU8spBKp0gf/nRwYgjHiMhcx5iITkILnHiS5evaY0bYa3hYQ08w8YQyn9420A1BlJcoj7rMn4VL45fyuzInuqn3+UGgtq652YFK8U98fvy0wnYfzfMoII09SkuusHTlJSQFix1hdEo1Jn9AiwVw9BRFxa5pdJqrtCONAcx59g==&Expires=1673210375"
+                NDI_SUPPORT: "false"
         restart: always
         volumes:
             - /dev/blackmagic/dv0:/dev/blackmagic/dv0

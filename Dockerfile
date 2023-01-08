@@ -1,23 +1,17 @@
 FROM ubuntu:lunar
 
-ARG DEKSTOP_VIDEO_SDK_URL="https://sw.blackmagicdesign.com/DeckLink/v12.3/Blackmagic_DeckLink_SDK_12.3.zip"
+#Get a download link here - https://www.blackmagicdesign.com/support/download/2438c76b9f734f69b4a914505e50a5ab/Linux
+ARG DESKTOP_VIDEO_SDK_URL="https://sw.blackmagicdesign.com/DeckLink/v12.4.2/Blackmagic_DeckLink_SDK_12.4.2.zip"
 ARG DECKLINK_SUPPORT="false"
+ARG NDI_SUPPORT="false"
+
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Create folder structure
 RUN mkdir $HOME/ffmpeg_sources
 RUN mkdir $HOME/bin
 
-RUN if [ "$DECKLINK_SUPPORT" = "true" ] ; then \
-        # Get Blackmagic Desktop Video Install Files (Link expires... You'll need to get a new one)
-        wget -c $DEKSTOP_VIDEO_SDK_URL -O desktopvideoSDK.zip\
-        bsdtar -xf desktopvideoSDK.zip -s'|[^/]*/|./desktopvideoSDK/|'\
-        cp -r ./desktopvideoSDK/Linux/ $HOME/ffmpeg_sources/BMD_SDK\
-    else \
-       echo "Decklink flag not set"; \
-    fi
-
-# Install FFMPEG Dependencies
+# Install additional dependencies
 RUN apt update
 RUN apt -y install \
   autoconf \
@@ -56,7 +50,34 @@ RUN apt -y install \
   libssl-dev \
   libaom-dev \
   libdav1d-dev \
-  libopus-dev
+  libopus-dev \
+  libarchive-tools
+
+# Get Blackmagic Desktop Video Install Files (Link expires... You'll need to get a new one)
+RUN if [ "$DECKLINK_SUPPORT" = "true" ];\
+    then \
+        wget -O "desktopvideoSDK.zip" "$DESKTOP_VIDEO_SDK_URL" &&\
+        bsdtar -xf desktopvideoSDK.zip -s'|[^/]*/|./desktopvideoSDK/|' &&\
+        cp -r ./desktopvideoSDK/Linux/ $HOME/ffmpeg_sources/BMD_SDK;\
+    else \
+       echo "Decklink flag not set"; \
+    fi
+
+RUN if [ "$NDI_SUPPORT" = "true" ];\
+    then \
+        # A Patch to readd NDI to FFmpeg on building. (https://framagit.org/tytan652/ffmpeg-ndi-patch)
+        git clone https://framagit.org/tytan652/ffmpeg-ndi-patch.git &&\
+        git clone https://git.ffmpeg.org/ffmpeg.git &&\
+        cd  $HOME/ffmpeg_sources &&\
+        # Checkout to 4.2 version or later
+        git checkout n4.4 &&\
+        # Apply the patch for 5.x and later versions
+        git am ../ffmpeg-ndi-patch/master_Revert-lavd-Remove-libndi_newtek.patch &&\
+        # Add needed files
+        cp ../ffmpeg-ndi-patch/libavdevice/libndi_newtek_* libavdevice/;\
+    else \
+       echo "Newtek NDI flag not set"; \
+    fi
 
 WORKDIR $HOME/ffmpeg_sources
 
@@ -102,7 +123,6 @@ RUN ./configure \
         --extra-libs="-lpthread -lm" \
         --ld="g++" \
         --bindir="$HOME/bin" \
-        --enable-gpl \
         --enable-gnutls \
         --enable-libass \
         --enable-libfdk-aac \
@@ -114,8 +134,10 @@ RUN ./configure \
         --enable-libvpx \
         --enable-libx264 \
         --enable-libx265 \
+        --enable-gpl \
         --enable-nonfree \
-#       --enable-decklink \
+#        --enable-libndi_newtek \
+        --enable-decklink \
         --enable-libsrt \
         --disable-libaom \
         --disable-libsvtav1
