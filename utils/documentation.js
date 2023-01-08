@@ -12,7 +12,7 @@ const swaggerOptions = {
     definition: {
         openapi: "3.0.0",
         info: {
-            title: "FFMPEG API",
+            title: "FFmpeg API",
             version: "0.1.0",
             description: "This is a simple CRUD API application made with Express and documented with Swagger",
             license: {

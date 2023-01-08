@@ -19,7 +19,7 @@ module.exports = async () => {
     });
 
     command.on("start", (commandString) => {
-        logger.debug(`Spawned FFMPEG with command: ${commandString}`);
+        logger.debug(`Spawned FFmpeg with command: ${commandString}`);
         return { options: options, command: commandString };
     });
 

@@ -1,7 +1,7 @@
 # NAME: docker-compose.yml
 # AUTH: Ryan McCartney <ryan@mccartney.info>
 # DATE: 04/03/2021
-# DESC: FFMPEG compiled with Decklink SDK
+# DESC: FFmpeg compiled with Decklink SDK
 
 version: "3.8"
 

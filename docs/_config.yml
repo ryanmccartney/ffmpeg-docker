@@ -1,5 +1,5 @@
-title: Docker FFMPEG
-description: FFMPEG in Docker with a RESTful API for control
+title: Docker FFmpeg
+description: FFmpeg in Docker with a RESTful API for control
 remote_theme: pmarsceill/just-the-docs
 url: https://ryan.mccartney.info/ffmpeg-docker
 show_downloads: true

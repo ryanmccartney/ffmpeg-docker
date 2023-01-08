@@ -1,7 +1,7 @@
 {
   "name": "ffmpeg-docker",
   "version": "1.0.0",
-  "description": "FFMPEG compiled in a docker container with an API for control",
+  "description": "FFmpeg compiled in a docker container with an API for control",
   "main": "index.js",
   "scripts": {
     "development": "nodemon index",

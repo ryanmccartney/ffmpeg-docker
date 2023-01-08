@@ -3,11 +3,11 @@ title: Home
 layout: home
 ---
 
-# FFMPEG in Docker
+# FFmpeg in Docker
 
 [![Docker Deploy](https://github.com/ryanmccartney/ffmpeg-docker/actions/workflows/docker.yml/badge.svg)](https://github.com/ryanmccartney/ffmpeg-docker/actions/workflows/docker.yml) [![Pages Deploy](https://github.com/ryanmccartney/ffmpeg-docker/actions/workflows/pages.yml/badge.svg)](https://github.com/ryanmccartney/ffmpeg-docker/actions/workflows/pages.yml)
 
-FFMPEG compiled with additional libraries and running inside a Docker container. A RESTful API runs alongside written in Node.js utilsing `fluent-ffmpeg`.
+FFmpeg compiled with additional libraries and running inside a Docker container. A RESTful API runs alongside written in Node.js utilsing `fluent-ffmpeg`.
 
 ## Exmaple
 
@@ -19,7 +19,7 @@ Get comand to the following enpoint `http://localhost/api/stream/rtmp/bars` with
     "key": "YOUTUBE_STREAM_KEY",
     "bitrate": "1000k",
     "line1": "Test RTMP Stream",
-    "line2": "FFMPEG in Docker",
+    "line2": "FFmpeg in Docker",
     "font": "swansea-bold.ttf"
 }
 ```
@@ -36,7 +36,7 @@ Try it with file inputs, decklink inputs and RIST, SRT or RTMP output.
 
 ### Media Passthrough
 
-Mounting media from your host machine directly into the running container allows FFMPEG to scan and analyse it in the background. It can then be directly used when running FFMPEG commands.
+Mounting media from your host machine directly into the running container allows FFmpeg to scan and analyse it in the background. It can then be directly used when running FFmpeg commands.
 
 Mount media in `/home/node/app/data/media` directory for use.
 
