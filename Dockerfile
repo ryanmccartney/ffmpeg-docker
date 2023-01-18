@@ -1,9 +1,14 @@
+# NAME: Dockerfile
+# AUTH: Ryan McCartney <ryan@mccartney.info>
+# DATE: 08/01/2023
+# DESC: FFmpeg compiled with configurable options link BMD Decklink or Newtec NDI
+
 FROM ubuntu:lunar
 
-#Get a download link here - https://www.blackmagicdesign.com/support/download/2438c76b9f734f69b4a914505e50a5ab/Linux
-ARG DESKTOP_VIDEO_SDK_URL="https://sw.blackmagicdesign.com/DeckLink/v12.4.2/Blackmagic_DeckLink_SDK_12.4.2.zip"
 ARG DECKLINK_SUPPORT="false"
+ARG DECLINK_SDK_URL="https://sw.blackmagicdesign.com/DeckLink/v12.4.2/Blackmagic_DeckLink_SDK_12.4.2.zip"
 ARG NDI_SUPPORT="false"
+ARG NDI_SDK_URL="https://downloads.ndi.tv/SDK/NDI_SDK_Linux/Install_NDI_SDK_v5_Linux.tar.gz"
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -53,30 +58,14 @@ RUN apt -y install \
   libopus-dev \
   libarchive-tools
 
-# Get Blackmagic Desktop Video Install Files (Link expires... You'll need to get a new one)
+# Get Blackmagic Desktop Video SDK (Link expires... You'll need to get a new one)
 RUN if [ "$DECKLINK_SUPPORT" = "true" ];\
     then \
-        wget -O "desktopvideoSDK.zip" "$DESKTOP_VIDEO_SDK_URL" &&\
+        wget -O "desktopvideoSDK.zip" "$DECLINK_SDK_URL" &&\
         bsdtar -xf desktopvideoSDK.zip -s'|[^/]*/|./desktopvideoSDK/|' &&\
         cp -r ./desktopvideoSDK/Linux/ $HOME/ffmpeg_sources/BMD_SDK;\
     else \
        echo "Decklink flag not set"; \
-    fi
-
-RUN if [ "$NDI_SUPPORT" = "true" ];\
-    then \
-        # A Patch to readd NDI to FFmpeg on building. (https://framagit.org/tytan652/ffmpeg-ndi-patch)
-        git clone https://framagit.org/tytan652/ffmpeg-ndi-patch.git &&\
-        git clone https://git.ffmpeg.org/ffmpeg.git &&\
-        cd  $HOME/ffmpeg_sources &&\
-        # Checkout to 4.2 version or later
-        git checkout n4.4 &&\
-        # Apply the patch for 5.x and later versions
-        git am ../ffmpeg-ndi-patch/master_Revert-lavd-Remove-libndi_newtek.patch &&\
-        # Add needed files
-        cp ../ffmpeg-ndi-patch/libavdevice/libndi_newtek_* libavdevice/;\
-    else \
-       echo "Newtek NDI flag not set"; \
     fi
 
 WORKDIR $HOME/ffmpeg_sources
@@ -107,8 +96,38 @@ RUN git -C srt pull 2> /dev/null || git clone --depth 1 https://github.com/Haivi
     make install && \
     ldconfig
 
-RUN wget -O ffmpeg-snapshot.tar.bz2 https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
-RUN tar xjvf ffmpeg-snapshot.tar.bz2
+WORKDIR $HOME/ffmpeg_sources
+RUN git clone https://git.ffmpeg.org/ffmpeg.git
+WORKDIR $HOME/ffmpeg_sources/ffmpeg
+RUN git checkout n5.0
+RUN git config --global user.email "hello@mccartney.info"
+RUN git config --global user.name "FFmpeg Docker"
+
+# Static source files option - now using git for NDI patching
+#RUN wget -O ffmpeg-snapshot.tar.bz2 https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
+#RUN tar xjvf ffmpeg-snapshot.tar.bz2
+
+WORKDIR $HOME/ffmpeg_sources
+
+RUN if [ "$NDI_SUPPORT" = "true" ];\
+    then \
+        # Get NDI SDK and install it (https://framagit.org/tytan652/ffmpeg-ndi-patch/-/issues/1)
+        wget -O "ndiSDK.tar.gz" "$NDI_SDK_URL" &&\
+        tar -xf ndiSDK.tar.gz &&\
+        sed -i 's/read -p "Type y or Y to agree: " REPLY if [ "$REPLY" != "y" ] && [ "$REPLY" != "Y" ]; then exit 1 fi/ /g' Install_NDI_SDK_v5_Linux.sh &&\
+        chmod +x Install_NDI_SDK_v5_Linux.sh &&\
+        ./Install_NDI_SDK_v5_Linux.sh && \
+        # A Patch to readd NDI to FFmpeg on building. (https://framagit.org/tytan652/ffmpeg-ndi-patch)
+        git clone https://framagit.org/tytan652/ffmpeg-ndi-patch.git &&\
+        # Set the directory for the FFmpeg source
+        cd ffmpeg &&\
+        # Apply the patch for 5.x and later versions
+        git am ../ffmpeg-ndi-patch/master_Revert-lavd-Remove-libndi_newtek.patch &&\
+        # Add needed files
+        cp ../ffmpeg-ndi-patch/libavdevice/libndi_newtek_* libavdevice/ ;\
+    else \
+       echo "Newtek NDI flag not set"; \
+    fi
 
 WORKDIR $HOME/ffmpeg_sources/ffmpeg
 
@@ -136,7 +155,7 @@ RUN ./configure \
         --enable-libx265 \
         --enable-gpl \
         --enable-nonfree \
-#        --enable-libndi_newtek \
+        --enable-libndi_newtek \
         --enable-decklink \
         --enable-libsrt \
         --disable-libaom \

@@ -1,7 +1,7 @@
 # NAME: docker-compose.yml
 # AUTH: Ryan McCartney <ryan@mccartney.info>
-# DATE: 04/03/2021
-# DESC: FFmpeg compiled with Decklink SDK
+# DATE: 08/01/2023
+# DESC: FFmpeg compiled with configurable options link BMD Decklink or Newtec NDI
 
 version: "3.8"
 
@@ -12,8 +12,9 @@ services:
             context: "."
             args:
                 DECKLINK_SUPPORT: "true"
-                DESKTOP_VIDEO_SDK_URL: "https://sw.blackmagicdesign.com/DeckLink/v12.4.2/Blackmagic_DeckLink_SDK_12.4.2.zip?Key-Pair-Id=APKAJTKA3ZJMJRQITVEA&Signature=ShqJ+Hjwzp3X7hunTSEoW5s7hE6h2E7O3G4XJUizof6whDpAeD+HlBVjPPi0wVeObCIfq+bdTuVnvNJx2AI6E3EoXd0hi485Z96JRo7vEG8sJ3Skhva/hOQw8c02XNp2hQKqk5/MJzByC2J/Q4b3Luh4+sLQY3kACirIUFVm801uvFU8spBKp0gf/nRwYgjHiMhcx5iITkILnHiS5evaY0bYa3hYQ08w8YQyn9420A1BlJcoj7rMn4VL45fyuzInuqn3+UGgtq652YFK8U98fvy0wnYfzfMoII09SkuusHTlJSQFix1hdEo1Jn9AiwVw9BRFxa5pdJqrtCONAcx59g==&Expires=1673210375"
+                DECLINK_SDK_URL: "https://sw.blackmagicdesign.com/DeckLink/v12.4.2/Blackmagic_DeckLink_SDK_12.4.2.zip?Key-Pair-Id=APKAJTKA3ZJMJRQITVEA&Signature=QgiA0d0hTh75jP8mZurfIYEvE9bISRVIdFiQVb1tm5CwPYSMs65NGvBNlyV5+GuqVXeHkYGLQSV5Wqt2oTkXMosuZhfpm6ojbkSxj/XIzyu7NWeRNulVYTzoBtJcPNZYi+SqrWZf1OUk1LyhV5QHANIKuc8ryHYvnFUyCrzYhIobWxz5c1L2xoYnFV+Jd9Up5V8pxu7BxHNyMgh6/KySe9pRgxliu+6lWM/btnuRNA0BrMLCYoT042NDux3EJwSvri41kC2x7HtC2JDE8xgJA601OS4Bx4qLgOS4OaKOsVWh0hoxWkGfX1Bozbuh0wEDzlJ/9/tZDSJNqRZlTNTanw==&Expires=1673227885"
                 NDI_SUPPORT: "false"
+                NDI_SDK_URL: "https://downloads.ndi.tv/SDK/NDI_SDK_Linux/Install_NDI_SDK_v5_Linux.tar.gz"
         restart: always
         volumes:
             - /dev/blackmagic/dv0:/dev/blackmagic/dv0
