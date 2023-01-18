@@ -155,7 +155,7 @@ RUN ./configure \
         --enable-libx265 \
         --enable-gpl \
         --enable-nonfree \
-        --enable-libndi_newtek \
+ #       --enable-libndi_newtek \
         --enable-decklink \
         --enable-libsrt \
         --disable-libaom \
