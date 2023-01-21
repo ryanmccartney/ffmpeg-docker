@@ -7,6 +7,9 @@ FROM ubuntu:lunar
 
 ARG DECKLINK_SUPPORT="false"
 ARG DECLINK_SDK_URL="https://sw.blackmagicdesign.com/DeckLink/v12.4.2/Blackmagic_DeckLink_SDK_12.4.2.zip"
+ARG DECKLINK_DRIVER_URL="https://sw.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz"
+ARG DECKLINK_DRIVER_VERSION="12.4.1"
+
 ARG NDI_SUPPORT="false"
 ARG NDI_SDK_URL="https://downloads.ndi.tv/SDK/NDI_SDK_Linux/Install_NDI_SDK_v5_Linux.tar.gz"
 
@@ -61,6 +64,25 @@ RUN apt -y install \
 # Get Blackmagic Desktop Video SDK (Link expires... You'll need to get a new one)
 RUN if [ "$DECKLINK_SUPPORT" = "true" ];\
     then \
+        #Decklink Driver: Download and extract
+        wget -O "desktop-video-driver.tar.gz" "$DECKLINK_DRIVER_URL" &&\
+        tar -xvf desktop-video-driver.tar.gz &&\
+        #Decklink Driver: Get .deb name and location
+        DECKLINK_DRIVER_DEB="driver.deb" &&\
+        SEARCH_DIR="./Blackmagic_Desktop_Video_Linux_$DECKLINK_DRIVER_VERSION/deb/x86_64" &&\ 
+        for FILE in "$SEARCH_DIR"/*;\
+        do\
+            echo $FILE &&\
+            DECKLINK_DRIVER_DEB=$FILE;\
+        done &&\
+        #Decklink Driver: Install the .deb
+        set -e &&\
+        dpkg --install $DECKLINK_DRIVER_DEB || true &&\
+        apt install -f -y &&\
+        #Decklink Driver: Cleanup files and folder
+        rm -r "./Blackmagic_Desktop_Video_Linux_$DECKLINK_DRIVER_VERSION" &&\
+        rm "desktop-video-driver.tar.gz" &&\
+        #Decklink SDK: Get SDK, extract and copy
         wget -O "desktopvideoSDK.zip" "$DECLINK_SDK_URL" &&\
         bsdtar -xf desktopvideoSDK.zip -s'|[^/]*/|./desktopvideoSDK/|' &&\
         cp -r ./desktopvideoSDK/Linux/ $HOME/ffmpeg_sources/BMD_SDK;\

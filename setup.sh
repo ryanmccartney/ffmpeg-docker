@@ -22,9 +22,9 @@ do
 done
 
 #Install the .deb
-dpkg --install $DESKTOP_VIDEO_DRIVER_DEB
+dpkg --install $DESKTOP_VIDEO_DRIVER_DEB | true
 
-apt-get install -f
+apt install -f -y
 
 #Cleanup files and folder
 rm -r "./Blackmagic_Desktop_Video_Linux_$DESKTOP_VIDEO_DRIVER_VERSION"
