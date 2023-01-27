@@ -1,6 +1,7 @@
 ---
+layout: page
 title: Installation
-layout: installation
+nav_order: 2
 has_children: true
 ---
 
