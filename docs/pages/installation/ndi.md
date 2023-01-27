@@ -1,8 +1,8 @@
 ---
 layout: page
-title: Newtec NDI  
+title: Newtec NDI
+parent: Installation
 nav_order: 2
-has_children: false
 ---
 
 # NDI Support

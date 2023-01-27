@@ -1,8 +1,8 @@
 ---
 layout: page
 title: Decklink
-nav_order: 2
-has_children: false
+parent: Installation
+nav_order: 1
 ---
 
 # Decklink Support
