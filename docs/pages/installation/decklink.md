@@ -1,7 +1,8 @@
 ---
-title: BMD Decklink
-layout: installation
-parent: Installation
+layout: page
+title: Decklink
+nav_order: 2
+has_children: false
 ---
 
 # Decklink Support
@@ -16,6 +17,7 @@ You can use the script in this repository to do this;
 * `./setup.sh`
 
 If your Decklink card required an update during this process you'll need to reboot the host machine.
+
 # Building
 
 Before building you'll need to set the build argument variable `DECKLINK_SUPPORT` to `true`.
