@@ -23,8 +23,8 @@ done
 
 #Install the .deb
 dpkg --install $DESKTOP_VIDEO_DRIVER_DEB | true
-
 apt install -f -y
+dpkg --install $DECKLINK_DRIVER_DEB || true &&\
 
 #Cleanup files and folder
 rm -r "./Blackmagic_Desktop_Video_Linux_$DESKTOP_VIDEO_DRIVER_VERSION"

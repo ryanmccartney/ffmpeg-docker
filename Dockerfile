@@ -79,6 +79,7 @@ RUN if [ "$DECKLINK_SUPPORT" = "true" ];\
         set -e &&\
         dpkg --install $DECKLINK_DRIVER_DEB || true &&\
         apt install -f -y &&\
+        dpkg --install $DECKLINK_DRIVER_DEB || true &&\
         #Decklink Driver: Cleanup files and folder
         rm -r "./Blackmagic_Desktop_Video_Linux_$DECKLINK_DRIVER_VERSION" &&\
         rm "desktop-video-driver.tar.gz" &&\

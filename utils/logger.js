@@ -8,14 +8,14 @@ const logLevel = process.env.LOG_LEVEL || "debug";
 const customLevels = {
     levels: {
         error: 0,
-        warning: 1,
+        warn: 1,
         info: 2,
         http: 3,
         debug: 4,
     },
     colors: {
         error: "red",
-        warning: "yellow",
+        warn: "yellow",
         info: "blue",
         http: "magenta",
         debug: "gray",
