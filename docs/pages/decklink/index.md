@@ -9,6 +9,14 @@ has_children: false
 
 ## FFMPEG Commands
 
+Check Firmware status
+
+`BlackmagicFirmwareUpdater status`
+
+List Decklink devices
+
+`ffmpeg -sources decklink`
+
 List support formats
 
 `ffmpeg -f decklink -list_formats 1 -i "DeckLink 4K Extreme 12G"`
