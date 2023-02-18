@@ -113,7 +113,7 @@ RUN git -C SVT-AV1 pull 2> /dev/null || git clone https://gitlab.com/AOMediaCode
 RUN git -C srt pull 2> /dev/null || git clone --depth 1 https://github.com/Haivision/srt.git && \
     mkdir -p srt/build && \
     cd srt && \
-    ./configure --prefix="$HOME/ffmpeg_build" --bindir="$HOME/bin" --disable-shared && \
+    ./configure --prefix="$HOME/ffmpeg_build" --bindir="$HOME/bin" --disable-shared --enable-bonding && \
     cmake -DCMAKE_INSTALL_PREFIX="$HOME/ffmpeg_build" -DENABLE_C_DEPS=ON -DENABLE_SHARED=OFF -DENABLE_STATIC=ON && \
     make && \
     make install && \
