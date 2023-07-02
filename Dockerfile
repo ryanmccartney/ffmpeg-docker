@@ -6,9 +6,9 @@
 FROM ubuntu:lunar
 
 ARG DECKLINK_SUPPORT="false"
-ARG DECLINK_SDK_URL="https://sw.blackmagicdesign.com/DeckLink/v12.4.2/Blackmagic_DeckLink_SDK_12.4.2.zip"
-ARG DECKLINK_DRIVER_URL="https://sw.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz"
-ARG DECKLINK_DRIVER_VERSION="12.4.1"
+ARG DECLINK_SDK_URL="https://sw.blackmagicdesign.com/DeckLink/v12.5/Blackmagic_DeckLink_SDK_12.5.zip"
+ARG DECKLINK_DRIVER_URL="https://sw.blackmagicdesign.com/DesktopVideo/v12.5-1/Blackmagic_Desktop_Video_Linux_12.5.tar.gz"
+ARG DECKLINK_DRIVER_VERSION="12.5"
 
 ARG NDI_SUPPORT="false"
 ARG NDI_SDK_URL="https://downloads.ndi.tv/SDK/NDI_SDK_Linux/Install_NDI_SDK_v5_Linux.tar.gz"
@@ -70,10 +70,15 @@ RUN if [ "$DECKLINK_SUPPORT" = "true" ];\
         #Decklink Driver: Get .deb name and location
         DECKLINK_DRIVER_DEB="driver.deb" &&\
         SEARCH_DIR="./Blackmagic_Desktop_Video_Linux_$DECKLINK_DRIVER_VERSION/deb/x86_64" &&\ 
+        echo "Searching for driver in $SEARCH_DIR" &&\
         for FILE in "$SEARCH_DIR"/*;\
         do\
             echo $FILE &&\
-            DECKLINK_DRIVER_DEB=$FILE;\
+            if [[ $FILE == *"desktopvideo_"* ]];\
+            then\
+                echo "Found Desktop Video Drivers" &&\
+                DECKLINK_DRIVER_DEB=$FILE;\
+            fi\
         done &&\
         #Decklink Driver: Install the .deb
         set -e &&\
