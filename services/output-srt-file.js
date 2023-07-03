@@ -49,6 +49,7 @@ module.exports = async (options) => {
                 }}\':fontcolor=white:fontsize=100:box=1:boxcolor=black@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)+180`,
             },
         ])
+        .outputOptions(["-r 4", "-update 1", path.resolve(`./data/srt-thumbnail-${options.address}-${options.port}.png`),])
         .output(`srt://${options.address}:${options.port}?pkt_size=1316&latency=${options.latency}*1000`)
         .outputOptions(["-preset veryfast", "-f mpegts"]);
 

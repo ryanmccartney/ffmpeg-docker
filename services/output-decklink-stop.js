@@ -7,6 +7,8 @@ const path = require("path");
 let command;
 
 module.exports = async (cardIndex,options) => {
+    
+    logger.info(`Stopping the output on Decklink Device ${cardIndex}.`)
     let status = true
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 

@@ -29,4 +29,36 @@ Bars Playout
 
 `ffmpeg -re -f lavfi -i smptehdbars=rate=25:size=1920x1080 -t 10000 -pix_fmt uyvy422 -s 1920x1080 -f decklink -s 1920x1080 -pix_fmt uyvy422 "DeckLink 4K Extreme 12G"`
 
+Bars Types
+
+* The `allrgb` source returns frames of size 4096x4096 of all rgb colors.
+
+The allyuv source returns frames of size 4096x4096 of all yuv colors.
+
+The color source provides an uniformly colored input.
+
+The colorchart source provides a colors checker chart.
+
+The colorspectrum source provides a color spectrum input.
+
+The haldclutsrc source provides an identity Hald CLUT. See also haldclut filter.
+
+The nullsrc source returns unprocessed video frames. It is mainly useful to be employed in analysis / debugging tools, or as the source for filters which ignore the input data.
+
+The pal75bars source generates a color bars pattern, based on EBU PAL recommendations with 75% color levels.
+
+The pal100bars source generates a color bars pattern, based on EBU PAL recommendations with 100% color levels.
+
+The rgbtestsrc source generates an RGB test pattern useful for detecting RGB vs BGR issues. You should see a red, green and blue stripe from top to bottom.
+
+The smptebars source generates a color bars pattern, based on the SMPTE Engineering Guideline EG 1-1990.
+
+The smptehdbars source generates a color bars pattern, based on the SMPTE RP 219-2002.
+
+The testsrc source generates a test video pattern, showing a color pattern, a scrolling gradient and a timestamp. This is mainly intended for testing purposes.
+
+The testsrc2 source is similar to testsrc, but supports more pixel formats instead of just rgb24. This allows using it as an input for other tests without requiring a format conversion.
+
+The yuvtestsrc source generates an YUV test pattern. You should see a y, cb and cr stripe from top to bottom.
+
 ## Card Index Addressing

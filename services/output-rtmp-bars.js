@@ -59,6 +59,7 @@ module.exports = async (options) => {
                 }}\':fontcolor=white:fontsize=100:box=1:boxcolor=black@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)+180`,
             },
         ])
+        .outputOptions(["-r 2", "-update 1", path.resolve(`./data/rtmp-thumbnail-${options.address}.png`),])
         .output(getRtmpAddress(options.address, options.key))
         .outputOptions(["-f flv"]);
 

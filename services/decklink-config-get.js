@@ -1,4 +1,5 @@
 const macadam = require('macadam');
+const logger = require("@utils/logger")(module);
 
 module.exports = async (index) => {
     try{
@@ -6,6 +7,7 @@ module.exports = async (index) => {
         return deviceInfo;
     }
     catch(error){
+        logger.error(error)
         return false
     }
 }
