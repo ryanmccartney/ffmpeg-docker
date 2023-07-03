@@ -12,9 +12,9 @@ services:
             context: "."
             args:
                 DECKLINK_SUPPORT: "true"
-                DECLINK_SDK_URL: "https://sw.blackmagicdesign.com/DeckLink/v12.5/Blackmagic_DeckLink_SDK_12.5.zip?Key-Pair-Id=APKAJTKA3ZJMJRQITVEA&Signature=MnzNr1B56klWNEfkuBdsrs+hsNTA7JZBY9wwejbAMiGdvphubvGixfURihJp6kcqk3sav5UUpUmvnAHEEAp3nPqU3nxIIEJTbVzGNSAt0GaA6+8b2WHvJ//7g4x/8ZQUgA/htniWekayjJFjwJyBnk2ApdVFPkW9GizTYhLqNkN1o22rJfiAHEHXxIL8O+908oc7Ied3Qs2ZT8CTmDA0euE5TM9gNRTneJ96wkuj8l8qA2UcAVqif0ZEAmDEg5uSxrroa3DqOb8NShSGzsATozEykuC6dRU422ZidnO8Hqy4wBCUMY/iSBMmKvSTNHCl1w0S2imxNsrfr8eeaocFJQ==&Expires=1688337534"
-                DECKLINK_DRIVER_URL: "https://sw.blackmagicdesign.com/DesktopVideo/v12.5-1/Blackmagic_Desktop_Video_Linux_12.5.tar.gz?Key-Pair-Id=APKAJTKA3ZJMJRQITVEA&Signature=m5TKzaYoB26Mt0qT8QV8JDCOFkLzeX3tT9GR7j/zz/EgybDbXSUPx/V9Q/IpIA6YI5LWP+3huhcANkFZsxensMWjCLK9lZYoed/fC2rxKB/eTJy+Jd6JWRlFXw0hQPH1qVXDxZXC809LQkm0ALT4sBRZQFX+mzaDqyM/5Cd3DMxdjuNYjQSmMQXXumO+BxxAr4V8xQJWc3mjaWTepRtLvuvvRghCAzGyh8VLS2YY69UMneyiQcQvGZLc4Og8qXtblNIbYpvadoAobeBHFrQRoM4FGdF3iqypsfJHE2yAGQ32Yal18XP0O0qZGv/IlnF892VT1FLldAml0pGf+sVR0A==&Expires=1688337504"
-                DECKLINK_DRIVER_VERSION: "12.5"
+                DECLINK_SDK_URL: "https://sw.blackmagicdesign.com/DeckLink/v12.4.2/Blackmagic_DeckLink_SDK_12.4.2.zip?Key-Pair-Id=APKAJTKA3ZJMJRQITVEA&Signature=Mph/yOHPbYgA1voU4yzqDetm26Nugw12gMlklCqfrs0qPSfCLLKTZmlCByZvAR5OiAVaRxVqc/6CjOFgsy9R1vT4YWYERuo9NmCZJOESYTh1cxvVKtYhkJmBHoSd7+1RTjX8D3rWVDRR5Lgcwq3wGllsHxpfFqzrfD1GkUoRJqfGGIX08LzQUBhZPthXQQJyKUeA5HxTV1M8G70nkMIOTbmmxUvBTNqynJm3P5kMUyJIq08G+I/mALofhNZPb5a/3qjxoaJ9jq16r1rPtVzrp7V3nDDjCZPZphfFgRx9k0R67OUzw25oxdDD3ZxBdK/XSI/4jP2pCztaq9xgQPcQdg==&Expires=1688397730"
+                DECKLINK_DRIVER_URL: "https://sw.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz?Key-Pair-Id=APKAJTKA3ZJMJRQITVEA&Signature=aWHPJ+Q8ZhMOnBnxECWE170sc7bWVJt3qriUxMvCTV8J8EO+dIXDhetlqy1lAs+/OViH1ipubZDUpceJEwLcsav6cTUYX/8mjLXEaq01hTy4ckGlX61OMukt5EBxboBa2Tjm65SktVQcRhuW4VgoAAH/ipjkhTEVW5SEdLr9FZqDgP2jIMN6NgiiVz6B71dIf+BnCzdWAHxLJSDStd3LEGAc8DkmFVDTVElBZvFRHRb3Fqc6dVOWhARTKZeEUGbJRhbaGk+rOsR2/0XdRanIXz/f4ybQEVS1z/uN/eFQRFmolZzA01r4rHewIl1LV5mxux7cx3AZmVbeE0CZIW6OtA==&Expires=1688397756"
+                DECKLINK_DRIVER_VERSION: "12.4.1"
                 NDI_SUPPORT: "false"
                 NDI_SDK_URL: "https://downloads.ndi.tv/SDK/NDI_SDK_Linux/Install_NDI_SDK_v5_Linux.tar.gz"
         restart: always

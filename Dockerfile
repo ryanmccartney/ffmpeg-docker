@@ -3,7 +3,7 @@
 # DATE: 08/01/2023
 # DESC: FFmpeg compiled with configurable options link BMD Decklink or Newtec NDI
 
-FROM ubuntu:lunar
+FROM ubuntu:jammy
 
 ARG DECKLINK_SUPPORT="false"
 ARG DECLINK_SDK_URL="https://sw.blackmagicdesign.com/DeckLink/v12.5/Blackmagic_DeckLink_SDK_12.5.zip"
@@ -59,7 +59,9 @@ RUN apt -y install \
   libaom-dev \
   libdav1d-dev \
   libopus-dev \
-  libarchive-tools
+  libarchive-tools \
+  linux-oem-22.04c \
+  linux-tools-oem-22.04c
 
 # Get Blackmagic Desktop Video SDK (Link expires... You'll need to get a new one)
 RUN if [ "$DECKLINK_SUPPORT" = "true" ];\
@@ -73,7 +75,7 @@ RUN if [ "$DECKLINK_SUPPORT" = "true" ];\
         echo "Searching for driver in $SEARCH_DIR" &&\
         for FILE in "$SEARCH_DIR"/*;\
         do\
-            echo $FILE &&\
+            echo "$FILE" &&\
             if [[ $FILE == *"desktopvideo_"* ]];\
             then\
                 echo "Found Desktop Video Drivers" &&\

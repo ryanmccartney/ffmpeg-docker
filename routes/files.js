@@ -17,8 +17,8 @@ const getMetadata = require("@services/metadata-get");
  *          description: Success
  */
 router.get("/metadata", async (req, res, next) => {
-    const response = await getMetadata(req.body?.filename);
-    hashResponse(res, req, { ...response, ...{ status: response?.error ? "error" : "success" } });
+    const response = await getMetadata(req.body.filename);
+    hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
 });
 
 module.exports = router;

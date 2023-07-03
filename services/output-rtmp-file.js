@@ -15,10 +15,10 @@ const getRtmpAddress = (address, key) => {
 module.exports = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
     const command = ffmpeg({ logger: logger })
-        .input(path.join(__dirname, "..", "data", "media", options?.filename))
+        .input(path.join(__dirname, "..", "data", "media", options.filename))
         .inputOptions(["-re"])
         .videoCodec("libx264")
-        .videoBitrate(options?.bitrate)
+        .videoBitrate(options.bitrate)
         .videoFilters([
             {
                 filter: "drawtext",
@@ -27,9 +27,9 @@ module.exports = async (options) => {
                     "..",
                     "public",
                     "fonts",
-                    `${options?.font || "swansea-bold.ttf"}`
+                    `${options.font || "swansea-bold.ttf"}`
                 )}:\'text=\'${
-                    options?.line1
+                    options.line1
                 }\':fontcolor=white:fontsize=100:box=1:boxcolor=black@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)-60`,
             },
             {
@@ -39,9 +39,9 @@ module.exports = async (options) => {
                     "..",
                     "public",
                     "fonts",
-                    `${options?.font || "swansea-bold.ttf"}`
+                    `${options.font || "swansea-bold.ttf"}`
                 )}:\'text=\'${
-                    options?.line2
+                    options.line2
                 }\':fontcolor=white:fontsize=100:box=1:boxcolor=black@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)+60`,
             },
             {
@@ -51,13 +51,13 @@ module.exports = async (options) => {
                     "..",
                     "public",
                     "fonts",
-                    `${options?.font || "swansea-bold.ttf"}`
+                    `${options.font || "swansea-bold.ttf"}`
                 )}:\'text=\'%{pts\\:gmtime\\:${
                     Date.now() / 1000
                 }}\':fontcolor=white:fontsize=100:box=1:boxcolor=black@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)+180`,
             },
         ])
-        .output(getRtmpAddress(options?.address, options?.key))
+        .output(getRtmpAddress(options.address, options.key))
         .outputOptions(["-f flv"]);
 
     command.on("end", () => {

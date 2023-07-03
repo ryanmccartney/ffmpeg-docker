@@ -79,7 +79,7 @@ app.use(function (error, req, res, next) {
     res.status(error.status || 500).json({
         status: error.status,
         message: error.message,
-        stack: nodeEnv !== "production" ? error?.stack?.split("\n") : undefined,
+        stack: nodeEnv !== "production" ? error.stack.split("\n") : undefined,
     });
 });
 
