@@ -70,20 +70,18 @@ RUN if [ "$DECKLINK_SUPPORT" = "true" ];\
         wget -O "desktop-video-driver.tar.gz" "$DECKLINK_DRIVER_URL" &&\
         tar -xvf desktop-video-driver.tar.gz &&\
         #Decklink Driver: Get .deb name and location
-        DECKLINK_DRIVER_DEB="driver.deb" &&\
+        DECKLINK_DRIVER_DEB="./Blackmagic_Desktop_Video_Linux_$DECKLINK_DRIVER_VERSION/deb/x86_64/desktopvideo_12.4.1a15_amd64.deb" &&\
         SEARCH_DIR="./Blackmagic_Desktop_Video_Linux_$DECKLINK_DRIVER_VERSION/deb/x86_64" &&\ 
         echo "Searching for driver in $SEARCH_DIR" &&\
         for FILE in "$SEARCH_DIR"/*;\
         do\
             echo "$FILE" &&\
-            if [[ $FILE == *"desktopvideo_"* ]];\
-            then\
+            if [[ $FILE == *"desktopvideo_"* ]]; then\
                 echo "Found Desktop Video Drivers" &&\
                 DECKLINK_DRIVER_DEB=$FILE;\
             fi\
         done &&\
         #Decklink Driver: Install the .deb
-        set -e &&\
         dpkg --install $DECKLINK_DRIVER_DEB || true &&\
         apt install -f -y &&\
         dpkg --install $DECKLINK_DRIVER_DEB || true &&\
@@ -197,9 +195,17 @@ RUN make && \
 
 #Install Node.js
 WORKDIR $HOME
-RUN wget -c https://deb.nodesource.com/setup_18.x | bash -
+
+RUN apt remove nodejs
+RUN wget -O node.sh https://deb.nodesource.com/setup_18.x
+RUN chmod +x node.sh && ./node.sh
+RUN apt update
 RUN apt -y install nodejs
-RUN apt -y install npm
+RUN node -v
+RUN apt -y install aptitude
+RUN aptitude -y install npm 
+RUN npm -v
+RUN rm ./node.sh
 
 #Install Node.js API
 WORKDIR $HOME/home/node/app

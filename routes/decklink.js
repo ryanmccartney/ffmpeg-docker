@@ -21,7 +21,7 @@ const getDecklinkInfo = require("@services/decklink-info-get");
  *        '200':
  *          description: Success
  */
-router.get("/info", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
     const response = await getDecklinkInfo();
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
@@ -39,7 +39,7 @@ router.get("/info", async (req, res, next) => {
  *          description: Success
  */
 router.get("/:cardIndex", async (req, res, next) => {
-    const response = await getDecklinkConfig(req.cardIndex);
+    const response = await getDecklinkConfig(req.params.cardIndex);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
@@ -56,7 +56,7 @@ router.get("/:cardIndex", async (req, res, next) => {
  *          description: Success
  */
 router.post("/:cardIndex", async (req, res, next) => {
-    const response = await setDecklinkConfig(req.cardIndex,req.body);
+    const response = await setDecklinkConfig(req.params.cardIndex,req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
@@ -73,7 +73,7 @@ router.post("/:cardIndex", async (req, res, next) => {
  *          description: Success
  */
 router.get("/:cardIndex/file", async (req, res, next) => {
-    const response = await outputDecklinkFile(req.cardIndex,req.body);
+    const response = await outputDecklinkFile(req.params.cardIndex,req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
@@ -90,7 +90,7 @@ router.get("/:cardIndex/file", async (req, res, next) => {
  *          description: Success
  */
 router.get("/:cardIndex/bars", async (req, res, next) => {
-    const response = await outputDecklinkBars(req.cardIndex,req.body);
+    const response = await outputDecklinkBars(req.params.cardIndex,req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
@@ -107,7 +107,7 @@ router.get("/:cardIndex/bars", async (req, res, next) => {
  *          description: Success
  */
 router.get("/:cardIndex/stop", async (req, res, next) => {
-    const response = await outputDecklinkStop(req.cardIndex,req.body);
+    const response = await outputDecklinkStop(req.params.cardIndex,req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 

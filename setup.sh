@@ -2,7 +2,7 @@
 # Install host dependencies for BMD Decklink
 
 #Set download link and driver version as below
-DEKSTOP_VIDEO_DRIVER_URL="https://sw.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz?Key-Pair-Id=APKAJTKA3ZJMJRQITVEA&Signature=eOC2OOTCzwnS2SwHH1npjsriDjtVBeMDShPpZS0jl535phYjJ0HgiWaoZZiQsMpDrmQlQHSd7WXtKnvqauCLF6iI0/Yx9+F7YeW0U45m7Klx8zhehH7v8z1f/OFHtMIrgWmjXf6svAfxIUR+0CXQyN1tHtMSpnGd+9llhiLFLfEJvENnOiMMUpulP8RpM8bL1sARS7jpFCdDF6pWn5rRZPH2hM5lWk0yO0/vCI5b0wxgeG43GtdrYfi06KvybGiXGxwsI1qjLpzYSknwKBZqR+0ojwcTXhYfHbS7dCX2LuW3dgcu/dkIjuo9gLnqqvGrLMdFSJncOG5toQYJa1Ps9g==&Expires=1688340514"
+DEKSTOP_VIDEO_DRIVER_URL="https://sw.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz?Key-Pair-Id=APKAJTKA3ZJMJRQITVEA&Signature=aWHPJ+Q8ZhMOnBnxECWE170sc7bWVJt3qriUxMvCTV8J8EO+dIXDhetlqy1lAs+/OViH1ipubZDUpceJEwLcsav6cTUYX/8mjLXEaq01hTy4ckGlX61OMukt5EBxboBa2Tjm65SktVQcRhuW4VgoAAH/ipjkhTEVW5SEdLr9FZqDgP2jIMN6NgiiVz6B71dIf+BnCzdWAHxLJSDStd3LEGAc8DkmFVDTVElBZvFRHRb3Fqc6dVOWhARTKZeEUGbJRhbaGk+rOsR2/0XdRanIXz/f4ybQEVS1z/uN/eFQRFmolZzA01r4rHewIl1LV5mxux7cx3AZmVbeE0CZIW6OtA==&Expires=1688397756"
 DESKTOP_VIDEO_DRIVER_VERSION="12.4.1"
 DESKTOP_VIDEO_DRIVER_DEB="driver.deb"
 
