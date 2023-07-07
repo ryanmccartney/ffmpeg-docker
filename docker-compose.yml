@@ -21,7 +21,7 @@ services:
         volumes:
             - ./:/home/node/app
         devices:
-            - /dev/blackmagic/io0:/dev/blackmagic/io0
+            - /dev/blackmagic/dv0:/dev/blackmagic/dv0
         environment:
             NODE_ENV: "development"
             PORT: 80

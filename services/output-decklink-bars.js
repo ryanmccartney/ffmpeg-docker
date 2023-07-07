@@ -58,7 +58,7 @@ module.exports = async (cardIndex,options) => {
                 }}\':fontcolor=white:fontsize=100:box=1:boxcolor=black@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)+180`,
             },
         ])
-        .outputOptions(["-r 2", "-update 1", path.resolve(`./data/decklink-thumbnail-${cardIndex}.png`),])
+        //.outputOptions(["-r 2", "-update 1", path.resolve(`./data/decklink-thumbnail-${cardIndex}.png`),])
         .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink"])
         .output(options.cardName);
 

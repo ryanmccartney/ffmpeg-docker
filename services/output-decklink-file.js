@@ -8,16 +8,20 @@ let command;
 
 module.exports = async (cardIndex,options) => {
     let status = true
+    let repeat = "";
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
+
+    if(options.repeat){
+        repeat = "-stream_loop -1"
+    }
 
     if(command){
         logger.info("Killing already running FFMPEG process")
         await command.kill()
     }
-
     command = ffmpeg({ logger: logger })
         .input(`${path.join(__dirname, "..", "data", "media", options.filename)}`)
-        .inputOptions(["-re"])
+        .inputOptions([`-re`,repeat])
         .videoFilters([
             {
                 filter: "drawtext",
@@ -56,7 +60,7 @@ module.exports = async (cardIndex,options) => {
                 }}\':fontcolor=white:fontsize=100:box=1:boxcolor=black@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)+180`,
             },
         ])
-        .outputOptions(["-r 2", "-update 1", path.resolve(`./data/decklink-thumbnail-${cardIndex}.png`),])
+        //.outputOptions(["-r 2", "-update 1", path.resolve(`./data/decklink-thumbnail-${cardIndex}.png`),])
         .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink"])
         .output(options.cardName);
 
@@ -85,7 +89,7 @@ module.exports = async (cardIndex,options) => {
         command.run();
     }
     catch(error){
-        logger.error(error)
+        logger.warn(error)
         status = "false"
     }
 

@@ -12,7 +12,7 @@ module.exports = async (filename) => {
         const metadata = await ffprobe(path.join(__dirname, "..", "data", "media", filename));
         return { data: metadata };
     } catch (error) {
-        logger.error("Cannot probe media " + error.message);
+        logger.warn("Cannot probe media " + error.message);
         return { error: error.toString() };
     }
 };
