@@ -65,3 +65,8 @@ Let's make the file smaller
 ## Low latency HLS to browser
 
 `ffmpeg -f decklink -i 'DeckLink SDI' -c:v libx264 -preset ultrafast -tune zerolatency -g 30 -c:a aac -strict experimental -movflags faststart -f hls -hls_time 0.5 -hls_list_size 5 -hls_flags independent_segments output.m3u8`
+
+## Decklink input to Waveform
+
+`ffmpeg -f decklink -i 'DeckLink SDI' -vf "waveform" -pix_fmt yuv420p -c:v libx264 -preset medium -crf 18 output.mp4`
+

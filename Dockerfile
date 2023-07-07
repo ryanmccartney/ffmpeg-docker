@@ -6,9 +6,9 @@
 FROM ubuntu:jammy
 
 ARG DECKLINK_SUPPORT="false"
-ARG DECLINK_SDK_URL="https://sw.blackmagicdesign.com/DeckLink/v12.5/Blackmagic_DeckLink_SDK_12.5.zip"
-ARG DECKLINK_DRIVER_URL="https://sw.blackmagicdesign.com/DesktopVideo/v12.5-1/Blackmagic_Desktop_Video_Linux_12.5.tar.gz"
-ARG DECKLINK_DRIVER_VERSION="12.5"
+ARG DECLINK_SDK_URL="https://sw.blackmagicdesign.com/DeckLink/v12.4.1/Blackmagic_DeckLink_SDK_12.4.1.zip"
+ARG DECKLINK_DRIVER_URL="https://sw.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz"
+ARG DECKLINK_DRIVER_VERSION="12.4.1"
 
 ARG NDI_SUPPORT="false"
 ARG NDI_SDK_URL="https://downloads.ndi.tv/SDK/NDI_SDK_Linux/Install_NDI_SDK_v5_Linux.tar.gz"
@@ -118,11 +118,19 @@ RUN git -C SVT-AV1 pull 2> /dev/null || git clone https://gitlab.com/AOMediaCode
 RUN git -C srt pull 2> /dev/null || git clone --depth 1 https://github.com/Haivision/srt.git && \
     mkdir -p srt/build && \
     cd srt && \
-    ./configure --prefix="$HOME/ffmpeg_build" --bindir="$HOME/bin" --disable-shared --enable-bonding && \
+    ./configure --prefix="$HOME/ffmpeg_build"" --disable-shared --enable-bonding && \
     cmake -DCMAKE_INSTALL_PREFIX="$HOME/ffmpeg_build" -DENABLE_C_DEPS=ON -DENABLE_SHARED=OFF -DENABLE_STATIC=ON && \
     make && \
     make install && \
     ldconfig
+
+RUN git -C libklvanc pull 2> /dev/null || git clone --depth 1 https://github.com/stoth68000/libklvanc && \
+    mkdir -p libklvanc/build && \
+    cd libklvanc && \
+    ./autogen.sh --build &&\
+    ./configure --enable-shared=no --prefix="$HOME/ffmpeg_build" --bindir="$HOME/bin &&\
+    make &&\
+    make install
 
 WORKDIR $HOME/ffmpeg_sources
 RUN git clone https://git.ffmpeg.org/ffmpeg.git
@@ -142,10 +150,26 @@ RUN if [ "$NDI_SUPPORT" = "true" ];\
         # Get NDI SDK and install it (https://framagit.org/tytan652/ffmpeg-ndi-patch/-/issues/1)
         wget -O "ndiSDK.tar.gz" "$NDI_SDK_URL" &&\
         tar -xf ndiSDK.tar.gz &&\
-        sed -i 's/read -p "Type y or Y to agree: " REPLY if [ "$REPLY" != "y" ] && [ "$REPLY" != "Y" ]; then exit 1 fi/ /g' Install_NDI_SDK_v5_Linux.sh &&\
-        chmod +x Install_NDI_SDK_v5_Linux.sh &&\
-        ./Install_NDI_SDK_v5_Linux.sh && \
-        # A Patch to readd NDI to FFmpeg on building. (https://framagit.org/tytan652/ffmpeg-ndi-patch)
+        # Path to the target script
+        SCRIPT_PATH="./Install_NDI_SDK_v5_Linux.sh" &&\
+        # Find and replace text
+        SEARCH_PATTERN='read -p "Type y or Y to agree: " REPLY' &&\
+        REPLACEMENT='REPLY="Y"' &&\
+        sed -i "s/${SEARCH_PATTERN}/${REPLACEMENT}/g" "$SCRIPT_PATH" &&\
+        # Find and replace text
+        SEARCH_PATTERN='	view_eula="\$PAGER"'&&\
+        REPLACEMENT='	view_eula=cat' &&\
+        sed -i "s/${SEARCH_PATTERN}/${REPLACEMENT}/g" "$SCRIPT_PATH" &&\
+        # Make it executable and execute it
+        chmod +x $SCRIPT_PATH &&\
+        $SCRIPT_PATH && \
+        # Copy files to new location
+        cp -r ./NDI\ SDK\ for\ Linux/lib/x86_64-linux-gnu /usr/local/lib/x86_64-linux-gnu &&\
+        cp -r ./NDI\ SDK\ for\ Linux/include /usr/local/include/ndi &&\
+        # Delete the bash scripts and downloads
+        rm $SCRIPT_PATH &&\
+        rm ndiSDK.tar.gz &&\
+        # A Patch to re-add NDI to FFmpeg on building. (https://framagit.org/tytan652/ffmpeg-ndi-patch)
         git clone https://framagit.org/tytan652/ffmpeg-ndi-patch.git &&\
         # Set the directory for the FFmpeg source
         cd ffmpeg &&\
@@ -183,11 +207,12 @@ RUN ./configure \
         --enable-libx265 \
         --enable-gpl \
         --enable-nonfree \
- #       --enable-libndi_newtek \
+        #--enable-libndi_newtek \
         --enable-decklink \
         --enable-libsrt \
         --disable-libaom \
-        --disable-libsvtav1
+        --disable-libsvtav1\
+        --enable-libklvanc
 
 RUN make && \
     make install && \
