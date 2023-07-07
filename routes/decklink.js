@@ -9,7 +9,9 @@ const getDecklinkConfig = require("@services/decklink-config-get");
 const setDecklinkConfig = require("@services/decklink-config-set");
 const getDecklinkInfo = require("@services/decklink-info-get");
 const thumbnailGet = require("@services/thumbnail-get");
-const inputDecklink = require("@services/input-decklink");
+const inputDecklinkFile = require("@services/input-decklink-file");
+const inputDecklinkHls = require("@services/input-decklink-hls");
+const inputDecklinkThumbnail = require("@services/input-decklink-thumbnail");
 
 /**
  * @swagger
@@ -92,7 +94,24 @@ router.get("/:cardIndex/file", async (req, res, next) => {
  *          description: Success
  */
 router.get("/:cardIndex/record", async (req, res, next) => {
-    const response = await inputDecklink(req.params.cardIndex,req.body);
+    const response = await inputDecklinkFile(req.params.cardIndex,req.body);
+    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+});
+
+/**
+ * @swagger
+ * /decklink/:cardIndex:/recod:
+ *    get:
+ *      description: Converts the input of a decklink card index to hls
+ *      tags: [decklink]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/:cardIndex/hls", async (req, res, next) => {
+    const response = await inputDecklinkHls(req.params.cardIndex,req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 

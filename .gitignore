@@ -1,5 +1,6 @@
 /logs
 /node_modules
 /data/media
+/data/hls
 
 .DS_Store

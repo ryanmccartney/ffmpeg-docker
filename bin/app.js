@@ -58,6 +58,7 @@ app.use("/api/system", systemRouter);
 app.use("/api/stream", streamRouter);
 app.use("/api/decklink", decklinkRouter);
 app.use("/api/files", filesRouter);
+app.use('/api/hls', express.static(path.join(__dirname, "..", "data","hls")));
 
 // Redirect /api to /documentation
 app.use("/api", function (req, res, next) {

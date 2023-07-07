@@ -61,3 +61,7 @@ Capture raw
 Let's make the file smaller
 
 `ffmpeg -f decklink -i 'DeckLink SDI' -c:v libx264 -crf 23 -preset medium ./media/test2.mp4`
+
+## Low latency HLS to browser
+
+`ffmpeg -f decklink -i 'DeckLink SDI' -c:v libx264 -preset ultrafast -tune zerolatency -g 30 -c:a aac -strict experimental -movflags faststart -f hls -hls_time 0.5 -hls_list_size 5 -hls_flags independent_segments output.m3u8`
