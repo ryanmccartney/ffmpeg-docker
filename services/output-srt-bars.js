@@ -18,7 +18,6 @@ module.exports = async (options) => {
         .inputOptions(["-f lavfi"])
         .videoCodec("libx264")
         .videoBitrate(options.bitrate)
-        .outputOptions(["-r 4", "-update 1", path.resolve(`./data/srt-thumbnail-${options.address}-${options.port}.png`),])
         .output(`srt://${options.address}:${options.port}?pkt_size=1316&latency=${options.latency}*1000`)
         .outputOptions(["-preset veryfast", "-f mpegts"]);
 

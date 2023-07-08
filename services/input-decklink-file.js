@@ -22,8 +22,17 @@ module.exports = async (cardIndex,options) => {
     command = ffmpeg({ logger: logger })
         .input(options.cardName)
         .inputFormat('decklink')
-        .outputOptions(["-c:v libx264","-crf 23","-preset medium"])
-        .output(`${path.join(__dirname, "..", "data", "media", options.filename)}`)
+        .outputOptions(["-c:v libx264","-crf 23","-preset medium"]);
+    
+    if(options.chunkSize){
+        command.outputOptions('-f', 'segment')
+            .outputOptions('-segment_time', parseInt(options.chunkSize))
+            .outputOptions('-reset_timestamps', 1)
+            .output(`${path.join(__dirname, "..", "data", "media", `${options.filename.split(".")[0]}-%03d.${options.filename.split(".")[1]}`)}`);
+    }
+    else{
+        command.output(`${path.join(__dirname, "..", "data", "media", options.filename)}`);
+    }
 
     if(Array.isArray(filters)){
         command.videoFilters(filters)

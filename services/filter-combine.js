@@ -14,11 +14,7 @@ module.exports = async (...filter) => {
     } catch (error) {
         logger.warn("Cannot concatenate filters " + error.message);
     }
-
-    console.log(filters)
-
     return filters
-
 };
 
 

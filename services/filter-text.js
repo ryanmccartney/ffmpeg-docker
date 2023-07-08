@@ -40,6 +40,40 @@ module.exports = async (options = {}) => {
             );
         }
 
+        if(options.topRight){
+            if(options.topRight.line1){
+                filters.push(
+                    {
+                        filter: "drawtext",
+                        options: `fontfile=\'${path.join(
+                            __dirname,
+                            "..",
+                            "public",
+                            "fonts",
+                            `${options?.font || "swansea-bold.ttf"}`
+                        )}:\'text=\'${
+                            options.topRight.line1
+                        }\':fontcolor=${options?.textColor || "white"}:fontsize=50:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w-40):y=60`,
+                    }
+                );
+            }
+            if(options.topRight.line2){
+                filters.push(
+                    {
+                        filter: "drawtext",
+                        options: `fontfile=\'${path.join(
+                            __dirname,
+                            "..",
+                            "public",
+                            "fonts",
+                            `${options?.font || "swansea-bold.ttf"}`
+                        )}:\'text=\'${
+                            options.topRight.line2
+                        }\':fontcolor=${options?.textColor || "white"}:fontsize=50:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w-40):y=120`,
+                    }
+                );
+            }
+        }
         if(options.timecode){
             filters.push(
                 {
@@ -60,7 +94,4 @@ module.exports = async (options = {}) => {
         logger.warn("Cannot create text filter " + error.message);
     }
     return filters
-
 };
-
-

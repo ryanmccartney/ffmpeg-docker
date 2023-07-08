@@ -26,7 +26,6 @@ module.exports = async (cardIndex,options) => {
     command = ffmpeg({ logger: logger })
         .input(`${path.join(__dirname, "..", "data", "media", options.filename)}`)
         .inputOptions([`-re`,repeat])
-        //.outputOptions(["-r 2", "-update 1", path.resolve(`./data/decklink-thumbnail-${cardIndex}.png`),])
         .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink"])
         .output(options.cardName);
 
