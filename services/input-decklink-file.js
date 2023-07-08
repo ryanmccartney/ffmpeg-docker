@@ -22,7 +22,6 @@ module.exports = async (cardIndex,options) => {
     command = ffmpeg({ logger: logger })
         .input(options.cardName)
         .inputFormat('decklink')
-        .outputOptions(["-c:v libx264","-crf 23","-preset medium"]);
     
     if(options.chunkSize){
         command.outputOptions('-f', 'segment')
@@ -32,6 +31,33 @@ module.exports = async (cardIndex,options) => {
     }
     else{
         command.output(`${path.join(__dirname, "..", "data", "media", options.filename)}`);
+    }
+
+    if(options.format === "prores"){
+        command.videoCodec('prores_ks')
+            .outputOptions('-profile:v', '3')
+            .outputOptions('-c:a', 'pcm_s16le');
+    }
+
+    if(options.format === "h264"){
+        command.videoCodec('libx264')
+            .videoCodec('libx264')
+            .outputOptions('-crf', '23')
+            .outputOptions('-preset', 'ultrafast');
+    }
+
+    if(options.format === "mjpeg"){
+        command.videoCodec('mjpeg')
+        .outputOptions('-q:v', '10')
+        .outputOptions('-c:a', 'copy')
+        .addOutputOptions('-pix_fmt', 'yuvj422p')
+    }
+
+    if(!options.format){
+        command.videoCodec('libx264')
+            .videoCodec('libx264')
+            .outputOptions('-crf', '23')
+            .outputOptions('-preset', 'ultrafast');
     }
 
     if(Array.isArray(filters)){

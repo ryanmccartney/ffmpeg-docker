@@ -26,7 +26,7 @@ module.exports = async (cardIndex,options) => {
         .videoCodec("libx264")
         .videoBitrate(options.bitrate)
         .output(`srt://${options.address}:${options.port}?pkt_size=1316&latency=${options.latency}*1000`)
-        .outputOptions(["-preset veryfast", "-f mpegts"]);
+        .outputOptions(["-preset ultrafast", "-f mpegts"]);
 
     if(Array.isArray(filters)){
         command.videoFilters(filters)
