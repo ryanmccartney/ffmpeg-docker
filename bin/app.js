@@ -16,7 +16,7 @@ const documentation = require("@utils/documentation");
 const systemRouter = require("@routes/system");
 const streamRouter = require("@routes/stream");
 const decklinkRouter = require("@routes/decklink");
-const filesRouter = require("@routes/files");
+const fileRouter = require("@routes/file");
 
 const app = express();
 
@@ -57,7 +57,7 @@ app.use("/documentation", documentation);
 app.use("/api/system", systemRouter);
 app.use("/api/stream", streamRouter);
 app.use("/api/decklink", decklinkRouter);
-app.use("/api/files", filesRouter);
+app.use("/api/file", fileRouter);
 app.use('/api/hls', express.static(path.join(__dirname, "..", "data","hls")));
 
 // Redirect /api to /documentation

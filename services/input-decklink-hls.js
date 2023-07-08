@@ -3,12 +3,16 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
+const filterCombine = require("@services/filter-combine");
+const filterText = require("@services/filter-text");
 
 let command;
 
 module.exports = async (cardIndex,options) => {
     let status = true
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
+    
+    const filters = await filterCombine(await filterText(options));
 
     if(command){
         logger.info("Killing already running FFMPEG process")
@@ -21,6 +25,10 @@ module.exports = async (cardIndex,options) => {
         .outputOptions(["-c:v libx264","-preset ultrafast","-tune zerolatency","-g 30","-c:a aac","-strict experimental","-movflags faststart","-f hls","-hls_time 0.5","-hls_list_size 5","-hls_flags independent_segments"])
         .output(`${path.join(__dirname, "..", "data", "hls", options?.streamName)}`)
 
+    if(Array.isArray(filters)){
+        command.videoFilters(filters)
+    }
+        
     command.on("end", () => {
         logger.info("Finished thumbnailing file");
     });

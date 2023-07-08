@@ -2,7 +2,7 @@
 
 const router = require("express").Router();
 const hashResponse = require("@utils/hash-response");
-const testBars = require("@services/test-bars");
+const setTime = require("@services/system-time-set");
 
 /**
  * @swagger
@@ -23,9 +23,9 @@ router.get("/hello", (req, res, next) => {
 
 /**
  * @swagger
- * /system/test:
- *    get:
- *      description: Test route, API greets you in response.
+ * /system/time:
+ *    post:
+ *      description: Set NTP server and sync.
  *      tags: [system]
  *      produces:
  *        - application/json
@@ -33,9 +33,34 @@ router.get("/hello", (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/test", async (req, res, next) => {
-    const response = await testBars();
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+router.post("/time", async (req, res, next) => {
+    const response = await setTime(req.body.server)
+    hashResponse(res, req, response);
 });
+
+/**
+ * @swagger
+ * /system/time:
+ *    get:
+ *      description: Get server time.
+ *      tags: [system]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/time", async (req, res, next) => {
+    const dateTimeObject = new Date();
+    const response = {
+        data:{
+            datatime:dateTimeObject,
+            date:dateTimeObject.toDateString(),
+            time:dateTimeObject.toTimeString()
+        }
+    };
+    hashResponse(res, req, response);
+});
+
 
 module.exports = router;

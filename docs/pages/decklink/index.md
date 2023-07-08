@@ -69,4 +69,3 @@ Let's make the file smaller
 ## Decklink input to Waveform
 
 `ffmpeg -f decklink -i 'DeckLink SDI' -vf "waveform" -pix_fmt yuv420p -c:v libx264 -preset medium -crf 18 output.mp4`
-

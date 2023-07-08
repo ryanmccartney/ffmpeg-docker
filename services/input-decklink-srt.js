@@ -20,19 +20,20 @@ module.exports = async (cardIndex,options) => {
     }
 
     command = ffmpeg({ logger: logger })
-        .addInput(`${options.type||"smptehdbars"}=rate=25:size=1920x1080`)
-        .inputOptions(["-re", "-f lavfi"])
-        .addInput("sine=frequency=1000:sample_rate=48000")
-        .inputOptions(["-f lavfi"])
-        .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink"])
-        .output(options.cardName);
+        .input(options.cardName)
+        .inputFormat('decklink')
+        .inputOptions(["-re"])
+        .videoCodec("libx264")
+        .videoBitrate(options.bitrate)
+        .output(`srt://${options.address}:${options.port}?pkt_size=1316&latency=${options.latency}*1000`)
+        .outputOptions(["-preset veryfast", "-f mpegts"]);
 
     if(Array.isArray(filters)){
         command.videoFilters(filters)
     }
-    
+               
     command.on("end", () => {
-        logger.info("Finished playing file");
+        logger.info("Finished encoding decklink card to SRT");
     });
 
     command.on("error", () => {
@@ -56,7 +57,7 @@ module.exports = async (cardIndex,options) => {
         command.run();
     }
     catch(error){
-        logger.error(error)
+        logger.warn(error)
         status = "false"
     }
 

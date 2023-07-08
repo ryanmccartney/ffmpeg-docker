@@ -6,37 +6,27 @@ const path = require("path");
 const filterCombine = require("@services/filter-combine");
 const filterText = require("@services/filter-text");
 
-let command;
-
-module.exports = async (cardIndex,options) => {
+module.exports = async (options) => {
     let status = true
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     const filters = await filterCombine(await filterText(options));
 
-    if(command){
-        logger.info("Killing already running FFMPEG process")
-        await command.kill()
-    }
-
-    command = ffmpeg({ logger: logger })
-        .addInput(`${options.type||"smptehdbars"}=rate=25:size=1920x1080`)
-        .inputOptions(["-re", "-f lavfi"])
-        .addInput("sine=frequency=1000:sample_rate=48000")
+    const command = ffmpeg({ logger: logger })
+        .addInput(`${options?.type||"smptehdbars"}=rate=25:size=1920x1080`)
         .inputOptions(["-f lavfi"])
-        .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink"])
-        .output(options.cardName);
+        .addInput(`sine=frequency=${options?.audio?.frequency||"1000"}:sample_rate=48000`)
+        .inputOptions(["-f lavfi"])
+        .fps(25)
+        .output(path.join(__dirname, "..", "data", "media",`${options?.filename||"test.mp4"}`))
+        .outputOptions([`-t ${options?.duration||"10"}`]);
 
     if(Array.isArray(filters)){
         command.videoFilters(filters)
     }
-    
-    command.on("end", () => {
-        logger.info("Finished playing file");
-    });
 
-    command.on("error", () => {
-        logger.info("FFMPEG process killed");
+    command.on("end", () => {
+        logger.info("Finished processing");
     });
 
     command.on("start", (commandString) => {
@@ -45,18 +35,18 @@ module.exports = async (cardIndex,options) => {
     });
 
     command.on("progress", (progress) => {
-        logger.info("Processing: " + Math.floor(progress.percent) + "% done");
+        logger.info("Processing: " + progress.percent + "% done");
     });
 
     command.on("stderr", function (stderrLine) {
-        logger.info("Stderr output: " + stderrLine);
+        logger.warn("Stderr output: " + stderrLine);
     });
 
     try{
         command.run();
     }
     catch(error){
-        logger.error(error)
+        logger.warn(error)
         status = "false"
     }
 

@@ -3,6 +3,8 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
+const filterCombine = require("@services/filter-combine");
+const filterText = require("@services/filter-text");
 
 const getRtmpAddress = (address, key) => {
     let fullAddress = `rtmp://${address}`;
@@ -14,6 +16,9 @@ const getRtmpAddress = (address, key) => {
 
 module.exports = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
+
+    const filters = filterCombine(filterText(options));
+
     const command = ffmpeg({ logger: logger })
         .addInput("smptehdbars=rate=25:size=1920x1080")
         .inputOptions(["-re", "-f lavfi"])
@@ -21,48 +26,14 @@ module.exports = async (options) => {
         .inputOptions(["-f lavfi"])
         .videoCodec("libx264")
         .videoBitrate(options.bitrate)
-        .videoFilters([
-            {
-                filter: "drawtext",
-                options: `fontfile=\'${path.join(
-                    __dirname,
-                    "..",
-                    "public",
-                    "fonts",
-                    `${options.font || "swansea-bold.ttf"}`
-                )}:\'text=\'${
-                    options.line1
-                }\':fontcolor=white:fontsize=100:box=1:boxcolor=black@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)-60`,
-            },
-            {
-                filter: "drawtext",
-                options: `fontfile=\'${path.join(
-                    __dirname,
-                    "..",
-                    "public",
-                    "fonts",
-                    `${options.font || "swansea-bold.ttf"}`
-                )}:\'text=\'${
-                    options.line2
-                }\':fontcolor=white:fontsize=100:box=1:boxcolor=black@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)+60`,
-            },
-            {
-                filter: "drawtext",
-                options: `fontfile=\'${path.join(
-                    __dirname,
-                    "..",
-                    "public",
-                    "fonts",
-                    `${options.font || "swansea-bold.ttf"}`
-                )}:\'text=\'%{pts\\:gmtime\\:${
-                    Date.now() / 1000
-                }}\':fontcolor=white:fontsize=100:box=1:boxcolor=black@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)+180`,
-            },
-        ])
         .outputOptions(["-r 2", "-update 1", path.resolve(`./data/rtmp-thumbnail-${options.address}.png`),])
         .output(getRtmpAddress(options.address, options.key))
         .outputOptions(["-f flv"]);
 
+    if(Array.isArray(filters)){
+        command.videoFilters(filters)
+    }
+        
     command.on("end", () => {
         logger.info("Finished processing");
     });

@@ -3,6 +3,8 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
+const filterCombine = require("@services/filter-combine");
+const filterText = require("@services/filter-text");
 
 let command;
 
@@ -10,6 +12,8 @@ module.exports = async (cardIndex,options) => {
     let status = true
     let repeat = "";
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
+
+    const filters = await filterCombine(await filterText(options));
 
     if(options.repeat){
         repeat = "-stream_loop -1"
@@ -22,48 +26,14 @@ module.exports = async (cardIndex,options) => {
     command = ffmpeg({ logger: logger })
         .input(`${path.join(__dirname, "..", "data", "media", options.filename)}`)
         .inputOptions([`-re`,repeat])
-        .videoFilters([
-            {
-                filter: "drawtext",
-                options: `fontfile=\'${path.join(
-                    __dirname,
-                    "..",
-                    "public",
-                    "fonts",
-                    `${options.font || "swansea-bold.ttf"}`
-                )}:\'text=\'${
-                    options.line1
-                }\':fontcolor=white:fontsize=100:box=1:boxcolor=black@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)-60`,
-            },
-            {
-                filter: "drawtext",
-                options: `fontfile=\'${path.join(
-                    __dirname,
-                    "..",
-                    "public",
-                    "fonts",
-                    `${options.font || "swansea-bold.ttf"}`
-                )}:\'text=\'${
-                    options.line2
-                }\':fontcolor=white:fontsize=100:box=1:boxcolor=black@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)+60`,
-            },
-            {
-                filter: "drawtext",
-                options: `fontfile=\'${path.join(
-                    __dirname,
-                    "..",
-                    "public",
-                    "fonts",
-                    `${options.font || "swansea-bold.ttf"}`
-                )}:\'text=\'%{pts\\:gmtime\\:${
-                    Date.now() / 1000
-                }}\':fontcolor=white:fontsize=100:box=1:boxcolor=black@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)+180`,
-            },
-        ])
         //.outputOptions(["-r 2", "-update 1", path.resolve(`./data/decklink-thumbnail-${cardIndex}.png`),])
         .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink"])
         .output(options.cardName);
 
+    if(Array.isArray(filters)){
+        command.videoFilters(filters)
+    }
+         
     command.on("end", () => {
         logger.info("Finished playing file");
     });
