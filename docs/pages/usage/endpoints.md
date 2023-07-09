@@ -18,7 +18,7 @@ ryan@mccartney.info
 **License:** [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 ---
-### /decklink/info
+### /decklink
 
 #### GET
 ##### Description
@@ -31,9 +31,20 @@ Gets the info about currently attached Decklink cards
 | ---- | ----------- |
 | 200 | Success |
 
-### /decklink/cardIndex
+### /decklink/:cardIndex
 
 #### GET
+##### Description
+
+Gets the config for an individual Decklink card
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+#### POST
 ##### Description
 
 Sets the config for an individual Decklink card
@@ -44,12 +55,23 @@ Sets the config for an individual Decklink card
 | ---- | ----------- |
 | 200 | Success |
 
-### /decklink/:cardIndex:/file
+### /decklink/:cardIndex/file
 
 #### GET
 ##### Description
 
 Sends a file to a decklink output
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| filename | formData | Filename and extension of media to playout. E.g - test.mp4 | Yes | string |
+| cardName | formData | The name of the BMD Decklink cards. E.g - "DeckLink SDI" | Yes | string |
+| font | formData | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes | string |
+| offset | formData | Offset for time in hours. E.g 3, -3 | No | number |
+| timecode | formData | Show the timecode line - true,false | No | boolean |
+| repeat | formData | Decides whether the media loops or not | No | boolean |
 
 ##### Responses
 
@@ -57,7 +79,30 @@ Sends a file to a decklink output
 | ---- | ----------- |
 | 200 | Success |
 
-### /decklink/:cardIndex:/recod
+### /decklink/:cardIndex/record
+
+#### GET
+##### Description
+
+Record the input of a decklink card index to file
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| cardName | formData | The name of the BMD Decklink cards. E.g - "DeckLink SDI" | Yes | string |
+| font | formData | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes | string |
+| offset | formData | Offset for time in hours. E.g 3, -3 | No | number |
+| timecode | formData | Show the timecode line - true,false | No | boolean |
+| repeat | formData | Decides whether the media loops or not | No | boolean |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /decklink/:cardIndex/hls
 
 #### GET
 ##### Description
@@ -70,7 +115,20 @@ Converts the input of a decklink card index to hls
 | ---- | ----------- |
 | 200 | Success |
 
-### /decklink/bars
+### /decklink/:cardIndex:/srt
+
+#### GET
+##### Description
+
+Converts the input of a decklink card index to hls
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /decklink/:cardIndex/bars
 
 #### GET
 ##### Description
@@ -96,7 +154,7 @@ Get thumbnail of the decklink output
 | ---- | ----------- |
 | 200 | Success |
 
-### /decklink/stop
+### /decklink/:cardIndex/stop
 
 #### GET
 ##### Description
@@ -109,7 +167,7 @@ Stops the decklink output on a particular index
 | ---- | ----------- |
 | 200 | Success |
 
-### /decklink/pause
+### /decklink/:cardIndex/pause
 
 #### GET
 ##### Description

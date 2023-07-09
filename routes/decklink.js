@@ -17,7 +17,7 @@ const inputDecklinkThumbnail = require("@services/input-decklink-thumbnail");
 
 /**
  * @swagger
- * /decklink/info:
+ * /decklink:
  *    get:
  *      description: Gets the info about currently attached Decklink cards
  *      tags: [decklink]
@@ -34,7 +34,7 @@ router.get("/", async (req, res, next) => {
 
 /**
  * @swagger
- * /decklink/cardIndex:
+ * /decklink/:cardIndex:
  *    get:
  *      description: Gets the config for an individual Decklink card
  *      tags: [decklink]
@@ -51,8 +51,8 @@ router.get("/:cardIndex", async (req, res, next) => {
 
 /**
  * @swagger
- * /decklink/cardIndex:
- *    get:
+ * /decklink/:cardIndex:
+ *    post:
  *      description: Sets the config for an individual Decklink card
  *      tags: [decklink]
  *      produces:
@@ -68,10 +68,41 @@ router.post("/:cardIndex", async (req, res, next) => {
 
 /**
  * @swagger
- * /decklink/:cardIndex:/file:
+ * /decklink/:cardIndex/file:
  *    get:
  *      description: Sends a file to a decklink output
  *      tags: [decklink]
+ *      parameters:
+ *       - in: formData
+ *         name: filename
+ *         type: string
+ *         description: Filename and extension of media to playout. E.g - test.mp4
+ *         required: true
+ *       - in: formData
+ *         name: cardName
+ *         type: string
+ *         description: The name of the BMD Decklink cards. E.g - "DeckLink SDI"
+ *         required: true
+ *       - in: formData
+ *         name: font
+ *         type: string
+ *         description: The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf"
+ *         required: font
+ *       - in: formData
+ *         name: offset
+ *         type: number
+ *         description: Offset for time in hours. E.g 3, -3
+ *         required: false
+ *       - in: formData
+ *         name: timecode
+ *         type: boolean
+ *         description: Show the timecode line - true,false
+ *         required: false
+ *       - in: formData
+ *         name: repeat
+ *         type: boolean
+ *         description: Decides whether the media loops or not
+ *         required: false
  *      produces:
  *        - application/json
  *      responses:
@@ -85,10 +116,36 @@ router.get("/:cardIndex/file", async (req, res, next) => {
 
 /**
  * @swagger
- * /decklink/:cardIndex:/recod:
+ * /decklink/:cardIndex/record:
  *    get:
  *      description: Record the input of a decklink card index to file
  *      tags: [decklink]
+ *      parameters:
+ *       - in: formData
+ *         name: cardName
+ *         type: string
+ *         description: The name of the BMD Decklink cards. E.g - "DeckLink SDI"
+ *         required: true
+ *       - in: formData
+ *         name: font
+ *         type: string
+ *         description: The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf"
+ *         required: font
+ *       - in: formData
+ *         name: offset
+ *         type: number
+ *         description: Offset for time in hours. E.g 3, -3
+ *         required: false
+ *       - in: formData
+ *         name: timecode
+ *         type: boolean
+ *         description: Show the timecode line - true,false
+ *         required: false
+ *       - in: formData
+ *         name: repeat
+ *         type: boolean
+ *         description: Decides whether the media loops or not
+ *         required: false
  *      produces:
  *        - application/json
  *      responses:
@@ -102,7 +159,7 @@ router.get("/:cardIndex/record", async (req, res, next) => {
 
 /**
  * @swagger
- * /decklink/:cardIndex:/recod:
+ * /decklink/:cardIndex/hls:
  *    get:
  *      description: Converts the input of a decklink card index to hls
  *      tags: [decklink]
@@ -119,7 +176,7 @@ router.get("/:cardIndex/hls", async (req, res, next) => {
 
 /**
  * @swagger
- * /decklink/:cardIndex:/recod:
+ * /decklink/:cardIndex:/srt:
  *    get:
  *      description: Converts the input of a decklink card index to hls
  *      tags: [decklink]
@@ -136,7 +193,7 @@ router.get("/:cardIndex/srt", async (req, res, next) => {
 
 /**
  * @swagger
- * /decklink/bars:
+ * /decklink/:cardIndex/bars:
  *    get:
  *      description: Sends some SMPTE bars to a decklink output
  *      tags: [decklink]
@@ -183,7 +240,7 @@ router.get("/:cardIndex/thumbnail", async (req, res, next) => {
 
 /**
  * @swagger
- * /decklink/stop:
+ * /decklink/:cardIndex/stop:
  *    get:
  *      description: Stops the decklink output on a particular index
  *      tags: [decklink]
@@ -200,7 +257,7 @@ router.get("/:cardIndex/stop", async (req, res, next) => {
 
 /**
  * @swagger
- * /decklink/pause:
+ * /decklink/:cardIndex/pause:
  *    get:
  *      description: Pauses the decklink output on a particular index
  *      tags: [decklink]
