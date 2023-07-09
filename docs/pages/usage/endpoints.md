@@ -220,6 +220,32 @@ Download file by name.
 | ---- | ----------- |
 | 200 | Success |
 
+### /playlist/:playlist
+
+#### GET
+##### Description
+
+Set all the items in a playlist
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /playlist/:playlist/add
+
+#### GET
+##### Description
+
+Add a single file to the playlist.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
 ---
 ### /stream/srt/file
 

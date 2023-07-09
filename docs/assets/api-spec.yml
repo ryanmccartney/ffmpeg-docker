@@ -211,6 +211,26 @@ paths:
       responses:
         "200":
           description: Success
+  /playlist/:playlist:
+    get:
+      description: Set all the items in a playlist
+      tags:
+        - files
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /playlist/:playlist/add:
+    get:
+      description: Add a single file to the playlist.
+      tags:
+        - files
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
   /stream/srt/file:
     get:
       description: SRT Stream a file.
