@@ -1,0 +1,196 @@
+openapi: 3.0.0
+info:
+  title: FFmpeg Docker API
+  version: 0.1.0
+  description: Common FFMPEG fucntions from a RESTful API
+  license:
+    name: GPLv3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+  contact:
+    name: Ryan McCarntney
+    url: https://ryan.mccartney.info/ffmpeg-docker
+    email: ryan@mccartney.info
+servers:
+  - url: http://localhost:80/api/
+paths:
+  /decklink/info:
+    get:
+      description: Gets the info about currently attached Decklink cards
+      tags:
+        - decklink
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /decklink/cardIndex:
+    get:
+      description: Sets the config for an individual Decklink card
+      tags:
+        - decklink
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /decklink/:cardIndex:/file:
+    get:
+      description: Sends a file to a decklink output
+      tags:
+        - decklink
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /decklink/:cardIndex:/recod:
+    get:
+      description: Converts the input of a decklink card index to hls
+      tags:
+        - decklink
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /decklink/bars:
+    get:
+      description: Sends some SMPTE bars to a decklink output
+      tags:
+        - decklink
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /decklink/:cardIndex/thumbnail:
+    get:
+      description: Get thumbnail of the decklink output
+      tags:
+        - decklink
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /decklink/stop:
+    get:
+      description: Stops the decklink output on a particular index
+      tags:
+        - decklink
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /decklink/pause:
+    get:
+      description: Pauses the decklink output on a particular index
+      tags:
+        - decklink
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /file/metadata:
+    get:
+      description: Get the metadata in a media file.
+      tags:
+        - files
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /file/bars:
+    get:
+      description: Generate custom ident bars.
+      tags:
+        - files
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /file/download:
+    get:
+      description: Download file by name.
+      tags:
+        - files
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /stream/srt/file:
+    get:
+      description: SRT Stream a file.
+      tags:
+        - stream
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /stream/rtmp/file:
+    get:
+      description: RTMP Stream a file.
+      tags:
+        - stream
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /stream/srt/bars:
+    get:
+      description: SRT Stream test bars.
+      tags:
+        - stream
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /stream/rtmp/bars:
+    get:
+      description: RTMP Stream test bars.
+      tags:
+        - stream
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /system/hello:
+    get:
+      description: Test route, API greets you in response.
+      tags:
+        - system
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /system/time:
+    post:
+      description: Set NTP server and sync.
+      tags:
+        - system
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+    get:
+      description: Get server time.
+      tags:
+        - system
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+components: {}
+tags: []

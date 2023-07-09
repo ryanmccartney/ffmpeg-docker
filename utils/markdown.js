@@ -1,14 +1,13 @@
-const express = require("express");
-const documentation = express.Router();
-
-const swaggerUi = require("swagger-ui-express");
-const swaggerJSDoc = require("swagger-jsdoc");
+const swaggerJsdoc = require('swagger-jsdoc');
+const YAML = require('yaml')
+const fs = require('fs');
+const path = require("path");
 
 const host = process.env.HOST || "localhost";
 const port = process.env.PORT || "80";
 const url = `http://${host}:${port}/api/`;
 
-const swaggerOptions = {
+const options = {
     definition: {
         openapi: "3.0.0",
         info: {
@@ -34,7 +33,10 @@ const swaggerOptions = {
     apis: ["./routes/*.js", "./modules/*.js"],
 };
 
-const swaggerDocs = swaggerJSDoc(swaggerOptions);
-documentation.use("/", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+const main = async () => {
+    const swaggerJsonSpec = swaggerJsdoc(options);
+    const swaggerYamlSpec = YAML.stringify(swaggerJsonSpec);
+    fs.writeFileSync(path.join("docs", "assets", "api-spec.yml"), swaggerYamlSpec);
+}
 
-module.exports = documentation;
+main()

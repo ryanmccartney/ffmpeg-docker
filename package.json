@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "development": "nodemon index",
-    "production": "node index"
+    "production": "node index",
+    "docs": "node ./utils/markdown && swagger-markdown --force-version 2 -i ./docs/assets/api-spec.yml  -o ./docs/pages/usage/endpoints.md"
   },
   "author": "Ryan McCartney",
   "license": "MIT",
@@ -32,10 +33,12 @@
     "uuid": "^8.3.2",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.5.5",
-    "winston-mongodb": "^5.0.7"
+    "winston-mongodb": "^5.0.7",
+    "yaml": "^2.3.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.16"
+    "nodemon": "^2.0.16",
+    "swagger-markdown": "^2.3.0"
   },
   "_moduleAliases": {
     "@root": ".",
