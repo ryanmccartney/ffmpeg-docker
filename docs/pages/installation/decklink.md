@@ -2,7 +2,7 @@
 layout: page
 title: Decklink
 parent: Installation
-nav_order: 1
+nav_order: 2
 ---
 
 # Decklink Support

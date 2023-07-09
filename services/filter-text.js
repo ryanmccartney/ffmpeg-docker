@@ -75,6 +75,12 @@ module.exports = async (options = {}) => {
             }
         }
         if(options.timecode){
+            let offset = 0;
+
+            if(options.offset){
+                offset = 60*60*parseInt(options.offset)
+            }
+
             filters.push(
                 {
                     filter: `${options?.scrolling ? "scrolltext" : "drawtext"}`,
@@ -85,7 +91,7 @@ module.exports = async (options = {}) => {
                         "fonts",
                         `${options?.font || "swansea-bold.ttf"}`
                     )}:\'text=\'%{pts\\:gmtime\\:${
-                        Date.now() / 1000
+                        (Date.now() / 1000) + offset
                     }}\':fontcolor=${options?.textColor || "white"}:fontsize=100:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)+180`,
                 }
             );

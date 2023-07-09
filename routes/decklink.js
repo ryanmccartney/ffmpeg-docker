@@ -5,6 +5,7 @@ const hashResponse = require("@utils/hash-response");
 const outputDecklinkFile = require("@services/output-decklink-file");
 const outputDecklinkBars = require("@services/output-decklink-bars");
 const outputDecklinkStop = require("@services/output-decklink-stop");
+const outputDecklinkPause = require("@services/output-decklink-pause");
 const getDecklinkConfig = require("@services/decklink-config-get");
 const setDecklinkConfig = require("@services/decklink-config-set");
 const getDecklinkInfo = require("@services/decklink-info-get");
@@ -197,5 +198,21 @@ router.get("/:cardIndex/stop", async (req, res, next) => {
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
+/**
+ * @swagger
+ * /decklink/pause:
+ *    get:
+ *      description: Pauses the decklink output on a particular index
+ *      tags: [decklink]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/:cardIndex/pause", async (req, res, next) => {
+    const response = await outputDecklinkPause(req.params.cardIndex,req.body);
+    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+});
 
 module.exports = router;
