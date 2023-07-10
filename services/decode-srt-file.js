@@ -8,7 +8,7 @@ const filterText = require("@services/filter-text");
 
 let command;
 
-module.exports = async (cardIndex,options) => {
+module.exports = async (options) => {
     let status = true
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
@@ -20,13 +20,13 @@ module.exports = async (cardIndex,options) => {
     }
 
     command = ffmpeg({ logger: logger })
-        .input(options.cardName)
-        .inputFormat('decklink')
-    
+        .input(`srt://${options?.address}:${options?.port}?latency=${options?.latency}&mode=${options?.mode ||"caller"}&passphrase=${options.passphrase}`)
+        .inputOptions(["-protocol_whitelist","srt,udp,rtp","-stats"]);
+
     if(options.chunkSize){
         command.outputOptions('-f', 'segment')
             .outputOptions('-segment_time', parseInt(options.chunkSize))
-            .outputOptions('-reset_timestamps', 1)
+            .outputOptions('-reset_timestamps', 1,'-y')
             .output(`${path.join(__dirname, "..", "data", "media", `${options.filename.split(".")[0]}-%03d.${options.filename.split(".")[1]}`)}`);
     }
     else{
@@ -82,7 +82,15 @@ module.exports = async (cardIndex,options) => {
     });
 
     command.on("stderr", function (stderrLine) {
-        logger.info("ffmpeg: " + stderrLine);
+
+        if (stderrLine.includes('[srt]')) {
+            // Extract the relevant statistics from the line
+            const stats = stderrLine.match(/\[srt\]\s(.+)/)[1];
+            logger.info('SRT Stats: ', stats);
+        }
+        else{
+            logger.info("ffmpeg: " + stderrLine);
+        }
     });
 
     try{

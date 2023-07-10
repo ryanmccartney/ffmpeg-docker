@@ -9,10 +9,10 @@ const outputRtmpBars = require("@services/output-rtmp-bars");
 
 /**
  * @swagger
- * /stream/srt/file:
+ * /encode/srt/file:
  *    get:
- *      description: SRT Stream a file.
- *      tags: [stream]
+ *      description: SRT encode a file.
+ *      tags: [encode]
  *      produces:
  *        - application/json
  *      responses:
@@ -26,10 +26,10 @@ router.get("/srt/file", async (req, res, next) => {
 
 /**
  * @swagger
- * /stream/rtmp/file:
+ * /encode/rtmp/file:
  *    get:
- *      description: RTMP Stream a file.
- *      tags: [stream]
+ *      description: RTMP encode a file.
+ *      tags: [encode]
  *      produces:
  *        - application/json
  *      responses:
@@ -43,10 +43,10 @@ router.get("/rtmp/file", async (req, res, next) => {
 
 /**
  * @swagger
- * /stream/srt/bars:
+ * /encode/srt/bars:
  *    get:
- *      description: SRT Stream test bars.
- *      tags: [stream]
+ *      description: SRT encode test bars.
+ *      tags: [encode]
  *      produces:
  *        - application/json
  *      responses:
@@ -60,10 +60,10 @@ router.get("/srt/bars", async (req, res, next) => {
 
 /**
  * @swagger
- * /stream/rtmp/bars:
+ * /encode/rtmp/bars:
  *    get:
- *      description: RTMP Stream test bars.
- *      tags: [stream]
+ *      description: RTMP encode test bars.
+ *      tags: [encode]
  *      produces:
  *        - application/json
  *      responses:

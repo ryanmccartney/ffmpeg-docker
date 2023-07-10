@@ -44,7 +44,7 @@ module.exports = async (options) => {
     });
 
     command.on("stderr", function (stderrLine) {
-        logger.info("Stderr output: " + stderrLine);
+        logger.info("ffmpeg: " + stderrLine);
     });
 
     command.run();

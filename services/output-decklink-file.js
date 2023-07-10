@@ -47,11 +47,11 @@ module.exports = async (cardIndex,options) => {
     });
 
     command.on("progress", (progress) => {
-        logger.info("Processing: " + Math.floor(progress.percent) + "% done");
+        logger.info("ffmpeg-progress: " + Math.floor(progress.percent) + "% done");
     });
 
     command.on("stderr", function (stderrLine) {
-        logger.info("Stderr output: " + stderrLine);
+        logger.info("ffmpeg: " + stderrLine);
     });
 
     try{

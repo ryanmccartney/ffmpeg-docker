@@ -18,7 +18,7 @@ module.exports = async (options) => {
         .inputOptions(["-f lavfi"])
         .videoCodec("libx264")
         .videoBitrate(options.bitrate)
-        .output(`srt://${options.address}:${options.port}?pkt_size=1316&latency=${options.latency}*1000`)
+        .output(`srt://${options.address}:${options.port}?pkt_size=1316&latency=${options.latency}`)
         .outputOptions(["-preset veryfast", "-f mpegts"]);
 
     if(Array.isArray(filters)){
@@ -35,7 +35,7 @@ module.exports = async (options) => {
     });
 
     command.on("stderr", function (stderrLine) {
-        logger.info("Stderr output: " + stderrLine);
+        logger.info("ffmpeg: " + stderrLine);
     });
 
     command.run();

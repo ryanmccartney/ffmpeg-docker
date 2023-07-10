@@ -22,11 +22,12 @@ module.exports = async (cardIndex,options) => {
     command = ffmpeg({ logger: logger })
         .input(options.cardName)
         .inputFormat('decklink')
-        .inputOptions(["-re"])
+        .inputOptions(["-protocol_whitelist","srt,udp,rtp","-stats","-re"])
         .videoCodec("libx264")
         .videoBitrate(options.bitrate)
-        .output(`srt://${options.address}:${options.port}?pkt_size=1316&latency=${options.latency}*1000`)
-        .outputOptions(["-preset ultrafast", "-f mpegts"]);
+        .output(`srt://${options.address}:${options.port}?pkt_size=1316&latency=${options.latency}`)
+        .outputOptions(["-preset ultrafast", "-f mpegts","-protocol_whitelist","srt,udp,rtp","-stats"]);
+
 
     if(Array.isArray(filters)){
         command.videoFilters(filters)
@@ -46,11 +47,17 @@ module.exports = async (cardIndex,options) => {
     });
 
     command.on("progress", (progress) => {
-        logger.info("Processing: " + Math.floor(progress.percent) + "% done");
+        logger.info("ffmpeg-progress: " + Math.floor(progress.percent) + "% done");
     });
 
     command.on("stderr", function (stderrLine) {
-        logger.info("Stderr output: " + stderrLine);
+        logger.info("ffmpeg: " + stderrLine);
+
+        if (stderrLine.includes('[srt]')) {
+            // Extract the relevant statistics from the line
+            const stats = stderrLine.match(/\[srt\]\s(.+)/)[1];
+            logger.info('ffmpeg-srt: ', stats);
+        }
     });
 
     try{

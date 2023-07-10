@@ -181,6 +181,73 @@ Pauses the decklink output on a particular index
 | 200 | Success |
 
 ---
+### /decode/srt/file
+
+#### GET
+##### Description
+
+Takes an SRT input and turns it into a file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+---
+### /encode/srt/file
+
+#### GET
+##### Description
+
+SRT encode a file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /encode/rtmp/file
+
+#### GET
+##### Description
+
+RTMP encode a file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /encode/srt/bars
+
+#### GET
+##### Description
+
+SRT encode test bars.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /encode/rtmp/bars
+
+#### GET
+##### Description
+
+RTMP encode test bars.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+---
 ### /file/metadata
 
 #### GET
@@ -239,59 +306,6 @@ Set all the items in a playlist
 ##### Description
 
 Add a single file to the playlist.
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Success |
-
----
-### /stream/srt/file
-
-#### GET
-##### Description
-
-SRT Stream a file.
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Success |
-
-### /stream/rtmp/file
-
-#### GET
-##### Description
-
-RTMP Stream a file.
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Success |
-
-### /stream/srt/bars
-
-#### GET
-##### Description
-
-SRT Stream test bars.
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Success |
-
-### /stream/rtmp/bars
-
-#### GET
-##### Description
-
-RTMP Stream test bars.
 
 ##### Responses
 

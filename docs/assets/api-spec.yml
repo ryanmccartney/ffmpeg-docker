@@ -181,6 +181,56 @@ paths:
       responses:
         "200":
           description: Success
+  /decode/srt/file:
+    get:
+      description: Takes an SRT input and turns it into a file.
+      tags:
+        - decode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /encode/srt/file:
+    get:
+      description: SRT encode a file.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /encode/rtmp/file:
+    get:
+      description: RTMP encode a file.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /encode/srt/bars:
+    get:
+      description: SRT encode test bars.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /encode/rtmp/bars:
+    get:
+      description: RTMP encode test bars.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
   /file/metadata:
     get:
       description: Get the metadata in a media file.
@@ -226,46 +276,6 @@ paths:
       description: Add a single file to the playlist.
       tags:
         - files
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /stream/srt/file:
-    get:
-      description: SRT Stream a file.
-      tags:
-        - stream
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /stream/rtmp/file:
-    get:
-      description: RTMP Stream a file.
-      tags:
-        - stream
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /stream/srt/bars:
-    get:
-      description: SRT Stream test bars.
-      tags:
-        - stream
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /stream/rtmp/bars:
-    get:
-      description: RTMP Stream test bars.
-      tags:
-        - stream
       produces:
         - application/json
       responses:

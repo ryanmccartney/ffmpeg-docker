@@ -14,7 +14,8 @@ const nodeEnv = process.env.NODE_ENV || "production";
 // load routes
 const documentation = require("@utils/documentation");
 const systemRouter = require("@routes/system");
-const streamRouter = require("@routes/stream");
+const encodeRouter = require("@routes/encode");
+const decodeRouter = require("@routes/decode");
 const decklinkRouter = require("@routes/decklink");
 const fileRouter = require("@routes/file");
 const playlistRouter = require("@routes/playlist");
@@ -56,7 +57,8 @@ app.use(cookieParser());
 
 app.use("/documentation", documentation);
 app.use("/api/system", systemRouter);
-app.use("/api/stream", streamRouter);
+app.use("/api/encode", encodeRouter);
+app.use("/api/decode", decodeRouter);
 app.use("/api/decklink", decklinkRouter);
 app.use("/api/file", fileRouter);
 app.use("/api/playlist",playlistRouter)
