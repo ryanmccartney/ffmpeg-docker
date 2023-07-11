@@ -4,6 +4,7 @@ const logger = require("@utils/logger")(module);
 const path = require("path");
 
 module.exports = async (options = {}) => {
+    const fontSize = options?.fontSize || 50;
     const filters = [];
     try {
         if(options.line1){
@@ -18,7 +19,7 @@ module.exports = async (options = {}) => {
                         `${options?.font || "swansea-bold.ttf"}`
                     )}:\'text=\'${
                         options?.line1
-                    }\':fontcolor=${options?.textColor || "white"}:fontsize=100:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)-60`,
+                    }\':fontcolor=${options?.textColor || "white"}:fontsize=${fontSize}:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)-${parseInt(fontSize*0.6)}`,
                 }
             );
         }
@@ -35,7 +36,7 @@ module.exports = async (options = {}) => {
                         `${options?.font || "swansea-bold.ttf"}`
                     )}:\'text=\'${
                         options?.line2
-                    }\':fontcolor=${options?.textColor || "white"}:fontsize=100:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)+60`,
+                    }\':fontcolor=${options?.textColor || "white"}:fontsize=${fontSize}:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)+${parseInt(fontSize*0.6)}`,
                 }
             );
         }
@@ -53,7 +54,7 @@ module.exports = async (options = {}) => {
                             `${options?.font || "swansea-bold.ttf"}`
                         )}:\'text=\'${
                             options.topRight.line1
-                        }\':fontcolor=${options?.textColor || "white"}:fontsize=50:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w-40):y=60`,
+                        }\':fontcolor=${options?.textColor || "white"}:fontsize=${parseInt(fontSize/2)}:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w-${parseInt(fontSize*0.4)}):y=${parseInt(fontSize*0.6)}`,
                     }
                 );
             }
@@ -69,7 +70,7 @@ module.exports = async (options = {}) => {
                             `${options?.font || "swansea-bold.ttf"}`
                         )}:\'text=\'${
                             options.topRight.line2
-                        }\':fontcolor=${options?.textColor || "white"}:fontsize=50:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w-40):y=120`,
+                        }\':fontcolor=${options?.textColor || "white"}:fontsize=${parseInt(fontSize/2)}:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w-${parseInt(fontSize*0.4)}):y=${parseInt(fontSize*1.2)}`,
                     }
                 );
             }
@@ -92,7 +93,7 @@ module.exports = async (options = {}) => {
                         `${options?.font || "swansea-bold.ttf"}`
                     )}:\'text=\'%{pts\\:gmtime\\:${
                         (Date.now() / 1000) + offset
-                    }}\':fontcolor=${options?.textColor || "white"}:fontsize=100:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)+180`,
+                    }}\':fontcolor=${options?.textColor || "white"}:fontsize=${fontSize}:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)+${parseInt(fontSize*1.8)}`,
                 }
             );
         }
