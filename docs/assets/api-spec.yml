@@ -191,6 +191,16 @@ paths:
       responses:
         "200":
           description: Success
+  /decode/srt/decklink:
+    get:
+      description: Takes an SRT input and turns it into a file.
+      tags:
+        - decode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
   /encode/srt/file:
     get:
       description: SRT encode a file.
@@ -263,6 +273,15 @@ paths:
           description: Success
   /playlist/:playlist:
     get:
+      description: Get all the items in a playlist
+      tags:
+        - files
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+    post:
       description: Set all the items in a playlist
       tags:
         - files
@@ -305,6 +324,26 @@ paths:
       description: Get server time.
       tags:
         - system
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /vmaf/models:
+    get:
+      description: Returns a list of VMAF models.
+      tags:
+        - vmaf
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /vmaf/test:
+    get:
+      description: Run a VMAF test specifing a reference file and test file.
+      tags:
+        - vmaf
       produces:
         - application/json
       responses:

@@ -194,6 +194,19 @@ Takes an SRT input and turns it into a file.
 | ---- | ----------- |
 | 200 | Success |
 
+### /decode/srt/decklink
+
+#### GET
+##### Description
+
+Takes an SRT input and turns it into a file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
 ---
 ### /encode/srt/file
 
@@ -292,6 +305,17 @@ Download file by name.
 #### GET
 ##### Description
 
+Get all the items in a playlist
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+#### POST
+##### Description
+
 Set all the items in a playlist
 
 ##### Responses
@@ -344,6 +368,33 @@ Set NTP server and sync.
 ##### Description
 
 Get server time.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+---
+### /vmaf/models
+
+#### GET
+##### Description
+
+Returns a list of VMAF models.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /vmaf/test
+
+#### GET
+##### Description
+
+Run a VMAF test specifing a reference file and test file.
 
 ##### Responses
 

@@ -101,6 +101,7 @@ WORKDIR $HOME/ffmpeg_sources
 ENV PATH="$HOME/bin:${PATH}"
 RUN echo "export PATH=$HOME/bin:${PATH}" >> "$HOME/.bashrc"
 
+# Add source and compile for Fraunhofer AAC codec support
 RUN git -C fdk-aac pull 2> /dev/null || git clone --depth 1 https://github.com/mstorsjo/fdk-aac && \
     cd fdk-aac && \
     autoreconf -fiv && \
@@ -108,6 +109,7 @@ RUN git -C fdk-aac pull 2> /dev/null || git clone --depth 1 https://github.com/m
     make && \
     make install
 
+# Add source and compile for AV1 codec support
 RUN git -C SVT-AV1 pull 2> /dev/null || git clone https://gitlab.com/AOMediaCodec/SVT-AV1.git && \
     mkdir -p SVT-AV1/build && \
     cd SVT-AV1/build && \
@@ -115,23 +117,34 @@ RUN git -C SVT-AV1 pull 2> /dev/null || git clone https://gitlab.com/AOMediaCode
     make && \
     make install
 
+# Add source and compile for Haivision SRT support
 RUN git -C srt pull 2> /dev/null || git clone --depth 1 https://github.com/Haivision/srt.git && \
     mkdir -p srt/build && \
     cd srt && \
-    ./configure --prefix="$HOME/ffmpeg_build"" --disable-shared --enable-bonding && \
+    ./configure --prefix="$HOME/ffmpeg_build" --disable-shared --enable-bonding && \
     cmake -DCMAKE_INSTALL_PREFIX="$HOME/ffmpeg_build" -DENABLE_C_DEPS=ON -DENABLE_SHARED=OFF -DENABLE_STATIC=ON && \
     make && \
     make install && \
     ldconfig
 
+# Add source and compile for libklvanc support
 RUN git -C libklvanc pull 2> /dev/null || git clone --depth 1 https://github.com/stoth68000/libklvanc && \
     mkdir -p libklvanc/build && \
     cd libklvanc && \
     ./autogen.sh --build &&\
-    ./configure --enable-shared=no --prefix="$HOME/ffmpeg_build" --bindir="$HOME/bin &&\
+    ./configure --enable-shared=no --prefix="$HOME/ffmpeg_build" --bindir="$HOME/bin" &&\
     make &&\
     make install
 
+# Add source and compile for Netflix VMAF support
+RUN git -C libvmaf pull 2> /dev/null || git clone --depth 1 https://github.com/Netflix/vmaf.git && \
+    cd ./vmaf/libvmaf && \
+    apt -y install ninja-build meson && \
+    meson build --buildtype release && \
+    ninja -vC build && \
+    ninja -vC build install
+
+# Add source for FFMPEG
 WORKDIR $HOME/ffmpeg_sources
 RUN git clone https://git.ffmpeg.org/ffmpeg.git
 WORKDIR $HOME/ffmpeg_sources/ffmpeg
@@ -145,6 +158,7 @@ RUN git config --global user.name "FFmpeg Docker"
 
 WORKDIR $HOME/ffmpeg_sources
 
+# Add NDI SDK if option is selected
 RUN if [ "$NDI_SUPPORT" = "true" ];\
     then \
         # Get NDI SDK and install it (https://framagit.org/tytan652/ffmpeg-ndi-patch/-/issues/1)
@@ -212,7 +226,8 @@ RUN ./configure \
         --enable-libsrt \
         --disable-libaom \
         --disable-libsvtav1\
-        --enable-libklvanc
+        --enable-libklvanc\
+        --enable-libvmaf
 
 RUN make && \
     make install && \

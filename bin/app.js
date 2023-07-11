@@ -16,6 +16,7 @@ const documentation = require("@utils/documentation");
 const systemRouter = require("@routes/system");
 const encodeRouter = require("@routes/encode");
 const decodeRouter = require("@routes/decode");
+const vmafRouter = require("@routes/vmaf");
 const decklinkRouter = require("@routes/decklink");
 const fileRouter = require("@routes/file");
 const playlistRouter = require("@routes/playlist");
@@ -59,6 +60,7 @@ app.use("/documentation", documentation);
 app.use("/api/system", systemRouter);
 app.use("/api/encode", encodeRouter);
 app.use("/api/decode", decodeRouter);
+app.use("/api/vmaf",vmafRouter)
 app.use("/api/decklink", decklinkRouter);
 app.use("/api/file", fileRouter);
 app.use("/api/playlist",playlistRouter)
