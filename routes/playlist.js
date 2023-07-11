@@ -24,7 +24,7 @@ router.get("/:playlist", async (req, res, next) => {
 /**
  * @swagger
  * /playlist/:playlist:
- *    get:
+ *    post:
  *      description: Set all the items in a playlist
  *      tags: [files]
  *      produces:

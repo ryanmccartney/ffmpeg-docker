@@ -86,7 +86,7 @@ module.exports = async (options) => {
         if (stderrLine.includes('[srt]')) {
             // Extract the relevant statistics from the line
             const stats = stderrLine.match(/\[srt\]\s(.+)/)[1];
-            logger.info('SRT Stats: ', stats);
+            logger.info('ffmpeg-srt: ', stats);
         }
         else{
             logger.info("ffmpeg: " + stderrLine);
