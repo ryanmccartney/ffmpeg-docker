@@ -1,8 +1,8 @@
 ---
 layout: page
-title: Usage
+title: VMAF
 nav_order: 4
-has_children: true
+has_children: false
 ---
 
 # VMAF Support
@@ -35,6 +35,12 @@ Request Body
     "model": "vmaf_v0.6.1.json"
 }
 ```
+
+## Underlying Command
+
+Sending the above API command results in the following underlying command being run on the server is;
+
+`ffmpeg -i /home/node/app/data/media/reference-file.mov -i /home/node/app/data/media/test-file.mov -y -lavfi libvmaf=model_path=/ffmpeg_sources/vmaf/model/vmaf_v0.6.1.json -f null -`
 
 ## Docker Build
 
