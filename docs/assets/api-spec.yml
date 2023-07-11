@@ -349,5 +349,25 @@ paths:
       responses:
         "200":
           description: Success
+  /vmaf/results/download:
+    get:
+      description: Get a VMAF results file.
+      tags:
+        - vmaf
+      produces:
+        - application/file
+      responses:
+        "200":
+          description: Success
+  /vmaf/results:
+    get:
+      description: Get a VMAF results file.
+      tags:
+        - vmaf
+      produces:
+        - application/file
+      responses:
+        "200":
+          description: Success
 components: {}
 tags: []

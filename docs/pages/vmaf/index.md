@@ -7,7 +7,7 @@ has_children: false
 
 # VMAF Support
 
-[VMAF](https://github.com/Netflix/vmaf) - Video Multi-Method Assessment Fusion is a [Netflic](https://github.com/Netflix) Open Source project for evaluating the quality of video files.
+[VMAF](https://github.com/Netflix/vmaf) - Video Multi-Method Assessment Fusion is a [Netflix](https://github.com/Netflix) Open Source project for evaluating the quality of video files.
 
 FFMPEG-Docker provides build instructions for VMAF by default, and exposes an API endpoint for processing files with VMAF and generating results.
 
@@ -40,7 +40,17 @@ Request Body
 
 Sending the above API command results in the following underlying command being run on the server is;
 
-`ffmpeg -i /home/node/app/data/media/reference-file.mov -i /home/node/app/data/media/test-file.mov -y -lavfi libvmaf=model_path=/ffmpeg_sources/vmaf/model/vmaf_v0.6.1.json -f null -`
+`ffmpeg -i /home/node/app/data/media/good-as-hell.mov -i /home/node/app/data/media/good-as-hell.mov -y -lavfi libvmaf=model_path=/ffmpeg_sources/vmaf/model/vmaf_v0.6.1.json:log_fmt=json:psnr=1:ssim=1:ms_ssim=1:log_path=/home/node/app/data/vmaf/test01.json -f null -`
+
+## Generating Graphs from the outputs
+
+In the example above the parameter `output` was set to `test-output.json`. This means that all of the results are saved in text to this file.
+
+This can be directly downloaded as follows `http://172.26.182.69:3000/api/vmaf/results/download?filename=test-output.json`
+
+A graph of the results can be generated here - `http://172.26.182.69:3000/html/chart.html?filename=test-output.json` using Chart.js.
+
+Rememebr to change the filename query in the URL to the one set as the `output` parameter when running the test.
 
 ## Docker Build
 

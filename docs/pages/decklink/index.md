@@ -69,3 +69,12 @@ Let's make the file smaller
 ## Decklink input to Waveform
 
 `ffmpeg -f decklink -i 'DeckLink SDI' -vf "waveform" -pix_fmt yuv420p -c:v libx264 -preset medium -crf 18 output.mp4`
+
+## Decklink Delay
+
+Initially, file playback appeared to be significantly delayed. When timecode was overlayed on the decklink output it appeared 4-5 seconds behind the server time.
+
+Channging the following arguments, `-probesize 1M` and `-analyzeduration 1M` significantly helped this issue.
+
+This comment on the [FFMPEG Forum](http://ffmpeg.org/pipermail/ffmpeg-user/2020-May/048639.html) sheds some more light on the issue.
+

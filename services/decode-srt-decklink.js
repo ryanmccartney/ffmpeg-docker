@@ -23,7 +23,7 @@ module.exports = async (cardIndex,options) => {
 
         command = ffmpeg({ logger: logger })
             .input(`srt://${options?.address}:${options?.port}?latency=${options?.latency}&mode=${options?.mode ||"caller"}&passphrase=${options.passphrase}`)
-            .inputOptions(["-protocol_whitelist","srt,udp,rtp","-stats","-re"])
+            .inputOptions(["-protocol_whitelist","srt,udp,rtp","-stats","-re","-probesize 1M","-analyzeduration 1M"])
             .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink"])
             .output(options?.cardName);
 

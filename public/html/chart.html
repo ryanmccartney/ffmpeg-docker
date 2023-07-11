@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <title>VMAF Chart</title>
+    <body>
+        <canvas id="myChart" style="width:80%;"></canvas>
+
+        <script>
+
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+  
+            getData();
+
+            async function getData() {
+
+                const filename = urlParams.get('filename');
+                console.log(filename);
+                const frames = [];
+                const psnr = [];
+                const ssim = [];
+                const vmaf = [];
+
+                const response = await fetch(`/api/vmaf/results?filename=${filename}`);
+                const data = await response.json();
+
+                const framesData = data.data.frames;
+                for(let frame of framesData){
+                    frames.push(frame.frameNum);
+                    console.log(frame.metrics.vmaf)
+                    psnr.push(frame.metrics.psnr);
+                    ssim.push(frame.metrics.ssim);
+                    vmaf.push(frame.metrics.vmaf);
+                }
+                
+                new Chart("myChart", {
+                    type: "line",
+                    data: {
+                        labels: frames,
+                            datasets: [
+                            {
+                                label: "PSNR",
+                                fill: false,
+                                lineTension: 0,
+                                backgroundColor: "rgba(0,0,255,0.6)",
+                                borderColor: "rgba(0,0,255,0.6)",
+                                pointRadius: 0,
+                                data: psnr
+                            },
+                            // {
+                            //     label: "SSIM",
+                            //     fill: false,
+                            //     lineTension: 0,
+                            //     backgroundColor: "rgba(0,255,0,0.6)",
+                            //     borderColor: "rgba(0,255,0,0.6)",
+                            //     pointRadius: 0,
+                            //     data: ssim
+                            // },
+                            {
+                                label: "VMAF",
+                                fill: false,
+                                lineTension: 0,
+                                backgroundColor: "rgba(255,0,0,0.6)",
+                                borderColor: "rgba(255,0,0,0.6)",
+                                pointRadius: 0,
+                                data: vmaf
+                            }
+                        ]
+                    },
+                    options: {
+                        plugins:{
+                            legend:{
+                                position:"bottom",
+                                display: true,
+                            },
+                            title: 
+                            {
+                            display: true,
+                            text: `VMAF Results for ${filename}`
+                            },
+                        },
+                        responsive: true,
+                        scales: {
+                            x: {             
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Frames',
+                                    padding: {top: 20, left: 0, right: 0, bottom: 0}
+                                },
+                                ticks: {
+                                    stepSize: 10
+                                }
+                            },
+                            y: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Percentage (0-100%)',
+                                },
+                                max: 100,
+                                min: 0,
+                                ticks: {
+                                    stepSize: 1
+                                },
+                                padding: {top: 20, left: 0, right: 0, bottom: 0}
+                            }
+                        }
+                    }
+                });
+            }
+        </script>
+    </body>
+</html>

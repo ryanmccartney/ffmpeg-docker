@@ -23,7 +23,7 @@ module.exports = async (options) => {
         const command = ffmpeg({ logger: logger })
             .input(path.join(__dirname, "..", "data", "media", options?.reference?.filename))
             .input(path.join(__dirname, "..", "data", "media", options?.input?.filename))
-            .outputOptions('-lavfi', `libvmaf=model_path=${path.join("/ffmpeg_sources", "vmaf", "model", options?.model)}`, '-f', 'null')
+            .outputOptions('-lavfi', `libvmaf=model_path=${path.join("/ffmpeg_sources", "vmaf", "model", options?.model)}:log_fmt=json:psnr=1:ssim=1:ms_ssim=1:log_path=${path.join(__dirname, "..", "data", "vmaf", options?.output)}`, '-f', 'null')
             .output('-');
 
         command.on("end", () => {

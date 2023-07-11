@@ -401,3 +401,29 @@ Run a VMAF test specifing a reference file and test file.
 | Code | Description |
 | ---- | ----------- |
 | 200 | Success |
+
+### /vmaf/results/download
+
+#### GET
+##### Description
+
+Get a VMAF results file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /vmaf/results
+
+#### GET
+##### Description
+
+Get a VMAF results file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |

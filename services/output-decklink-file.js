@@ -26,7 +26,7 @@ module.exports = async (cardIndex,options) => {
     command = ffmpeg({ logger: logger })
         .input(`${path.join(__dirname, "..", "data", "media", options.filename)}`)
         .inputOptions([`-re`,repeat])
-        .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink"])
+        .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink","-probesize 1M","-analyzeduration 1M"])
         .output(options.cardName);
 
     if(Array.isArray(filters)){
