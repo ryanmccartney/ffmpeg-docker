@@ -36,19 +36,29 @@ Request Body
 }
 ```
 
+Alternatively, running from the broswers
+
+`http://SERVER_IP:SERVER_PORT/api/vmaf/test?filename=test-file.mov&reference=reference-file.mov`
+
+Running the above command again after starting the test will display information about the task progress.
+
+If you need to stop the current command running you can use the following command;
+
+`http://SERVER_IP:SERVER_PORT/api/vmaf/test?kill=true`
+
 ## Underlying Command
 
 Sending the above API command results in the following underlying command being run on the server is;
 
-`ffmpeg -i /home/node/app/data/media/good-as-hell.mov -i /home/node/app/data/media/good-as-hell.mov -y -lavfi libvmaf=model_path=/ffmpeg_sources/vmaf/model/vmaf_v0.6.1.json:log_fmt=json:psnr=1:ssim=1:ms_ssim=1:log_path=/home/node/app/data/vmaf/test01.json -f null -`
+`ffmpeg -i test-file.mov -i reference-file.mov -y -lavfi libvmaf=model_path=/ffmpeg_sources/vmaf/model/vmaf_v0.6.1.json:log_fmt=json:psnr=1:ssim=1:ms_ssim=1:log_path=test-output.json -f null -`
 
 ## Generating Graphs from the outputs
 
 In the example above the parameter `output` was set to `test-output.json`. This means that all of the results are saved in text to this file.
 
-This can be directly downloaded as follows `http://172.26.182.69:3000/api/vmaf/results/download?filename=test-output.json`
+This can be directly downloaded as follows `http://SERVER_IP:SERVER_PORT/api/vmaf/results/download?filename=test-output.json`
 
-A graph of the results can be generated here - `http://172.26.182.69:3000/html/chart.html?filename=test-output.json` using Chart.js.
+A graph of the results can be generated here - `http://SERVER_IP:SERVER_PORT/html/chart.html?filename=test-output.json` using Chart.js.
 
 Rememebr to change the filename query in the URL to the one set as the `output` parameter when running the test.
 

@@ -4,7 +4,6 @@ title: Endpoints
 parent: Usage
 nav_order: 1
 ---
-
 # FFmpeg Docker API
 Common FFMPEG fucntions from a RESTful API
 

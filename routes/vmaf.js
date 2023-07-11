@@ -37,8 +37,21 @@ router.get("/models", async (req, res, next) => {
  *          description: Success
  */
 router.get("/test", async (req, res, next) => {
+
+    if(req.query.filename){
+        req.body.input = {"filename": ""}
+        req.body.input.filename = req.query.filename
+    }
+    if(req.query.reference){
+        req.body.reference = {"filename": ""}
+        req.body.reference.filename = req.query.reference
+    }
+    if(req.query.kill){
+        req.body.kill = true;
+    }
+
     const response = await testVmaf(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+    hashResponse(res, req, response);
 });
 
 /**
