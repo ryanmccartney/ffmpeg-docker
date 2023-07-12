@@ -40,6 +40,13 @@
     "nodemon": "^2.0.16",
     "swagger-markdown": "^2.3.0"
   },
+  "nodemonConfig": {
+    "ignore": [
+      "./public/*",
+      "./data/*",
+      "./docs/*"
+    ]
+  },
   "_moduleAliases": {
     "@root": ".",
     "@bin": "./bin/",
