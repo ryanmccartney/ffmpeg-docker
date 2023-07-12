@@ -2,6 +2,7 @@
 
 const logger = require("@utils/logger")(module);
 const path = require("path");
+const parse = require("@utils/parse");
 
 module.exports = async (options = {}) => {
     const fontSize = options?.fontSize || 50;
@@ -18,7 +19,7 @@ module.exports = async (options = {}) => {
                         "fonts",
                         `${options?.font || "swansea-bold.ttf"}`
                     )}:\'text=\'${
-                        options?.line1
+                       await parse(options?.line1,options)
                     }\':fontcolor=${options?.textColor || "white"}:fontsize=${fontSize}:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)-${parseInt(fontSize*0.6)}`,
                 }
             );
@@ -35,7 +36,7 @@ module.exports = async (options = {}) => {
                         "fonts",
                         `${options?.font || "swansea-bold.ttf"}`
                     )}:\'text=\'${
-                        options?.line2
+                       await parse(options?.line2,options)
                     }\':fontcolor=${options?.textColor || "white"}:fontsize=${fontSize}:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w)/2:y=((h-text_h)/2)+${parseInt(fontSize*0.6)}`,
                 }
             );
@@ -53,7 +54,7 @@ module.exports = async (options = {}) => {
                             "fonts",
                             `${options?.font || "swansea-bold.ttf"}`
                         )}:\'text=\'${
-                            options.topRight.line1
+                            await parse(options.topRight.line1,options)
                         }\':fontcolor=${options?.textColor || "white"}:fontsize=${parseInt(fontSize/2)}:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w-${parseInt(fontSize*0.4)}):y=${parseInt(fontSize*0.6)}`,
                     }
                 );
@@ -69,7 +70,7 @@ module.exports = async (options = {}) => {
                             "fonts",
                             `${options?.font || "swansea-bold.ttf"}`
                         )}:\'text=\'${
-                            options.topRight.line2
+                           await parse(options.topRight.line2,options)
                         }\':fontcolor=${options?.textColor || "white"}:fontsize=${parseInt(fontSize/2)}:box=1:boxcolor=${options?.backgroundColor || "black"}@0.5:boxborderw=8:x=(w-text_w-${parseInt(fontSize*0.4)}):y=${parseInt(fontSize*1.2)}`,
                     }
                 );

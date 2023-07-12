@@ -5,6 +5,7 @@ const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
 const filterCombine = require("@services/filter-combine");
 const filterText = require("@services/filter-text");
+const filterQr = require("@services/filter-qr");
 
 let command;
 
@@ -28,11 +29,15 @@ module.exports = async (cardIndex,options) => {
         .inputOptions([`-re`,repeat])
         .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink","-probesize 32","-analyzeduration 32","-flags low_delay"])
         .output(options.cardName);
-
+        
     if(Array.isArray(filters)){
         command.videoFilters(filters)
     }
          
+    // if(options?.qr){
+    //     command = await filterQr(command, options.qr);
+    // }
+
     command.on("end", () => {
         logger.info("Finished playing file");
     });

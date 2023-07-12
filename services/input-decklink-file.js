@@ -5,6 +5,7 @@ const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
 const filterCombine = require("@services/filter-combine");
 const filterText = require("@services/filter-text");
+const filterQr = require("@services/filter-qr");
 
 let command;
 
@@ -12,7 +13,7 @@ module.exports = async (cardIndex,options) => {
     let status = true
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
-    const filters = await filterCombine(await filterText(options));
+    const filters = await filterCombine(await filterText(options),await filterQr(options.qr));
 
     if(command){
         logger.info("Killing already running FFMPEG process")

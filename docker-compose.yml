@@ -25,6 +25,7 @@ services:
         environment:
             NODE_ENV: "development"
             PORT: 80
+            HOST: "172.26.182.69"
         ports:
             - 3000:80
             - 5004:5004
