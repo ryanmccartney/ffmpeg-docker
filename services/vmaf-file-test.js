@@ -3,7 +3,7 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
-const fileExists = require("@utils/file-exisits");
+const fileExists = require("@utils/file-exists");
 
 let command;
 let progress = 0;

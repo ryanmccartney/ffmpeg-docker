@@ -6,6 +6,7 @@ const getVmafModels = require("@services/vmaf-models-get");
 const testVmaf = require("@services/vmaf-file-test");
 const getVmafResults = require("@services/vmaf-results");
 const path = require("path");
+const fileExists = require("@utils/file-exists");
 
 /**
  * @swagger
@@ -84,8 +85,11 @@ router.get('/results', async (req, res) => {
  *          description: Success
  */
 router.get('/results/download', async (req, res) => {
-    const filePath = path.join(__dirname, "..", "data", "vmaf", req.query.filename);
-    res.download(filePath);
+    const filePath = path.join(__dirname, "..", "data", "vmaf", req.query?.filename || "");
+    if(fileExists(filePath)){
+        res.download(filePath);
+    }
+    hashResponse(res, req, { error: {message:"File does not exisit"}, data:{file:filePath}, status: false });
   });
 
 module.exports = router;
