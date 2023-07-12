@@ -20,7 +20,6 @@ module.exports = async (filename) => {
 
     try{
         const dataString = await get(path.join(__dirname, "..", "data", "vmaf", filename));
-        console.log(dataString)
         data = JSON.parse(dataString)
     }
     catch(error){

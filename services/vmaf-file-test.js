@@ -3,6 +3,7 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
+const fileExists = require("@utils/file-exisits");
 
 let command;
 let progress = 0;
@@ -22,7 +23,7 @@ module.exports = async (options) => {
 
     try{
         ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
-  
+        
         if(command){
             if(options.kill){
                 logger.info("Killing already running FFMPEG process")
@@ -44,10 +45,16 @@ module.exports = async (options) => {
         const inputFilePathElements = inputFilePath.split("/");
         const defaultOutputFile = `${inputFilePathElements[inputFilePathElements.length-1].split(".")[0]}.json`
 
+        if(! await fileExists(inputFilePath)){   
+            response.error = {message: "Input file does not exisit"};
+            response.status = false;
+            return response    
+        }
+
         command = ffmpeg({ logger: logger })
             .input(path.join(__dirname, "..", "data", "media", options?.reference?.filename))
             .input(inputFilePath)
-            .outputOptions('-lavfi', `libvmaf=model_path=${path.join("/ffmpeg_sources", "vmaf", "model", `${options?.model || "vmaf_v0.6.1.json"}`)}:log_fmt=json:psnr=1:ssim=1:ms_ssim=1:log_path=${path.join(__dirname, "..", "data", "vmaf", options?.output || defaultOutputFile)}`, '-f', 'null')
+            .outputOptions('-lavfi', `libvmaf=model_path=${path.join("/ffmpeg_sources", "vmaf", "model", `${options?.model || "vmaf_v0.6.1.json"}`)}:log_fmt=json:psnr=1:ssim=1:ms_ssim=1:log_path=${path.join(__dirname, "..", "data", "vmaf", options?.output || defaultOutputFile)}:n_threads=${options.threads || 20}`, '-f', 'null')
             .output('-');
 
         command.on("end", () => {
