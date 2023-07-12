@@ -59,6 +59,7 @@ module.exports = async (options) => {
 
         command.on("end", () => {
             logger.info("Finished processing");
+            command.kill();
         });
 
         command.on("start", (commandString) => {

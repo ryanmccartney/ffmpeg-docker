@@ -3,6 +3,7 @@
 const router = require("express").Router();
 const hashResponse = require("@utils/hash-response");
 const setTime = require("@services/system-time-set");
+const path = require('path');
 
 /**
  * @swagger
@@ -60,6 +61,22 @@ router.get("/time", async (req, res, next) => {
         }
     };
     hashResponse(res, req, response);
+});
+
+/**
+ * @swagger
+ * /system/clock:
+ *    get:
+ *      description: An HTML page with a live clock showing server time - suitable for latency measurements
+ *      tags: [system]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/clock", async (req, res, next) => {
+    res.sendFile(path.join(__dirname,"..","public","html","clock.html"));
 });
 
 
