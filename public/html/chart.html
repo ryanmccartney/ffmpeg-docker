@@ -25,7 +25,7 @@
                 const ssim = [];
                 const vmaf = [];
 
-                const response = await fetch(`/api/vmaf/results?filename=${filename}`);
+                const response = await fetch(`/api/vmaf/results/json?filename=${filename}`);
                 const data = await response.json();
 
                 const framesData = data.data.frames;
