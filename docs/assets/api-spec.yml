@@ -84,6 +84,48 @@ paths:
       responses:
         "200":
           description: Success
+  /decklink/:cardIndex/audio:
+    get:
+      description: Sends an audio file to a decklink output
+      tags:
+        - decklink
+      parameters:
+        - in: formData
+          name: filename
+          type: string
+          description: Filename and extension of media to playout. E.g - test.mp4
+          required: true
+        - in: formData
+          name: cardName
+          type: string
+          description: The name of the BMD Decklink cards. E.g - "DeckLink SDI"
+          required: true
+        - in: formData
+          name: font
+          type: string
+          description: The name of the font file to use for text overlay. Must use the
+            TrueType fonts. E.g - "swansea-bold.ttf"
+          required: font
+        - in: formData
+          name: offset
+          type: number
+          description: Offset for time in hours. E.g 3, -3
+          required: false
+        - in: formData
+          name: timecode
+          type: boolean
+          description: Show the timecode line - true,false
+          required: false
+        - in: formData
+          name: repeat
+          type: boolean
+          description: Decides whether the media loops or not
+          required: false
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
   /decklink/:cardIndex/record:
     get:
       description: Record the input of a decklink card index to file
@@ -329,6 +371,17 @@ paths:
       responses:
         "200":
           description: Success
+  /system/clock:
+    get:
+      description: An HTML page with a live clock showing server time - suitable for
+        latency measurements
+      tags:
+        - system
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
   /vmaf/models:
     get:
       description: Returns a list of VMAF models.
@@ -349,9 +402,9 @@ paths:
       responses:
         "200":
           description: Success
-  /vmaf/results/download:
+  /vmaf/results/json:
     get:
-      description: Get a VMAF results file.
+      description: Get a VMAF results file as a JSON object.
       tags:
         - vmaf
       produces:
@@ -359,9 +412,19 @@ paths:
       responses:
         "200":
           description: Success
-  /vmaf/results:
+  /vmaf/results/csv:
     get:
-      description: Get a VMAF results file.
+      description: Get a VMAF results file as a CSV object.
+      tags:
+        - vmaf
+      produces:
+        - application/file
+      responses:
+        "200":
+          description: Success
+  /vmaf/results/download:
+    get:
+      description: Get a VMAF results file in a downloadable file.
       tags:
         - vmaf
       produces:

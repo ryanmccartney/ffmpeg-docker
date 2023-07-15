@@ -4,6 +4,7 @@ title: Endpoints
 parent: Usage
 nav_order: 1
 ---
+
 # FFmpeg Docker API
 Common FFMPEG fucntions from a RESTful API
 
@@ -60,6 +61,30 @@ Sets the config for an individual Decklink card
 ##### Description
 
 Sends a file to a decklink output
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+| filename | formData | Filename and extension of media to playout. E.g - test.mp4 | Yes | string |
+| cardName | formData | The name of the BMD Decklink cards. E.g - "DeckLink SDI" | Yes | string |
+| font | formData | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes | string |
+| offset | formData | Offset for time in hours. E.g 3, -3 | No | number |
+| timecode | formData | Show the timecode line - true,false | No | boolean |
+| repeat | formData | Decides whether the media loops or not | No | boolean |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /decklink/:cardIndex/audio
+
+#### GET
+##### Description
+
+Sends an audio file to a decklink output
 
 ##### Parameters
 
@@ -374,6 +399,19 @@ Get server time.
 | ---- | ----------- |
 | 200 | Success |
 
+### /system/clock
+
+#### GET
+##### Description
+
+An HTML page with a live clock showing server time - suitable for latency measurements
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
 ---
 ### /vmaf/models
 
@@ -401,12 +439,12 @@ Run a VMAF test specifing a reference file and test file.
 | ---- | ----------- |
 | 200 | Success |
 
-### /vmaf/results/download
+### /vmaf/results/json
 
 #### GET
 ##### Description
 
-Get a VMAF results file.
+Get a VMAF results file as a JSON object.
 
 ##### Responses
 
@@ -414,12 +452,25 @@ Get a VMAF results file.
 | ---- | ----------- |
 | 200 | Success |
 
-### /vmaf/results
+### /vmaf/results/csv
 
 #### GET
 ##### Description
 
-Get a VMAF results file.
+Get a VMAF results file as a CSV object.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /vmaf/results/download
+
+#### GET
+##### Description
+
+Get a VMAF results file in a downloadable file.
 
 ##### Responses
 

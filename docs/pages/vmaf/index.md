@@ -56,7 +56,11 @@ Sending the above API command results in the following underlying command being 
 
 In the example above the parameter `output` was set to `test-output.json`. This means that all of the results are saved in text to this file.
 
-This can be directly downloaded as follows `http://SERVER_IP:SERVER_PORT/api/vmaf/results/download?filename=test-output.json`
+This can be directly downloaded as follows 
+
+* As a JSON object - `http://SERVER_IP:SERVER_PORT/api/vmaf/results?filename=test-output.json`
+* As a JSON file - `http://SERVER_IP:SERVER_PORT/api/vmaf/results/download/json?filename=test-output.json`
+* As a CSV file - `http://SERVER_IP:SERVER_PORT/api/vmaf/results/download/csv?filename=test-output.json`
 
 A graph of the results can be generated here - `http://SERVER_IP:SERVER_PORT/html/chart.html?filename=test-output.json` using Chart.js.
 
