@@ -422,9 +422,19 @@ paths:
       responses:
         "200":
           description: Success
-  /vmaf/results/download:
+  /vmaf/results/download/csv:
     get:
-      description: Get a VMAF results file in a downloadable file.
+      description: Get a VMAF results file as a CSV file.
+      tags:
+        - vmaf
+      produces:
+        - application/file
+      responses:
+        "200":
+          description: Success
+  /vmaf/results/download/json:
+    get:
+      description: Get a VMAF results file in a downloadable JSON file.
       tags:
         - vmaf
       produces:

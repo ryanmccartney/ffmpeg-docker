@@ -87,6 +87,23 @@ router.get('/results/json', async (req, res) => {
  *          description: Success
  */
 router.get('/results/csv', async (req, res) => {
+    const response = await getVmafResultsCsv(req.query.filename);
+    hashResponse(res, req, { data: response, status: response ? true : false });
+});
+
+/**
+ * @swagger
+ * /vmaf/results/download/csv:
+ *    get:
+ *      description: Get a VMAF results file as a CSV file.
+ *      tags: [vmaf]
+ *      produces:
+ *        - application/file
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get('/results/download/csv', async (req, res) => {
     try{
         const response = await getVmafResultsCsv(req.query.filename);
         const filenameElements = req.query.filename.split(".")
@@ -101,9 +118,9 @@ router.get('/results/csv', async (req, res) => {
 
 /**
  * @swagger
- * /vmaf/results/download:
+ * /vmaf/results/download/json:
  *    get:
- *      description: Get a VMAF results file in a downloadable file.
+ *      description: Get a VMAF results file in a downloadable JSON file.
  *      tags: [vmaf]
  *      produces:
  *        - application/file
@@ -111,7 +128,7 @@ router.get('/results/csv', async (req, res) => {
  *        '200':
  *          description: Success
  */
-router.get('/results/download', async (req, res) => {
+router.get('/results/download/json', async (req, res) => {
     const filePath = path.join(__dirname, "..", "data", "vmaf", req.query?.filename || req.body?.filename || "");
     if(fileExists(filePath)){
         res.download(filePath);

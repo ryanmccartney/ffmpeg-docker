@@ -58,7 +58,8 @@ In the example above the parameter `output` was set to `test-output.json`. This 
 
 This can be directly downloaded as follows 
 
-* As a JSON object - `http://SERVER_IP:SERVER_PORT/api/vmaf/results?filename=test-output.json`
+* As a JSON object - `http://SERVER_IP:SERVER_PORT/api/vmaf/results/json?filename=test-output.json`
+* As a CSV object - `http://SERVER_IP:SERVER_PORT/api/vmaf/results/csv?filename=test-output.json`
 * As a JSON file - `http://SERVER_IP:SERVER_PORT/api/vmaf/results/download/json?filename=test-output.json`
 * As a CSV file - `http://SERVER_IP:SERVER_PORT/api/vmaf/results/download/csv?filename=test-output.json`
 

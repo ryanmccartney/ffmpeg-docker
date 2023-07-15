@@ -4,7 +4,6 @@ title: Endpoints
 parent: Usage
 nav_order: 1
 ---
-
 # FFmpeg Docker API
 Common FFMPEG fucntions from a RESTful API
 
@@ -465,12 +464,25 @@ Get a VMAF results file as a CSV object.
 | ---- | ----------- |
 | 200 | Success |
 
-### /vmaf/results/download
+### /vmaf/results/download/csv
 
 #### GET
 ##### Description
 
-Get a VMAF results file in a downloadable file.
+Get a VMAF results file as a CSV file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /vmaf/results/download/json
+
+#### GET
+##### Description
+
+Get a VMAF results file in a downloadable JSON file.
 
 ##### Responses
 
