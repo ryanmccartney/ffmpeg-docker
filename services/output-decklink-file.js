@@ -24,30 +24,32 @@ module.exports = async (cardIndex,options) => {
             repeat = "-stream_loop -1"
         }
 
-        if(command){
-            if(options.state === "play"){
-                logger.info("Playing")
-                await command.kill()
-                // await command.kill('SIGCONT')
-            }
-            else if(options.state === "pause"){
-                logger.info("Pausing")
-                inPoint = command.time;
-                await command.kill('SIGSTOP')
-            }
-            if(options.state === "restart"){
-                logger.info("Restarting Playback");
-                await command.kill();
-                inPoint = "00:00:00.000";
-            }
+        if(options.state === "play"){
+            logger.info("Playing Playback")
         }
+        else if(options.state === "pause" && command){
+            logger.info("Pausing Playback")
+            //inPoint = command.time;
+            await command.kill('SIGSTOP')
+        }
+        else if(options.state === "resume" && command){
+            logger.info("Resuming Playback")
+            await command.kill('SIGCONT')
+        }
+        if(options.state === "restart" && command){
+            logger.info("Restarting Playback");
+            await command.kill();
+            inPoint = "00:00:00.000";
+        }
+        
+        if(options.state === "restart" || !command){
 
-        if(options.state !== "pause"){
+            //`-ss ${inPoint}`
 
             command = ffmpeg({ logger: logger })
                 .input(`${path.join(__dirname, "..", "data", "media", options.filename)}`)
-                .inputOptions(["-nostdin","-re",`-ss ${inPoint}`, repeat,"-probesize 32","-analyzeduration 0"])
-                .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink","-probesize 32","-analyzeduration 0","-flags low_delay","-bufsize 0","-muxdelay 0","-vsync passthrough"])
+                .inputOptions(["-re", repeat,"-probesize 32","-analyzeduration 0"])
+                .outputOptions(["-timecode 00:00:00:00","-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink",`-af volume=${options?.volume || 0.1}`,"-probesize 32","-analyzeduration 0","-flags low_delay","-bufsize 0","-muxdelay 0","-vsync passthrough"])
                 .output(options.cardName);
                 
             if(Array.isArray(filters)){

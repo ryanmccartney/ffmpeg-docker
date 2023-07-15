@@ -48,7 +48,7 @@ module.exports = async (cardIndex,options) => {
     
     command.outputOptions("-ar 48000");
     command.outputOptions("-shortest")
-        .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink","-probesize 32","-analyzeduration 0","-flags low_delay","-bufsize 0","-muxdelay 0","-vsync passthrough"])
+        .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink",`-af volume=${options?.volume || 0.1}`,"-probesize 32","-analyzeduration 0","-flags low_delay","-bufsize 0","-muxdelay 0","-vsync passthrough"])
         .output(options.cardName);
         
     if(Array.isArray(filters)){
