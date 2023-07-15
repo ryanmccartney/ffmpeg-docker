@@ -24,7 +24,7 @@ module.exports = async (cardIndex,options) => {
         command = ffmpeg({ logger: logger })
             .input(`srt://${options?.address}:${options?.port}?latency=${options?.latency}&mode=${options?.mode ||"caller"}&passphrase=${options.passphrase}`)
             .inputOptions(["-protocol_whitelist","srt,udp,rtp","-stats","-re","-probesize 1M","-analyzeduration 1M"])
-            .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink"])
+            .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink","-probesize 32","-analyzeduration 0","-flags low_delay","-bufsize 0","-muxdelay 0","-vsync passthrough"])
             .output(options?.cardName);
 
         if(Array.isArray(filters)){

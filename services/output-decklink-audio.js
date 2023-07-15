@@ -6,6 +6,7 @@ const path = require("path");
 const filterCombine = require("@services/filter-combine");
 const filterText = require("@services/filter-text");
 const filterQr = require("@services/filter-qr");
+const getMetadata = require("@services/metadata-get");
 
 let command;
 
@@ -14,8 +15,6 @@ module.exports = async (cardIndex,options) => {
     let repeat = "";
     const outputFPS = 25;
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
-
-    const filters = await filterCombine(await filterText(options));
 
     if(options.repeat){
         repeat = "-stream_loop -1"
@@ -27,15 +26,29 @@ module.exports = async (cardIndex,options) => {
     }
 
     const audioFilePath = path.join(__dirname, "..", "data", "media", options?.filename);
-    const backgroundFilePath = path.join(__dirname, "..", "data", "media", options?.background || "test.png");
 
+    const metadata = await getMetadata(options?.filename);
+    const tags = metadata?.data?.format?.tags
+    const filters = await filterCombine(await filterText({...options,...tags}));
+
+    console.log()
     command = ffmpeg({ logger: logger })
-        .input(backgroundFilePath)
-        .inputOptions([`-re`,repeat])
-        .inputOptions([`-loop 1`])
         .input(audioFilePath)
-        .outputOptions("-shortest")
-        .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink","-probesize 32","-analyzeduration 32","-flags low_delay"])
+        .inputOptions([`-re`,repeat]);
+
+    if(options.type === "image"){
+        const backgroundFilePath = path.join(__dirname, "..", "data", "media", options?.background || "test.png");
+        command.input(backgroundFilePath)
+            .inputOptions([`-loop 1`]);
+    }
+    else{
+        command.addInput(`${options.type||"smptehdbars"}=rate=25:size=1920x1080`)
+            .inputOptions(["-re", "-f lavfi"]);
+    }
+    
+    command.outputOptions("-ar 48000");
+    command.outputOptions("-shortest")
+        .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink","-probesize 32","-analyzeduration 0","-flags low_delay","-bufsize 0","-muxdelay 0","-vsync passthrough"])
         .output(options.cardName);
         
     if(Array.isArray(filters)){
@@ -76,5 +89,5 @@ module.exports = async (cardIndex,options) => {
         status = "false"
     }
 
-    return { error: status, options: options };
+    return { error: status, tags:tags, options: options };
 };
