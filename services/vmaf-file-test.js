@@ -33,7 +33,7 @@ module.exports = async (options) => {
                 await command.kill();
                 return response;
             }
-            else{
+            if(command.progress){
                 response.data = {}
                 response.data.message = `Already running a test ${command.progress}% complete`;
                 response.data.progress = command.progress
@@ -59,6 +59,7 @@ module.exports = async (options) => {
 
         command.on("end", () => {
             logger.info("Finished processing");
+            command.progress = 0;
             command.kill();
         });
 
