@@ -11,17 +11,13 @@ let command;
 
 module.exports = async (cardIndex,options) => {
     let status = true
-    let repeat = "";
+    let repeat = "-stream_loop 0";
     let inPoint = "00:00:00.000";
 
     try{
 
-        ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
-
-        const filters = await filterCombine(await filterText(options));
-
         if(options.repeat){
-            repeat = "-stream_loop -1"
+            repeat = `-stream_loop -1`
         }
 
         if(options.state === "play"){
@@ -44,12 +40,13 @@ module.exports = async (cardIndex,options) => {
         
         if(options.state === "restart" || !command){
 
-            //`-ss ${inPoint}`
-
+            ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
+            const filters = await filterCombine(await filterText(options));
+    
             command = ffmpeg({ logger: logger })
                 .input(`${path.join(__dirname, "..", "data", "media", options.filename)}`)
                 .inputOptions(["-re", repeat,"-probesize 32","-analyzeduration 0"])
-                .outputOptions(["-timecode 00:00:00:00","-pix_fmt uyvy422","-s 1920x1080","-ac 2","-f decklink",`-af volume=${options?.volume || 0.1}`,"-probesize 32","-analyzeduration 0","-flags low_delay","-bufsize 0","-muxdelay 0","-vsync passthrough"])
+                .outputOptions(["-pix_fmt uyvy422","-s 1920x1080","-ac 16","-f decklink",`-af volume=${options?.volume || 0.1}`,"-flags low_delay","-bufsize 0","-muxdelay 0","-async 1","-copyts"])
                 .output(options.cardName);
                 
             if(Array.isArray(filters)){
