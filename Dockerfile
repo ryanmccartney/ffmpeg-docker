@@ -59,9 +59,9 @@ RUN apt -y install \
   libaom-dev \
   libdav1d-dev \
   libopus-dev \
-  libarchive-tools \
-  linux-oem-22.04c \
-  linux-tools-oem-22.04c
+  libarchive-tools 
+#   linux-oem-22.04c \
+#   linux-tools-oem-22.04c
 
 # Get Blackmagic Desktop Video SDK (Link expires... You'll need to get a new one)
 RUN if [ "$DECKLINK_SUPPORT" = "true" ];\
@@ -222,7 +222,7 @@ RUN ./configure \
         --enable-gpl \
         --enable-nonfree \
         #--enable-libndi_newtek \
-        --enable-decklink \
+        #--enable-decklink \
         --enable-libsrt \
         --disable-libaom \
         --disable-libsvtav1\

@@ -20,12 +20,12 @@ services:
         restart: always
         volumes:
             - ./:/home/node/app
-        devices:
-            - /dev/blackmagic/dv0:/dev/blackmagic/dv0
+        # devices:
+        #     - /dev/blackmagic/dv0:/dev/blackmagic/dv0
         environment:
             NODE_ENV: "development"
             PORT: 80
             HOST: "172.26.182.69"
         ports:
-            - 3000:80
+            - 3001:80
             - 5004:5004
