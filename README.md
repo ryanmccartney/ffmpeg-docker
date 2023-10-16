@@ -27,6 +27,10 @@ If you want to contribute to this project or you'd like some of the above featur
 2. Change directory to the repository `cd ./ffmpeg-docker`
 3. Build the image using `docker compose build`.
 
+### on an M1 Mac
+
+1. Install your packages locally - `npm install --platform=linux --arch=arm64v8 sharp`
+
 ### With Decklink Support
 
 Before building you'll need to set the build argument variable `DECKLINK_SUPPORT` to `true`.
