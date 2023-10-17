@@ -18,12 +18,16 @@ const process = async (options) => {
 
         const command = ffmpeg({ logger: logger })
             .addInput("smptehdbars=rate=25:size=1920x1080")
-            .inputOptions(["-re", "-f lavfi"])
+            .inputOptions(["-re", repeat, "-f lavfi"])
             .addInput("sine=frequency=1000:sample_rate=48000")
             .inputOptions(["-f lavfi"])
             .videoCodec("libx264")
             .videoBitrate(options.bitrate)
-            .output(`srt://${options.address}:${options.port}?pkt_size=1316&latency=${options?.latency | 250}`)
+            .output(
+                `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize | 1316}&latency=${
+                    options?.latency | 250
+                }`
+            )
             .outputOptions(["-preset veryfast", "-f mpegts"]);
 
         if (Array.isArray(filters)) {

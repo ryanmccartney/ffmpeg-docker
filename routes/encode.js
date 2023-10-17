@@ -2,12 +2,15 @@
 
 const router = require("express").Router();
 const hashResponse = require("@utils/hash-response");
+const encodeFileUdp = require("@services/encode-file-udp");
 const encodeFileSrt = require("@services/encode-file-srt");
+const encodeFileRtmp = require("@services/encode-file-rtmp");
+const encodeBarsRtmp = require("@services/encode-bars-rtmp");
+const encodeBarsUdp = require("@services/encode-bars-udp");
 const encodeBarsSrt = require("@services/encode-bars-srt");
-const encodeRtmpFile = require("@services/encode-file-rtmp");
-const encodeRtmpBars = require("@services/encode-bars-rtmp");
 const encodeDecklinkSrt = require("@services/encode-decklink-srt");
 const encodeDecklinkRtmp = require("@services/encode-decklink-rtmp");
+const encodeDecklinkHls = require("@services/encode-decklink-hls");
 
 /**
  * @swagger
@@ -74,6 +77,23 @@ router.get("/file/srt", async (req, res, next) => {
 
 /**
  * @swagger
+ * /encode/file/udp:
+ *    get:
+ *      description: UDP encode a file.
+ *      tags: [encode]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/file/udp", async (req, res, next) => {
+    const response = await encodeFileUdp(req.body);
+    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+});
+
+/**
+ * @swagger
  * /encode/file/rtmp:
  *    get:
  *      description: RTMP encode a file.
@@ -85,7 +105,7 @@ router.get("/file/srt", async (req, res, next) => {
  *          description: Success
  */
 router.get("/file/rtmp", async (req, res, next) => {
-    const response = await encodeRtmpFile(req.body);
+    const response = await encodeFileRtmp(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
@@ -118,8 +138,25 @@ router.get("/bars/srt", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/rtmp/bars", async (req, res, next) => {
-    const response = await encodeRtmpBars(req.body);
+router.get("/bars/rtmp", async (req, res, next) => {
+    const response = await encodeBarsRtmp(req.body);
+    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+});
+
+/**
+ * @swagger
+ * /encode/bars/udp:
+ *    get:
+ *      description: UDP encode test bars.
+ *      tags: [encode]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/bars/udp", async (req, res, next) => {
+    const response = await encodeBarsUdp(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
@@ -156,4 +193,22 @@ router.get("/decklink/rtmp", async (req, res, next) => {
     const response = await encodeDecklinkRtmp(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
+
+/**
+ * @swagger
+ * /encode/decklink/hls:
+ *    get:
+ *      description: Takes Decklink input in SDI and encodes it as HLS.
+ *      tags: [encode]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/decklink/hls", async (req, res, next) => {
+    const response = await encodeDecklinkHls(req.body);
+    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+});
+
 module.exports = router;

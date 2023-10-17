@@ -163,16 +163,6 @@ paths:
       responses:
         "200":
           description: Success
-  /decklink/:cardIndex/hls:
-    get:
-      description: Converts the input of a decklink card index to hls
-      tags:
-        - decklink
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
   /decklink/:cardIndex/bars:
     get:
       description: Sends some SMPTE bars to a decklink output
@@ -291,6 +281,16 @@ paths:
       responses:
         "200":
           description: Success
+  /encode/file/udp:
+    get:
+      description: UDP encode a file.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
   /encode/file/rtmp:
     get:
       description: RTMP encode a file.
@@ -321,6 +321,16 @@ paths:
       responses:
         "200":
           description: Success
+  /encode/bars/udp:
+    get:
+      description: UDP encode test bars.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
   /encode/decklink/srt:
     get:
       description: Takes Decklink input in SDI and encodes it as SRT.
@@ -334,6 +344,16 @@ paths:
   /encode/decklink/rtmp:
     get:
       description: Takes Decklink input in SDI and encodes it as RTMP.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /encode/decklink/hls:
+    get:
+      description: Takes Decklink input in SDI and encodes it as HLS.
       tags:
         - encode
       produces:

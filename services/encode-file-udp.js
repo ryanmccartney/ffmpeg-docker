@@ -9,6 +9,11 @@ const jobManager = require("@utils/jobManager");
 
 const process = async (options) => {
     const response = { options: options };
+    let repeat = "-stream_loop 0";
+    if (options.repeat) {
+        repeat = `-stream_loop -1`;
+    }
+
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
@@ -22,8 +27,8 @@ const process = async (options) => {
             .videoCodec("libx264")
             .videoBitrate(options.bitrate)
             .output(
-                `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize | 1316}&latency=${
-                    options?.latency | 250
+                `udp://${options.address}:${options.port}?pkt_size=${options?.packetSize | 1316}&buffer_size=${
+                    options?.buffer | 65535
                 }`
             )
             .outputOptions(["-preset veryfast", "-f mpegts"]);

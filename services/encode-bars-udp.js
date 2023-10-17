@@ -17,13 +17,15 @@ const process = async (options) => {
         const filters = await filterCombine(await filterText(options));
 
         const command = ffmpeg({ logger: logger })
-            .input(path.join(__dirname, "..", "data", "media", options.filename))
-            .inputOptions(["-protocol_whitelist", "file,udp,rtp", "-stats", "-re"])
+            .addInput(`${options.bars || "smptehdbars"}=rate=25:size=1920x1080`)
+            .inputOptions(["-re", "-f lavfi"])
+            .addInput(`sine=frequency=${options.frequency | 1000}:sample_rate=48000`)
+            .inputOptions(["-f lavfi"])
             .videoCodec("libx264")
             .videoBitrate(options.bitrate)
             .output(
-                `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize | 1316}&latency=${
-                    options?.latency | 250
+                `udp://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&buffer_size=${
+                    options?.buffer || 65535
                 }`
             )
             .outputOptions(["-preset veryfast", "-f mpegts"]);
@@ -43,11 +45,6 @@ const process = async (options) => {
             return { options: options, command: commandString };
         });
 
-        command.on("progress", (progress) => {
-            logger.info("ffmpeg-progress: " + Math.floor(progress.percent) + "% done");
-            jobManager.update(job?.jobId, { progress: Math.floor(progress.percent) });
-        });
-
         command.on("stderr", function (stderrLine) {
             logger.info("ffmpeg: " + stderrLine);
         });
@@ -55,6 +52,7 @@ const process = async (options) => {
         command.on("error", function (error) {
             logger.error(error);
             jobManager.end(job?.jobId, false);
+
             //If IO Error (Network error, restart)
             if (error.toString().includes("Input/output error") || error.toString().includes("Conversion failed!")) {
                 logger.info("Restarting due to IO error");

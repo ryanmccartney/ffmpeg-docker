@@ -134,20 +134,6 @@ Record the input of a decklink card index to file
 | ---- | ----------- |
 | 200  | Success     |
 
-### /decklink/:cardIndex/hls
-
-#### GET
-
-##### Description
-
-Converts the input of a decklink card index to hls
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
 ### /decklink/:cardIndex/bars
 
 #### GET
@@ -264,6 +250,20 @@ SRT encode a file.
 | ---- | ----------- |
 | 200  | Success     |
 
+### /encode/file/udp
+
+#### GET
+
+##### Description
+
+UDP encode a file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
 ### /encode/file/rtmp
 
 #### GET
@@ -306,6 +306,20 @@ RTMP encode test bars.
 | ---- | ----------- |
 | 200  | Success     |
 
+### /encode/bars/udp
+
+#### GET
+
+##### Description
+
+UDP encode test bars.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
 ### /encode/decklink/srt
 
 #### GET
@@ -327,6 +341,20 @@ Takes Decklink input in SDI and encodes it as SRT.
 ##### Description
 
 Takes Decklink input in SDI and encodes it as RTMP.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /encode/decklink/hls
+
+#### GET
+
+##### Description
+
+Takes Decklink input in SDI and encodes it as HLS.
 
 ##### Responses
 
