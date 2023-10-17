@@ -7,7 +7,8 @@ const filterCombine = require("@services/filter-combine");
 const filterText = require("@services/filter-text");
 const jobManager = require("@utils/jobManager");
 
-module.exports = async (options) => {
+const process = async (options) => {
+    const response = { options: options };
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
@@ -34,12 +35,13 @@ module.exports = async (options) => {
 
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
-            jobManager.update(job?.jobId, command);
+            jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
             return { options: options, command: commandString };
         });
 
         command.on("progress", (progress) => {
             logger.info("ffmpeg-progress: " + Math.floor(progress.percent) + "% done");
+            jobManager.update(job?.jobId, { progress: Math.floor(progress.percent) });
         });
 
         command.on("stderr", function (stderrLine) {
@@ -49,7 +51,6 @@ module.exports = async (options) => {
         command.on("error", function (error) {
             logger.error(error);
             jobManager.end(job?.jobId, false);
-
             //If IO Error (Network error, restart)
             if (error.toString().includes("Input/output error") || error.toString().includes("Conversion failed!")) {
                 logger.info("Restarting due to IO error");
@@ -66,3 +67,5 @@ module.exports = async (options) => {
     response.job = jobManager.get(`${options.address}:${options.port}`);
     return response;
 };
+
+module.exports = process;

@@ -1,9 +1,3 @@
----
-layout: page
-title: Endpoints
-parent: Usage
-nav_order: 1
----
 # FFmpeg Docker API
 Common FFMPEG fucntions from a RESTful API
 
@@ -138,19 +132,6 @@ Converts the input of a decklink card index to hls
 | ---- | ----------- |
 | 200 | Success |
 
-### /decklink/:cardIndex:/srt
-
-#### GET
-##### Description
-
-Converts the input of a decklink card index to hls
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200 | Success |
-
 ### /decklink/:cardIndex/bars
 
 #### GET
@@ -231,7 +212,7 @@ Takes an SRT input and turns it into a file.
 | 200 | Success |
 
 ---
-### /encode/srt/file
+### /encode/file/srt
 
 #### GET
 ##### Description
@@ -244,7 +225,7 @@ SRT encode a file.
 | ---- | ----------- |
 | 200 | Success |
 
-### /encode/rtmp/file
+### /encode/file/rtmp
 
 #### GET
 ##### Description
@@ -257,7 +238,7 @@ RTMP encode a file.
 | ---- | ----------- |
 | 200 | Success |
 
-### /encode/srt/bars
+### /encode/bars/srt
 
 #### GET
 ##### Description
@@ -270,12 +251,38 @@ SRT encode test bars.
 | ---- | ----------- |
 | 200 | Success |
 
-### /encode/rtmp/bars
+### /encode/bars/rtmp
 
 #### GET
 ##### Description
 
 RTMP encode test bars.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /encode/decklink/srt
+
+#### GET
+##### Description
+
+Takes Decklink input in SDI and encodes it as SRT.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /encode/decklink/rtmp
+
+#### GET
+##### Description
+
+Takes Decklink input in SDI and encodes it as RTMP.
 
 ##### Responses
 
@@ -391,6 +398,45 @@ Set NTP server and sync.
 ##### Description
 
 Get server time.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /system/job/kill/:jobId
+
+#### GET
+##### Description
+
+Kills a job by ID
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /system/job/all
+
+#### GET
+##### Description
+
+Gets all jobs that are running
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200 | Success |
+
+### /system/job/:jobId
+
+#### GET
+##### Description
+
+Gets a job by ID
 
 ##### Responses
 

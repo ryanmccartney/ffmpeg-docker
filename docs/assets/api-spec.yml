@@ -173,16 +173,6 @@ paths:
       responses:
         "200":
           description: Success
-  /decklink/:cardIndex:/srt:
-    get:
-      description: Converts the input of a decklink card index to hls
-      tags:
-        - decklink
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
   /decklink/:cardIndex/bars:
     get:
       description: Sends some SMPTE bars to a decklink output
@@ -243,7 +233,7 @@ paths:
       responses:
         "200":
           description: Success
-  /encode/srt/file:
+  /encode/file/srt:
     get:
       description: SRT encode a file.
       tags:
@@ -253,7 +243,7 @@ paths:
       responses:
         "200":
           description: Success
-  /encode/rtmp/file:
+  /encode/file/rtmp:
     get:
       description: RTMP encode a file.
       tags:
@@ -263,7 +253,7 @@ paths:
       responses:
         "200":
           description: Success
-  /encode/srt/bars:
+  /encode/bars/srt:
     get:
       description: SRT encode test bars.
       tags:
@@ -273,9 +263,29 @@ paths:
       responses:
         "200":
           description: Success
-  /encode/rtmp/bars:
+  /encode/bars/rtmp:
     get:
       description: RTMP encode test bars.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /encode/decklink/srt:
+    get:
+      description: Takes Decklink input in SDI and encodes it as SRT.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /encode/decklink/rtmp:
+    get:
+      description: Takes Decklink input in SDI and encodes it as RTMP.
       tags:
         - encode
       produces:
@@ -364,6 +374,36 @@ paths:
           description: Success
     get:
       description: Get server time.
+      tags:
+        - system
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /system/job/kill/:jobId:
+    get:
+      description: Kills a job by ID
+      tags:
+        - system
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /system/job/all:
+    get:
+      description: Gets all jobs that are running
+      tags:
+        - system
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /system/job/:jobId:
+    get:
+      description: Gets a job by ID
       tags:
         - system
       produces:

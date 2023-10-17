@@ -13,7 +13,6 @@ const getDecklinkInfo = require("@services/decklink-info-get");
 const thumbnailGet = require("@services/thumbnail-get");
 const inputDecklinkFile = require("@services/input-decklink-file");
 const inputDecklinkHls = require("@services/input-decklink-hls");
-const inputDecklinkSrt = require("@services/input-decklink-srt");
 const inputDecklinkThumbnail = require("@services/input-decklink-thumbnail");
 
 /**
@@ -63,7 +62,7 @@ router.get("/:cardIndex", async (req, res, next) => {
  *          description: Success
  */
 router.post("/:cardIndex", async (req, res, next) => {
-    const response = await setDecklinkConfig(req.params.cardIndex,req.body);
+    const response = await setDecklinkConfig(req.params.cardIndex, req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
@@ -111,7 +110,7 @@ router.post("/:cardIndex", async (req, res, next) => {
  *          description: Success
  */
 router.get("/:cardIndex/file", async (req, res, next) => {
-    const response = await outputDecklinkFile(req.params.cardIndex,req.body);
+    const response = await outputDecklinkFile(req.params.cardIndex, req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
@@ -159,7 +158,7 @@ router.get("/:cardIndex/file", async (req, res, next) => {
  *          description: Success
  */
 router.get("/:cardIndex/audio", async (req, res, next) => {
-    const response = await outputDecklinkAudio(req.params.cardIndex,req.body);
+    const response = await outputDecklinkAudio(req.params.cardIndex, req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
@@ -202,7 +201,7 @@ router.get("/:cardIndex/audio", async (req, res, next) => {
  *          description: Success
  */
 router.get("/:cardIndex/record", async (req, res, next) => {
-    const response = await inputDecklinkFile(req.params.cardIndex,req.body);
+    const response = await inputDecklinkFile(req.params.cardIndex, req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
@@ -219,24 +218,7 @@ router.get("/:cardIndex/record", async (req, res, next) => {
  *          description: Success
  */
 router.get("/:cardIndex/hls", async (req, res, next) => {
-    const response = await inputDecklinkHls(req.params.cardIndex,req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
-
-/**
- * @swagger
- * /decklink/:cardIndex:/srt:
- *    get:
- *      description: Converts the input of a decklink card index to hls
- *      tags: [decklink]
- *      produces:
- *        - application/json
- *      responses:
- *        '200':
- *          description: Success
- */
-router.get("/:cardIndex/srt", async (req, res, next) => {
-    const response = await inputDecklinkSrt(req.params.cardIndex,req.body);
+    const response = await inputDecklinkHls(req.params.cardIndex, req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
@@ -253,7 +235,7 @@ router.get("/:cardIndex/srt", async (req, res, next) => {
  *          description: Success
  */
 router.get("/:cardIndex/bars", async (req, res, next) => {
-    const response = await outputDecklinkBars(req.params.cardIndex,req.body);
+    const response = await outputDecklinkBars(req.params.cardIndex, req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
@@ -270,18 +252,17 @@ router.get("/:cardIndex/bars", async (req, res, next) => {
  *          description: Success
  */
 router.get("/:cardIndex/thumbnail", async (req, res, next) => {
-    const response = await thumbnailGet(`./data/decklink-thumbnail-${req.params.cardIndex}.png`,req.body.resize);
+    const response = await thumbnailGet(`./data/decklink-thumbnail-${req.params.cardIndex}.png`, req.body.resize);
 
-    const base64Data = response.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
-    const img = Buffer.from(base64Data, 'base64');
+    const base64Data = response.replace(/^data:image\/(png|jpeg|jpg);base64,/, "");
+    const img = Buffer.from(base64Data, "base64");
 
-    if(req.body.raw){
+    if (req.body.raw) {
         hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-    }
-    else{
+    } else {
         res.writeHead(200, {
-            'Content-Type': 'image/png',
-            'Content-Length': img.length
+            "Content-Type": "image/png",
+            "Content-Length": img.length,
         });
         res.end(img);
     }
@@ -300,7 +281,7 @@ router.get("/:cardIndex/thumbnail", async (req, res, next) => {
  *          description: Success
  */
 router.get("/:cardIndex/stop", async (req, res, next) => {
-    const response = await outputDecklinkStop(req.params.cardIndex,req.body);
+    const response = await outputDecklinkStop(req.params.cardIndex, req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
@@ -317,7 +298,7 @@ router.get("/:cardIndex/stop", async (req, res, next) => {
  *          description: Success
  */
 router.get("/:cardIndex/pause", async (req, res, next) => {
-    const response = await outputDecklinkPause(req.params.cardIndex,req.body);
+    const response = await outputDecklinkPause(req.params.cardIndex, req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 

@@ -28,7 +28,7 @@ const update = (hash, update) => {
 };
 
 const end = (hash, kill = true) => {
-    if (jobs[hash] && jobs[hash].pid) {
+    if (jobs[hash]) {
         const job = jobs[hash];
         if (kill) {
             process.kill(jobs[hash].pid, "SIGINT");
