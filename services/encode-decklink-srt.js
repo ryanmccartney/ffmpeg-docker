@@ -25,7 +25,7 @@ module.exports = async (options) => {
         .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats", "-re"])
         .videoCodec("libx264")
         .videoBitrate(options.bitrate)
-        .output(`srt://${options.address}:${options.port}?pkt_size=1316&latency=${options.latency}`)
+        .output(`srt://${options.address}:${options.port}?pkt_size=1316&latency=${options?.latency | 250}`)
         .outputOptions(["-preset ultrafast", "-f mpegts", "-protocol_whitelist", "srt,udp,rtp", "-stats"]);
 
     if (Array.isArray(filters)) {
