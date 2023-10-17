@@ -16,12 +16,12 @@ const process = async (options) => {
         const rtmpAddress = getRtmpAddress(options.address, options.key);
         const job = jobManager.start(rtmpAddress);
 
-        const filters = filterCombine(filterText(options));
+        const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
-            .addInput("smptehdbars=rate=25:size=1920x1080")
+            .addInput(`${options.bars || "smptehdbars"}=rate=25:size=1920x1080`)
             .inputOptions(["-re", "-f lavfi"])
-            .addInput("sine=frequency=1000:sample_rate=48000")
+            .addInput(`sine=frequency=${options.frequency || 1000}:sample_rate=48000`)
             .inputOptions(["-f lavfi"])
             .videoCodec("libx264")
             .videoBitrate(options.bitrate)

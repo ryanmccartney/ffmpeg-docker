@@ -8,7 +8,7 @@ const start = (output) => {
     if (queueSize < maxQueueSize) {
         const hash = crypto.createHash("md5").update(output).digest("hex");
         if (!jobs[hash]) {
-            jobs[hash] = { jobId: hash, started: new Date() };
+            jobs[hash] = { jobNumber: Object.keys(jobs).length + 1, jobId: hash, started: new Date() };
             return jobs[hash];
         } else {
             throw new Error("Job is already running.");

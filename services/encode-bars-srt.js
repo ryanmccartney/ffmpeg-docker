@@ -14,18 +14,18 @@ const process = async (options) => {
     try {
         const job = jobManager.start(`${options.address}:${options.port}`);
 
-        const filters = await filterCombine(await filterText(options));
+        const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
-            .addInput("smptehdbars=rate=25:size=1920x1080")
-            .inputOptions(["-re", repeat, "-f lavfi"])
-            .addInput("sine=frequency=1000:sample_rate=48000")
+            .addInput(`${options.bars || "smptehdbars"}=rate=25:size=1920x1080`)
+            .inputOptions(["-re", "-f lavfi"])
+            .addInput(`sine=frequency=${options.frequency || 1000}:sample_rate=48000`)
             .inputOptions(["-f lavfi"])
             .videoCodec("libx264")
             .videoBitrate(options.bitrate)
             .output(
-                `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize | 1316}&latency=${
-                    options?.latency | 250
+                `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&latency=${
+                    options?.latency || 250
                 }`
             )
             .outputOptions(["-preset veryfast", "-f mpegts"]);

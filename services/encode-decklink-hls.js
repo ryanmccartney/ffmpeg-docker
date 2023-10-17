@@ -15,7 +15,7 @@ module.exports = async (options) => {
         const job = jobManager.start(rtmpAddress);
         ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
-        const filters = await filterCombine(await filterText(options));
+        const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
             .input(options.cardName)

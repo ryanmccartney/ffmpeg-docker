@@ -9,16 +9,21 @@ const jobManager = require("@utils/jobManager");
 
 const process = async (options) => {
     const response = { options: options };
+    let repeat = "-stream_loop 0";
+    if (options.repeat) {
+        repeat = `-stream_loop -1`;
+    }
+
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
         const job = jobManager.start(`${options.address}:${options.port}`);
 
-        const filters = await filterCombine(await filterText(options));
+        const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
             .input(path.join(__dirname, "..", "data", "media", options.filename))
-            .inputOptions(["-protocol_whitelist", "file,udp,rtp", "-stats", "-re"])
+            .inputOptions([repeat, "-protocol_whitelist", "file,udp,rtp", "-stats", "-re"])
             .videoCodec("libx264")
             .videoBitrate(options.bitrate)
             .output(

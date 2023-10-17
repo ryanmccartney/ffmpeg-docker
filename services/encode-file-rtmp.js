@@ -10,17 +10,22 @@ const getRtmpAddress = require("@utils/rtmp-address");
 
 const process = async (options) => {
     const response = { options: options };
+    let repeat = "-stream_loop 0";
+    if (options.repeat) {
+        repeat = `-stream_loop -1`;
+    }
+
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
         const rtmpAddress = getRtmpAddress(options.address, options.key);
         const job = jobManager.start(rtmpAddress);
 
-        const filters = await filterCombine(await filterText(options));
+        const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
             .input(path.join(__dirname, "..", "data", "media", options.filename))
-            .inputOptions(["-re"])
+            .inputOptions([repeat, "-protocol_whitelist", "file,udp,rtp", "-stats", "-re"])
             .videoCodec("libx264")
             .videoBitrate(options.bitrate)
             .videoFilters(filterCombine(filterText(options)))

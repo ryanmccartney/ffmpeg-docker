@@ -12,7 +12,7 @@ module.exports = async (options) => {
     let status = true;
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
-    const filters = await filterCombine(await filterText(options));
+    const filters = await filterCombine(await filterText({ ...options, ...job }));
 
     if (command) {
         logger.info("Killing already running FFMPEG process");

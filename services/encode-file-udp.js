@@ -19,16 +19,16 @@ const process = async (options) => {
     try {
         const job = jobManager.start(`${options.address}:${options.port}`);
 
-        const filters = await filterCombine(await filterText(options));
+        const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
             .input(path.join(__dirname, "..", "data", "media", options.filename))
-            .inputOptions(["-protocol_whitelist", "file,udp,rtp", "-stats", "-re"])
+            .inputOptions([repeat, "-protocol_whitelist", "file,udp,rtp", "-stats", "-re"])
             .videoCodec("libx264")
             .videoBitrate(options.bitrate)
             .output(
-                `udp://${options.address}:${options.port}?pkt_size=${options?.packetSize | 1316}&buffer_size=${
-                    options?.buffer | 65535
+                `udp://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&buffer_size=${
+                    options?.buffer || 65535
                 }`
             )
             .outputOptions(["-preset veryfast", "-f mpegts"]);

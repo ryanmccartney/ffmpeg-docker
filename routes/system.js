@@ -6,6 +6,7 @@ const setTime = require("@services/system-time-set");
 const jobKill = require("@services/system-job-kill");
 const jobGet = require("@services/system-job-get");
 const jobGetAll = require("@services/system-job-getall");
+const jobKillAll = require("@services/system-job-killall");
 const path = require("path");
 
 /**
@@ -64,6 +65,23 @@ router.get("/time", async (req, res, next) => {
         },
     };
     hashResponse(res, req, response);
+});
+
+/**
+ * @swagger
+ * /system/job/kill/all:
+ *    get:
+ *      description: Kill all running jobs
+ *      tags: [system]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/job/kill/all", async (req, res, next) => {
+    const response = await jobKillAll();
+    hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
 });
 
 /**
