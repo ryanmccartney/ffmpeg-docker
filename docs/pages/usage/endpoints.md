@@ -244,6 +244,20 @@ Takes an SRT input and turns it into a file.
 
 SRT encode a file.
 
+##### Parameters
+
+| Name     | Located in | Description                                                                                              | Required | Schema  |
+| -------- | ---------- | -------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| filename | formData   | Filename and extension of media to playout. E.g - test.mp4. Relative to ./data/media/                    | Yes      | string  |
+| address  | formData   | Address to direct stream towards                                                                         | Yes      | string  |
+| port     | formData   | Port to direct stream towards                                                                            | Yes      | number  |
+| latency  | formData   | SRT latency in milliseconds, default is 250ms                                                            | No       | number  |
+| bitrate  | formData   | The bitrate of the encoded stream in kilobits per second                                                 | Yes      | number  |
+| font     | formData   | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | No       | string  |
+| offset   | formData   | Offset for time in hours. E.g 3, -3                                                                      | No       | number  |
+| timecode | formData   | Show the timecode line - true,false                                                                      | No       | boolean |
+| repeat   | formData   | Decides whether the media loops or not                                                                   | No       | boolean |
+
 ##### Responses
 
 | Code | Description |
