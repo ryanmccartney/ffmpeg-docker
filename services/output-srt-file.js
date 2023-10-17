@@ -44,12 +44,17 @@ module.exports = async (options) => {
 
         command.on("stderr", function (stderrLine) {
             logger.info("ffmpeg: " + stderrLine);
-            jobManager.end(job?.jobId);
         });
 
         command.on("error", function (error) {
             logger.error(error);
-            jobManager.end(job?.jobId);
+            jobManager.end(job?.jobId, false);
+
+            //If IO Error (Network error, restart)
+            if (error.toString().includes("Input/output error") || error.toString().includes("Conversion failed!")) {
+                logger.info("Restarting due to IO error");
+                process(options);
+            }
         });
 
         command.run();
