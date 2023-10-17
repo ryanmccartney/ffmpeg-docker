@@ -13,7 +13,8 @@ The image provides a RESTful API exposing a number of endpoints allowing you to 
 
 * `api/decklink`
 * `api/file`
-* `api/stream`
+* `api/encode/input/output`
+* `api/deocde/input/output`
 * `api/system`
 * `api/hls`
 

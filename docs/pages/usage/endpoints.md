@@ -1,4 +1,12 @@
+---
+layout: page
+title: Endpoints
+parent: Usage
+nav_order: 2
+---
+
 # FFmpeg Docker API
+
 Common FFMPEG fucntions from a RESTful API
 
 ## Version: 0.1.0
@@ -6,14 +14,16 @@ Common FFMPEG fucntions from a RESTful API
 **Contact information:**  
 Ryan McCarntney  
 <https://ryan.mccartney.info/ffmpeg-docker>  
-ryan@mccartney.info  
+ryan@mccartney.info
 
 **License:** [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
 ---
+
 ### /decklink
 
 #### GET
+
 ##### Description
 
 Gets the info about currently attached Decklink cards
@@ -22,11 +32,12 @@ Gets the info about currently attached Decklink cards
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /decklink/:cardIndex
 
 #### GET
+
 ##### Description
 
 Gets the config for an individual Decklink card
@@ -35,9 +46,10 @@ Gets the config for an individual Decklink card
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 #### POST
+
 ##### Description
 
 Sets the config for an individual Decklink card
@@ -46,82 +58,86 @@ Sets the config for an individual Decklink card
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /decklink/:cardIndex/file
 
 #### GET
+
 ##### Description
 
 Sends a file to a decklink output
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ------ |
-| filename | formData | Filename and extension of media to playout. E.g - test.mp4 | Yes | string |
-| cardName | formData | The name of the BMD Decklink cards. E.g - "DeckLink SDI" | Yes | string |
-| font | formData | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes | string |
-| offset | formData | Offset for time in hours. E.g 3, -3 | No | number |
-| timecode | formData | Show the timecode line - true,false | No | boolean |
-| repeat | formData | Decides whether the media loops or not | No | boolean |
+| Name     | Located in | Description                                                                                              | Required | Schema  |
+| -------- | ---------- | -------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| filename | formData   | Filename and extension of media to playout. E.g - test.mp4                                               | Yes      | string  |
+| cardName | formData   | The name of the BMD Decklink cards. E.g - "DeckLink SDI"                                                 | Yes      | string  |
+| font     | formData   | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes      | string  |
+| offset   | formData   | Offset for time in hours. E.g 3, -3                                                                      | No       | number  |
+| timecode | formData   | Show the timecode line - true,false                                                                      | No       | boolean |
+| repeat   | formData   | Decides whether the media loops or not                                                                   | No       | boolean |
 
 ##### Responses
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /decklink/:cardIndex/audio
 
 #### GET
+
 ##### Description
 
 Sends an audio file to a decklink output
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ------ |
-| filename | formData | Filename and extension of media to playout. E.g - test.mp4 | Yes | string |
-| cardName | formData | The name of the BMD Decklink cards. E.g - "DeckLink SDI" | Yes | string |
-| font | formData | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes | string |
-| offset | formData | Offset for time in hours. E.g 3, -3 | No | number |
-| timecode | formData | Show the timecode line - true,false | No | boolean |
-| repeat | formData | Decides whether the media loops or not | No | boolean |
+| Name     | Located in | Description                                                                                              | Required | Schema  |
+| -------- | ---------- | -------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| filename | formData   | Filename and extension of media to playout. E.g - test.mp4                                               | Yes      | string  |
+| cardName | formData   | The name of the BMD Decklink cards. E.g - "DeckLink SDI"                                                 | Yes      | string  |
+| font     | formData   | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes      | string  |
+| offset   | formData   | Offset for time in hours. E.g 3, -3                                                                      | No       | number  |
+| timecode | formData   | Show the timecode line - true,false                                                                      | No       | boolean |
+| repeat   | formData   | Decides whether the media loops or not                                                                   | No       | boolean |
 
 ##### Responses
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /decklink/:cardIndex/record
 
 #### GET
+
 ##### Description
 
 Record the input of a decklink card index to file
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ------ |
-| cardName | formData | The name of the BMD Decklink cards. E.g - "DeckLink SDI" | Yes | string |
-| font | formData | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes | string |
-| offset | formData | Offset for time in hours. E.g 3, -3 | No | number |
-| timecode | formData | Show the timecode line - true,false | No | boolean |
-| repeat | formData | Decides whether the media loops or not | No | boolean |
+| Name     | Located in | Description                                                                                              | Required | Schema  |
+| -------- | ---------- | -------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| cardName | formData   | The name of the BMD Decklink cards. E.g - "DeckLink SDI"                                                 | Yes      | string  |
+| font     | formData   | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes      | string  |
+| offset   | formData   | Offset for time in hours. E.g 3, -3                                                                      | No       | number  |
+| timecode | formData   | Show the timecode line - true,false                                                                      | No       | boolean |
+| repeat   | formData   | Decides whether the media loops or not                                                                   | No       | boolean |
 
 ##### Responses
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /decklink/:cardIndex/hls
 
 #### GET
+
 ##### Description
 
 Converts the input of a decklink card index to hls
@@ -130,11 +146,12 @@ Converts the input of a decklink card index to hls
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /decklink/:cardIndex/bars
 
 #### GET
+
 ##### Description
 
 Sends some SMPTE bars to a decklink output
@@ -143,11 +160,12 @@ Sends some SMPTE bars to a decklink output
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /decklink/:cardIndex/thumbnail
 
 #### GET
+
 ##### Description
 
 Get thumbnail of the decklink output
@@ -156,11 +174,12 @@ Get thumbnail of the decklink output
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /decklink/:cardIndex/stop
 
 #### GET
+
 ##### Description
 
 Stops the decklink output on a particular index
@@ -169,11 +188,12 @@ Stops the decklink output on a particular index
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /decklink/:cardIndex/pause
 
 #### GET
+
 ##### Description
 
 Pauses the decklink output on a particular index
@@ -182,12 +202,14 @@ Pauses the decklink output on a particular index
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ---
+
 ### /decode/srt/file
 
 #### GET
+
 ##### Description
 
 Takes an SRT input and turns it into a file.
@@ -196,11 +218,12 @@ Takes an SRT input and turns it into a file.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /decode/srt/decklink
 
 #### GET
+
 ##### Description
 
 Takes an SRT input and turns it into a file.
@@ -209,12 +232,14 @@ Takes an SRT input and turns it into a file.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ---
+
 ### /encode/file/srt
 
 #### GET
+
 ##### Description
 
 SRT encode a file.
@@ -223,11 +248,12 @@ SRT encode a file.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /encode/file/rtmp
 
 #### GET
+
 ##### Description
 
 RTMP encode a file.
@@ -236,11 +262,12 @@ RTMP encode a file.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /encode/bars/srt
 
 #### GET
+
 ##### Description
 
 SRT encode test bars.
@@ -249,11 +276,12 @@ SRT encode test bars.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /encode/bars/rtmp
 
 #### GET
+
 ##### Description
 
 RTMP encode test bars.
@@ -262,11 +290,12 @@ RTMP encode test bars.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /encode/decklink/srt
 
 #### GET
+
 ##### Description
 
 Takes Decklink input in SDI and encodes it as SRT.
@@ -275,11 +304,12 @@ Takes Decklink input in SDI and encodes it as SRT.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /encode/decklink/rtmp
 
 #### GET
+
 ##### Description
 
 Takes Decklink input in SDI and encodes it as RTMP.
@@ -288,12 +318,14 @@ Takes Decklink input in SDI and encodes it as RTMP.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ---
+
 ### /file/metadata
 
 #### GET
+
 ##### Description
 
 Get the metadata in a media file.
@@ -302,11 +334,12 @@ Get the metadata in a media file.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /file/bars
 
 #### GET
+
 ##### Description
 
 Generate custom ident bars.
@@ -315,11 +348,12 @@ Generate custom ident bars.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /file/download
 
 #### GET
+
 ##### Description
 
 Download file by name.
@@ -328,11 +362,12 @@ Download file by name.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /playlist/:playlist
 
 #### GET
+
 ##### Description
 
 Get all the items in a playlist
@@ -341,9 +376,10 @@ Get all the items in a playlist
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 #### POST
+
 ##### Description
 
 Set all the items in a playlist
@@ -352,11 +388,12 @@ Set all the items in a playlist
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /playlist/:playlist/add
 
 #### GET
+
 ##### Description
 
 Add a single file to the playlist.
@@ -365,12 +402,14 @@ Add a single file to the playlist.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ---
+
 ### /system/hello
 
 #### GET
+
 ##### Description
 
 Test route, API greets you in response.
@@ -379,11 +418,12 @@ Test route, API greets you in response.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /system/time
 
 #### POST
+
 ##### Description
 
 Set NTP server and sync.
@@ -392,9 +432,10 @@ Set NTP server and sync.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 #### GET
+
 ##### Description
 
 Get server time.
@@ -403,11 +444,12 @@ Get server time.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /system/job/kill/:jobId
 
 #### GET
+
 ##### Description
 
 Kills a job by ID
@@ -416,11 +458,12 @@ Kills a job by ID
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /system/job/all
 
 #### GET
+
 ##### Description
 
 Gets all jobs that are running
@@ -429,11 +472,12 @@ Gets all jobs that are running
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /system/job/:jobId
 
 #### GET
+
 ##### Description
 
 Gets a job by ID
@@ -442,11 +486,12 @@ Gets a job by ID
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /system/clock
 
 #### GET
+
 ##### Description
 
 An HTML page with a live clock showing server time - suitable for latency measurements
@@ -455,12 +500,14 @@ An HTML page with a live clock showing server time - suitable for latency measur
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ---
+
 ### /vmaf/models
 
 #### GET
+
 ##### Description
 
 Returns a list of VMAF models.
@@ -469,11 +516,12 @@ Returns a list of VMAF models.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /vmaf/test
 
 #### GET
+
 ##### Description
 
 Run a VMAF test specifing a reference file and test file.
@@ -482,11 +530,12 @@ Run a VMAF test specifing a reference file and test file.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /vmaf/results/json
 
 #### GET
+
 ##### Description
 
 Get a VMAF results file as a JSON object.
@@ -495,11 +544,12 @@ Get a VMAF results file as a JSON object.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /vmaf/results/csv
 
 #### GET
+
 ##### Description
 
 Get a VMAF results file as a CSV object.
@@ -508,11 +558,12 @@ Get a VMAF results file as a CSV object.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /vmaf/results/download/csv
 
 #### GET
+
 ##### Description
 
 Get a VMAF results file as a CSV file.
@@ -521,11 +572,12 @@ Get a VMAF results file as a CSV file.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
 
 ### /vmaf/results/download/json
 
 #### GET
+
 ##### Description
 
 Get a VMAF results file in a downloadable JSON file.
@@ -534,4 +586,4 @@ Get a VMAF results file in a downloadable JSON file.
 
 | Code | Description |
 | ---- | ----------- |
-| 200 | Success |
+| 200  | Success     |
