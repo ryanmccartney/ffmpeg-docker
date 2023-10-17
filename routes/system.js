@@ -3,7 +3,10 @@
 const router = require("express").Router();
 const hashResponse = require("@utils/hash-response");
 const setTime = require("@services/system-time-set");
-const path = require('path');
+const jobKill = require("@services/system-job-kill");
+const jobGet = require("@services/system-job-get");
+const jobGetAll = require("@services/system-job-getall");
+const path = require("path");
 
 /**
  * @swagger
@@ -35,7 +38,7 @@ router.get("/hello", (req, res, next) => {
  *          description: Success
  */
 router.post("/time", async (req, res, next) => {
-    const response = await setTime(req.body.server)
+    const response = await setTime(req.body.server);
     hashResponse(res, req, response);
 });
 
@@ -54,13 +57,64 @@ router.post("/time", async (req, res, next) => {
 router.get("/time", async (req, res, next) => {
     const dateTimeObject = new Date();
     const response = {
-        data:{
-            datatime:dateTimeObject,
-            date:dateTimeObject.toDateString(),
-            time:dateTimeObject.toTimeString()
-        }
+        data: {
+            datatime: dateTimeObject,
+            date: dateTimeObject.toDateString(),
+            time: dateTimeObject.toTimeString(),
+        },
     };
     hashResponse(res, req, response);
+});
+
+/**
+ * @swagger
+ * /system/job/kill/:jobId:
+ *    get:
+ *      description: Kills a job by ID
+ *      tags: [system]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/job/kill/:jobId", async (req, res, next) => {
+    const response = await jobKill(req.params.jobId);
+    hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
+});
+
+/**
+ * @swagger
+ * /system/job/all:
+ *    get:
+ *      description: Gets all jobs that are running
+ *      tags: [system]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/job/all", async (req, res, next) => {
+    const response = await jobGetAll();
+    hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
+});
+
+/**
+ * @swagger
+ * /system/job/:jobId:
+ *    get:
+ *      description: Gets a job by ID
+ *      tags: [system]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/job/:jobId", async (req, res, next) => {
+    const response = await jobGet(req.params.jobId);
+    hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
 });
 
 /**
@@ -76,8 +130,7 @@ router.get("/time", async (req, res, next) => {
  *          description: Success
  */
 router.get("/clock", async (req, res, next) => {
-    res.sendFile(path.join(__dirname,"..","public","html","clock.html"));
+    res.sendFile(path.join(__dirname, "..", "public", "html", "clock.html"));
 });
-
 
 module.exports = router;

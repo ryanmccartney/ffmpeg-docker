@@ -5,6 +5,7 @@ const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
 const filterCombine = require("@services/filter-combine");
 const filterText = require("@services/filter-text");
+const jobManager = require("@utils/jobManager");
 
 const getRtmpAddress = (address, key) => {
     let fullAddress = `rtmp://${address}`;

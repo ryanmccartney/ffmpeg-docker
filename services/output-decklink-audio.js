@@ -7,6 +7,7 @@ const filterCombine = require("@services/filter-combine");
 const filterText = require("@services/filter-text");
 const filterQr = require("@services/filter-qr");
 const getMetadata = require("@services/metadata-get");
+const jobManager = require("@utils/jobManager");
 
 let command;
 

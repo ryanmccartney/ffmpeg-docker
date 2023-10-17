@@ -5,6 +5,7 @@ const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
 const filterCombine = require("@services/filter-combine");
 const filterText = require("@services/filter-text");
+const jobManager = require("@utils/jobManager");
 
 const getRtmpAddress = (address, key) => {
     let fullAddress = `rtmp://${address}`;
@@ -25,20 +26,21 @@ module.exports = async (options) => {
         .videoCodec("libx264")
         .videoBitrate(options.bitrate)
         .videoFilters(filterCombine(filterText(options)))
-        .outputOptions(["-r 4", "-update 1", path.resolve(`./data/rtmp-thumbnail-${options.address}.png`),])
+        .outputOptions(["-r 4", "-update 1", path.resolve(`./data/rtmp-thumbnail-${options.address}.png`)])
         .output(getRtmpAddress(options.address, options.key))
         .outputOptions(["-f flv"]);
 
-    if(Array.isArray(filters)){
-        command.videoFilters(filters)
+    if (Array.isArray(filters)) {
+        command.videoFilters(filters);
     }
-    
+
     command.on("end", () => {
         logger.info("Finished processing");
     });
 
     command.on("start", (commandString) => {
         logger.debug(`Spawned FFmpeg with command: ${commandString}`);
+        jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid });
         return { options: options, command: commandString };
     });
 

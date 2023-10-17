@@ -6,6 +6,7 @@ const path = require("path");
 const filterCombine = require("@services/filter-combine");
 const filterText = require("@services/filter-text");
 const filterQr = require("@services/filter-qr");
+const jobManager = require("@utils/jobManager");
 
 let command;
 
