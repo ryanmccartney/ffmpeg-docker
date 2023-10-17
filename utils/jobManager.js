@@ -1,4 +1,3 @@
-const EventEmitter = require("events");
 const crypto = require("crypto");
 
 let maxQueueSize = process.env.QUEUE_SZIE | 5;
@@ -28,10 +27,12 @@ const update = (hash, update) => {
     }
 };
 
-const end = (hash) => {
+const end = (hash, kill = true) => {
     if (jobs[hash] && jobs[hash].pid) {
         const job = jobs[hash];
-        process.kill(jobs[hash].pid, "SIGINT");
+        if (kill) {
+            process.kill(jobs[hash].pid, "SIGINT");
+        }
         job.ended = new Date();
         job.duration = job.ended - job.started;
         delete jobs[hash];
