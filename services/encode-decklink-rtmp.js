@@ -16,7 +16,7 @@ const getRtmpAddress = (address, key) => {
 
 let command;
 
-module.exports = async (cardIndex, options) => {
+module.exports = async (options) => {
     let status = true;
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
