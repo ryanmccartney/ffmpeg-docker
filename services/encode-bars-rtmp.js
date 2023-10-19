@@ -14,7 +14,7 @@ const process = async (options) => {
 
     try {
         const rtmpAddress = getRtmpAddress(options.address, options.key);
-        const job = jobManager.start(rtmpAddress);
+        const job = jobManager.start(rtmpAddress, `Encode: Bars to RTMP ${rtmpAddress}`, ["encode", "rtmp"]);
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 

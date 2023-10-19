@@ -12,7 +12,12 @@ module.exports = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(rtmpAddress);
+        const job = jobManager.start(options.cardName, `Encode: Decklink to HLS (${options?.streamName})`, [
+            "encode",
+            "hls",
+            "decklink",
+        ]);
+
         ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));

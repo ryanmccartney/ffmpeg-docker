@@ -3,82 +3,73 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
+const jobManager = require("@utils/jobManager");
 const filterCombine = require("@services/filter-combine");
 const filterText = require("@services/filter-text");
 
-let command;
-
-module.exports = async (options) => {
-    let status = true;
+const process = async (options) => {
+    const response = { options: options };
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
-    const filters = await filterCombine(await filterText({ ...options, ...job }));
+    try {
+        const filters = await filterCombine(await filterText({ ...options, ...job }));
 
-    if (command) {
-        logger.info("Killing already running FFMPEG process");
-        await command.kill();
-    }
-
-    command = ffmpeg({ logger: logger })
-        .input(options.cardName)
-        .inputFormat("decklink")
-        .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats", "-re"])
-        .output(
-            `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize | 1316}&latency=${
-                options?.latency | 250
-            }`
-        )
-        .outputOptions(["-preset ultrafast", "-f mpegts", "-protocol_whitelist", "srt,udp,rtp", "-stats"])
-        .videoCodec("libx264")
-        .videoBitrate(options.bitrate);
-
-    if (Array.isArray(filters)) {
-        command.videoFilters(filters);
-    }
-
-    if (options?.thumbnail) {
-        command
-            .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
-            .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+        const command = ffmpeg({ logger: logger })
+            .input(options.cardName)
+            .inputFormat("decklink")
+            .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats", "-re"])
+            .output(
+                `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize | 1316}&latency=${
+                    options?.latency | 250
+                }`
+            )
+            .outputOptions(["-preset ultrafast", "-f mpegts", "-protocol_whitelist", "srt,udp,rtp", "-stats"])
+            .videoCodec("libx264")
+            .videoBitrate(options.bitrate);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
         }
-    }
 
-    command.on("end", () => {
-        logger.info("Finished encoding decklink card to SRT");
-    });
+        if (options?.thumbnail) {
+            command
+                .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
+                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
 
-    command.on("error", () => {
-        logger.info("FFMPEG process killed");
-    });
-
-    command.on("start", (commandString) => {
-        logger.debug(`Spawned FFmpeg with command: ${commandString}`);
-        return { options: options, command: commandString };
-    });
-
-    command.on("progress", (progress) => {
-        logger.info("ffmpeg-progress: " + Math.floor(progress.percent) + "% done");
-    });
-
-    command.on("stderr", function (stderrLine) {
-        logger.info("ffmpeg: " + stderrLine);
-
-        if (stderrLine.includes("[srt]")) {
-            // Extract the relevant statistics from the line
-            const stats = stderrLine.match(/\[srt\]\s(.+)/)[1];
-            logger.info("ffmpeg-srt: ", stats);
+            if (Array.isArray(filters)) {
+                command.videoFilters(filters);
+            }
         }
-    });
 
-    try {
+        command.on("end", () => {
+            logger.info("Finished encoding decklink card to SRT");
+        });
+        command.on("start", (commandString) => {
+            logger.debug(`Spawned FFmpeg with command: ${commandString}`);
+            jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
+            return { options: options, command: commandString };
+        });
+
+        command.on("stderr", function (stderrLine) {
+            logger.info("ffmpeg: " + stderrLine);
+        });
+
+        command.on("error", function (error) {
+            logger.error(error);
+            jobManager.end(job?.jobId, false);
+
+            //If IO Error (Network error, restart)
+            if (error.toString().includes("Input/output error") || error.toString().includes("Conversion failed!")) {
+                logger.info("Restarting due to IO error");
+                process(options);
+            }
+        });
+
         command.run();
     } catch (error) {
-        logger.warn(error);
-        status = "false";
+        logger.error(error.message);
+        response.error = error.message;
     }
-
-    return { error: status, options: options };
 };
+
+module.exports = process;

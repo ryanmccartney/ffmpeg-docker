@@ -12,8 +12,11 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(`${options.address}:${options.port}`);
-
+        const job = jobManager.start(
+            `${options.address}:${options.port}`,
+            `Encode: Bars to SRT srt://${options.address}:${options.port}`,
+            ["encode","srt"]
+        );
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })

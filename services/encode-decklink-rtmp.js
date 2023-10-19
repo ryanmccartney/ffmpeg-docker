@@ -3,6 +3,7 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
+const jobManager = require("@utils/jobManager");
 const filterCombine = require("@services/filter-combine");
 const filterText = require("@services/filter-text");
 const getRtmpAddress = require("@utils/rtmp-address");
@@ -13,7 +14,12 @@ const process = async (options) => {
 
     try {
         const rtmpAddress = getRtmpAddress(options.address, options.key);
-        const job = jobManager.start(rtmpAddress);
+
+        const job = jobManager.start(options.cardName, `Encode: Decklink to RTMP ${rtmpAddress}`, [
+            "encode",
+            "rtmp",
+            "decklink",
+        ]);
 
         ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 

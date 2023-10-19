@@ -173,16 +173,6 @@ paths:
       responses:
         "200":
           description: Success
-  /decklink/:cardIndex/thumbnail:
-    get:
-      description: Get thumbnail of the decklink output
-      tags:
-        - decklink
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
   /decklink/:cardIndex/stop:
     get:
       description: Stops the decklink output on a particular index
@@ -449,6 +439,16 @@ paths:
       responses:
         "200":
           description: Success
+  /system/job/kill/all:
+    get:
+      description: Kill all running jobs
+      tags:
+        - system
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
   /system/job/kill/:jobId:
     get:
       description: Kills a job by ID
@@ -469,9 +469,29 @@ paths:
       responses:
         "200":
           description: Success
+  /system/job/thumbnail/:jobId:
+    get:
+      description: Gets a thumnail for a job by it's Job ID
+      tags:
+        - system
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
   /system/job/:jobId:
     get:
       description: Gets a job by ID
+      tags:
+        - system
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /system/job:
+    get:
+      description: An HTML page with a simple job manager
       tags:
         - system
       produces:

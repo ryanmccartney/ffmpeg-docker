@@ -148,20 +148,6 @@ Sends some SMPTE bars to a decklink output
 | ---- | ----------- |
 | 200  | Success     |
 
-### /decklink/:cardIndex/thumbnail
-
-#### GET
-
-##### Description
-
-Get thumbnail of the decklink output
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
 ### /decklink/:cardIndex/stop
 
 #### GET
@@ -488,6 +474,20 @@ Get server time.
 | ---- | ----------- |
 | 200  | Success     |
 
+### /system/job/kill/all
+
+#### GET
+
+##### Description
+
+Kill all running jobs
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
 ### /system/job/kill/:jobId
 
 #### GET
@@ -516,6 +516,20 @@ Gets all jobs that are running
 | ---- | ----------- |
 | 200  | Success     |
 
+### /system/job/thumbnail/:jobId
+
+#### GET
+
+##### Description
+
+Gets a thumnail for a job by it's Job ID
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
 ### /system/job/:jobId
 
 #### GET
@@ -523,6 +537,20 @@ Gets all jobs that are running
 ##### Description
 
 Gets a job by ID
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /system/job
+
+#### GET
+
+##### Description
+
+An HTML page with a simple job manager
 
 ##### Responses
 

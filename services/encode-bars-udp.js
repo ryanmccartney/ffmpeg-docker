@@ -14,7 +14,8 @@ const process = async (options) => {
     try {
         const job = jobManager.start(
             `${options.address}:${options.port}`,
-            `Encode: Bars to UDP udp://${options.address}:${options.port}`
+            `Encode: Bars to UDP udp://${options.address}:${options.port}`,
+            ["encode","udp"]
         );
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));

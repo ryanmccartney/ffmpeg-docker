@@ -3,12 +3,18 @@ const crypto = require("crypto");
 let maxQueueSize = process.env.QUEUE_SZIE | 5;
 let jobs = {};
 
-const start = (output, name = "FFMPEG Process") => {
+const start = (output, name = "FFMPEG Process", type = ["default"]) => {
     const queueSize = Object.keys(jobs).length;
     if (queueSize < maxQueueSize) {
         const hash = crypto.createHash("md5").update(output).digest("hex");
         if (!jobs[hash]) {
-            jobs[hash] = { jobNumber: Object.keys(jobs).length + 1, jobId: hash, started: new Date(), jobName: name };
+            jobs[hash] = {
+                jobNumber: Object.keys(jobs).length + 1,
+                jobId: hash,
+                started: new Date(),
+                jobName: name,
+                type: type,
+            };
             return jobs[hash];
         } else {
             throw new Error("Job is already running.");

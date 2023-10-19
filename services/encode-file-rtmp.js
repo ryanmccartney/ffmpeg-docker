@@ -19,8 +19,7 @@ const process = async (options) => {
 
     try {
         const rtmpAddress = getRtmpAddress(options.address, options.key);
-        const job = jobManager.start(rtmpAddress);
-
+        const job = jobManager.start(rtmpAddress, `Encode: File to RTMP ${rtmpAddress}`, ["encode", "rtmp"]);
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
@@ -53,6 +52,11 @@ const process = async (options) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
             jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
             return { options: options, command: commandString };
+        });
+
+        command.on("progress", (progress) => {
+            logger.info("ffmpeg-progress: " + Math.floor(progress.percent) + "% done");
+            jobManager.update(job?.jobId, { progress: Math.floor(progress.percent) });
         });
 
         command.on("stderr", function (stderrLine) {

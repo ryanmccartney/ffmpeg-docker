@@ -40,17 +40,13 @@ router.get("/models", async (req, res, next) => {
  *          description: Success
  */
 router.get("/test", async (req, res, next) => {
-
-    if(req.query.filename){
-        req.body.input = {"filename": ""}
-        req.body.input.filename = req.query.filename
+    if (req.query.filename) {
+        req.body.input = { filename: "" };
+        req.body.input.filename = req.query.filename;
     }
-    if(req.query.reference){
-        req.body.reference = {"filename": ""}
-        req.body.reference.filename = req.query.reference
-    }
-    if(req.query.kill){
-        req.body.kill = true;
+    if (req.query.reference) {
+        req.body.reference = { filename: "" };
+        req.body.reference.filename = req.query.reference;
     }
 
     const response = await testVmaf(req.body);
@@ -69,7 +65,7 @@ router.get("/test", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get('/results/json', async (req, res) => {
+router.get("/results/json", async (req, res) => {
     const response = await getVmafResultsJson(req.query.filename);
     hashResponse(res, req, { data: response, status: response ? true : false });
 });
@@ -86,7 +82,7 @@ router.get('/results/json', async (req, res) => {
  *        '200':
  *          description: Success
  */
-router.get('/results/csv', async (req, res) => {
+router.get("/results/csv", async (req, res) => {
     const response = await getVmafResultsCsv(req.query.filename);
     hashResponse(res, req, { data: response, status: response ? true : false });
 });
@@ -103,18 +99,17 @@ router.get('/results/csv', async (req, res) => {
  *        '200':
  *          description: Success
  */
-router.get('/results/download/csv', async (req, res) => {
-    try{
+router.get("/results/download/csv", async (req, res) => {
+    try {
         const response = await getVmafResultsCsv(req.query.filename);
-        const filenameElements = req.query.filename.split(".")
-        res.header('Content-Type', 'text/csv');
+        const filenameElements = req.query.filename.split(".");
+        res.header("Content-Type", "text/csv");
         res.attachment(`${filenameElements[0]}.csv`);
         return res.send(response);
+    } catch (error) {
+        hashResponse(res, req, { error: { message: "File does not exisit" }, data: {}, status: false });
     }
-    catch(error){
-        hashResponse(res, req, { error: {message:"File does not exisit"}, data:{}, status: false });
-    }
-  });
+});
 
 /**
  * @swagger
@@ -128,13 +123,13 @@ router.get('/results/download/csv', async (req, res) => {
  *        '200':
  *          description: Success
  */
-router.get('/results/download/json', async (req, res) => {
+router.get("/results/download/json", async (req, res) => {
     const filePath = path.join(__dirname, "..", "data", "vmaf", req.query?.filename || req.body?.filename || "");
-    if(fileExists(filePath)){
+    if (fileExists(filePath)) {
         res.download(filePath);
-    }else{
-        hashResponse(res, req, { error: {message:"File does not exisit"}, data:{file:filePath}, status: false });
+    } else {
+        hashResponse(res, req, { error: { message: "File does not exisit" }, data: { file: filePath }, status: false });
     }
-  });
+});
 
 module.exports = router;
