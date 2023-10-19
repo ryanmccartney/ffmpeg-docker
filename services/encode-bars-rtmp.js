@@ -23,14 +23,23 @@ const process = async (options) => {
             .inputOptions(["-re", "-f lavfi"])
             .addInput(`sine=frequency=${options.frequency || 1000}:sample_rate=48000`)
             .inputOptions(["-f lavfi"])
-            .videoCodec("libx264")
-            .videoBitrate(options.bitrate)
-            .outputOptions(["-r 2", "-update 1", path.resolve(`./data/rtmp-thumbnail-${options.address}.png`)])
             .output(rtmpAddress)
-            .outputOptions(["-f flv"]);
+            .outputOptions(["-f flv"])
+            .videoCodec("libx264")
+            .videoBitrate(options.bitrate);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
+        }
+
+        if (options?.thumbnail) {
+            command
+                .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
+                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+
+            if (Array.isArray(filters)) {
+                command.videoFilters(filters);
+            }
         }
 
         command.on("end", () => {

@@ -26,15 +26,23 @@ const process = async (options) => {
         const command = ffmpeg({ logger: logger })
             .input(path.join(__dirname, "..", "data", "media", options.filename))
             .inputOptions([repeat, "-protocol_whitelist", "file,udp,rtp", "-stats", "-re"])
-            .videoCodec("libx264")
-            .videoBitrate(options.bitrate)
-            .videoFilters(filterCombine(filterText(options)))
-            .outputOptions(["-r 4", "-update 1", path.resolve(`./data/rtmp-thumbnail-${options.address}.png`)])
             .output(rtmpAddress)
-            .outputOptions(["-f flv"]);
+            .outputOptions(["-f flv"])
+            .videoCodec("libx264")
+            .videoBitrate(options.bitrate);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
+        }
+
+        if (options?.thumbnail) {
+            command
+                .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
+                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+
+            if (Array.isArray(filters)) {
+                command.videoFilters(filters);
+            }
         }
 
         command.on("end", () => {

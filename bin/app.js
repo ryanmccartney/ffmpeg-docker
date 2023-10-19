@@ -60,11 +60,11 @@ app.use("/documentation", documentation);
 app.use("/api/system", systemRouter);
 app.use("/api/encode", encodeRouter);
 app.use("/api/decode", decodeRouter);
-app.use("/api/vmaf",vmafRouter)
+app.use("/api/vmaf", vmafRouter);
 app.use("/api/decklink", decklinkRouter);
 app.use("/api/file", fileRouter);
-app.use("/api/playlist",playlistRouter)
-app.use('/api/hls', express.static(path.join(__dirname, "..", "data","hls")));
+app.use("/api/playlist", playlistRouter);
+app.use("/api/hls", express.static(path.join(__dirname, "..", "data", "hls")));
 
 // Redirect /api to /documentation
 app.use("/api", function (req, res, next) {
@@ -73,6 +73,7 @@ app.use("/api", function (req, res, next) {
 
 // development: serve files in the public folder
 app.use(express.static(path.join(__dirname, "..", "public")));
+app.use(express.static(path.join(__dirname, "..", "node_modules", "bootstrap", "dist")));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

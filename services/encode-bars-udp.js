@@ -12,7 +12,10 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(`${options.address}:${options.port}`);
+        const job = jobManager.start(
+            `${options.address}:${options.port}`,
+            `Encode: Bars to UDP udp://${options.address}:${options.port}`
+        );
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
@@ -21,17 +24,27 @@ const process = async (options) => {
             .inputOptions(["-re", "-f lavfi"])
             .addInput(`sine=frequency=${options.frequency || 1000}:sample_rate=48000`)
             .inputOptions(["-f lavfi"])
-            .videoCodec("libx264")
-            .videoBitrate(options.bitrate)
             .output(
                 `udp://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&buffer_size=${
                     options?.buffer || 65535
                 }`
             )
-            .outputOptions(["-preset veryfast", "-f mpegts"]);
+            .outputOptions(["-preset veryfast", "-f mpegts"])
+            .videoCodec("libx264")
+            .videoBitrate(options.bitrate);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
+        }
+
+        if (options?.thumbnail) {
+            command
+                .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
+                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+
+            if (Array.isArray(filters)) {
+                command.videoFilters(filters);
+            }
         }
 
         command.on("end", () => {

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script language="javascript" src="/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css" />
+
+    <title>Job Manager</title>
+    <body>
+        <table id="jobTable" class="table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Job Name</th>
+                    <th scope="col">Job ID</th>
+                    <th scope="col">Started</th>
+                    <th scope="col">Progress</th>
+                    <th scope="col">Thumbnail</th>
+                    <th scope="col">
+                        <button onclick="killAll()" type="button" class="btn btn-danger">Kill All</button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <script>
+            const table = document.getElementById("jobTable");
+
+            getJobs();
+
+            async function killJob(jobId) {
+                const response = await fetch(`/api/system/job/kill/${jobId}`);
+                console.log(`Killed Job ID ${jobId}`);
+            }
+
+            async function killAll() {
+                const response = await fetch(`/api/system/job/kill/all`);
+                console.log(`Killed all Jobs`);
+            }
+
+            async function getJobs() {
+                const response = await fetch(`/api/system/job/all`);
+                const data = await response.json();
+
+                for (let [jobId, job] of Object.entries(data?.jobs)) {
+                    const row = table.insertRow(job?.jobNumber);
+
+                    const cell1 = row.insertCell(0);
+                    const cell2 = row.insertCell(1);
+                    const cell3 = row.insertCell(2);
+                    const cell4 = row.insertCell(3);
+                    const cell5 = row.insertCell(4);
+                    const cell6 = row.insertCell(5);
+                    const cell7 = row.insertCell(6);
+
+                    // Add some text to the new cells:
+                    cell1.innerHTML = job?.jobNumber || "-";
+                    cell2.innerHTML = job?.jobName || "-";
+                    cell3.innerHTML = job?.jobId || "-";
+                    cell4.innerHTML = job?.started || "-";
+                    cell5.innerHTML = job?.progress
+                        ? `<div class="progress">
+                        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 25%" aria-valuenow="${job?.progress}" aria-valuemin="0" aria-valuemax="100"></div>${job?.progress}%
+                    </div>`
+                        : "-";
+                    cell6.innerHTML = `<img src="/api/system/job/thumbnail/${jobId}" alt="No Image" class="img-thumbnail">`;
+                    cell7.innerHTML = `<button onclick="killJob('${jobId}')" type="button" class="btn btn-danger">Kill</button>`;
+                }
+            }
+        </script>
+    </body>
+</html>

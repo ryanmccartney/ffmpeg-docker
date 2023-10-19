@@ -23,17 +23,27 @@ module.exports = async (options) => {
         .input(options.cardName)
         .inputFormat("decklink")
         .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats", "-re"])
-        .videoCodec("libx264")
-        .videoBitrate(options.bitrate)
         .output(
             `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize | 1316}&latency=${
                 options?.latency | 250
             }`
         )
-        .outputOptions(["-preset ultrafast", "-f mpegts", "-protocol_whitelist", "srt,udp,rtp", "-stats"]);
+        .outputOptions(["-preset ultrafast", "-f mpegts", "-protocol_whitelist", "srt,udp,rtp", "-stats"])
+        .videoCodec("libx264")
+        .videoBitrate(options.bitrate);
 
     if (Array.isArray(filters)) {
         command.videoFilters(filters);
+    }
+
+    if (options?.thumbnail) {
+        command
+            .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
+            .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+
+        if (Array.isArray(filters)) {
+            command.videoFilters(filters);
+        }
     }
 
     command.on("end", () => {

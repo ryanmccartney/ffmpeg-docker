@@ -7,6 +7,7 @@ const jobKill = require("@services/system-job-kill");
 const jobGet = require("@services/system-job-get");
 const jobGetAll = require("@services/system-job-getall");
 const jobKillAll = require("@services/system-job-killall");
+const jobThumbnailGet = require("@services/system-job-getthumbnail");
 const path = require("path");
 
 /**
@@ -120,6 +121,35 @@ router.get("/job/all", async (req, res, next) => {
 
 /**
  * @swagger
+ * /system/job/thumbnail/:jobId:
+ *    get:
+ *      description: Gets a thumnail for a job by it's Job ID
+ *      tags: [system]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/job/thumbnail/:jobId", async (req, res, next) => {
+    const response = await jobThumbnailGet(req.params.jobId, req.body.resize);
+
+    const base64Data = response.replace(/^data:image\/(png|jpeg|jpg);base64,/, "");
+    const img = Buffer.from(base64Data, "base64");
+
+    if (req.body.raw) {
+        hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+    } else {
+        res.writeHead(200, {
+            "Content-Type": "image/png",
+            "Content-Length": img.length,
+        });
+        res.end(img);
+    }
+});
+
+/**
+ * @swagger
  * /system/job/:jobId:
  *    get:
  *      description: Gets a job by ID
@@ -133,6 +163,22 @@ router.get("/job/all", async (req, res, next) => {
 router.get("/job/:jobId", async (req, res, next) => {
     const response = await jobGet(req.params.jobId);
     hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
+});
+
+/**
+ * @swagger
+ * /system/job:
+ *    get:
+ *      description: An HTML page with a simple job manager
+ *      tags: [system]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/job", async (req, res, next) => {
+    res.sendFile(path.join(__dirname, "..", "public", "html", "job.html"));
 });
 
 /**

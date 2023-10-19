@@ -2,9 +2,9 @@ const logger = require("@utils/logger")(module);
 const sharp = require("sharp");
 const path = require("path");
 
-module.exports = async (file, resize = 0.25) => {
+module.exports = async (jobId, resize = 0.25) => {
     try {
-        const resizedThumbnail = await sharp(path.resolve(file))
+        const resizedThumbnail = await sharp(path.join(__dirname, "..", "data", "thumbnail", `${jobId}.png`))
             .resize(parseInt(1920 * resize), parseInt(1080 * resize))
             .png()
             .toBuffer();

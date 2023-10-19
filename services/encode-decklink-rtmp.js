@@ -23,14 +23,23 @@ const process = async (options) => {
             .input(options.cardName)
             .inputFormat("decklink")
             .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats", "-re"])
-            .videoCodec("libx264")
-            .videoBitrate(options.bitrate)
-            .outputOptions(["-r 2", "-update 1", path.resolve(`./data/rtmp-thumbnail-${options.address}.png`)])
             .output(getRtmpAddress(options.address, options.key))
-            .outputOptions(["-f flv"]);
+            .outputOptions(["-f flv"])
+            .videoCodec("libx264")
+            .videoBitrate(options.bitrate);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
+        }
+
+        if (options?.thumbnail) {
+            command
+                .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
+                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+
+            if (Array.isArray(filters)) {
+                command.videoFilters(filters);
+            }
         }
 
         command.on("end", () => {

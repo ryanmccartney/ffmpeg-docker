@@ -20,6 +20,7 @@ module.exports = async (options) => {
         const command = ffmpeg({ logger: logger })
             .input(options.cardName)
             .inputFormat("decklink")
+            .output(`${path.join(__dirname, "..", "data", "hls", options?.streamName)}`)
             .outputOptions([
                 "-c:v libx264",
                 "-preset ultrafast",
@@ -32,11 +33,20 @@ module.exports = async (options) => {
                 `-hls_time ${options?.hls.chunkTime | 0.5}`,
                 `-hls_list_size ${options?.hls.chunks | 5}`,
                 "-hls_flags independent_segments",
-            ])
-            .output(`${path.join(__dirname, "..", "data", "hls", options?.streamName)}`);
+            ]);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
+        }
+
+        if (options?.thumbnail) {
+            command
+                .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
+                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+
+            if (Array.isArray(filters)) {
+                command.videoFilters(filters);
+            }
         }
 
         command.on("end", () => {

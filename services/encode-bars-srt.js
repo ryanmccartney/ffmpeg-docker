@@ -21,17 +21,27 @@ const process = async (options) => {
             .inputOptions(["-re", "-f lavfi"])
             .addInput(`sine=frequency=${options.frequency || 1000}:sample_rate=48000`)
             .inputOptions(["-f lavfi"])
-            .videoCodec("libx264")
-            .videoBitrate(options.bitrate)
             .output(
                 `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&latency=${
                     options?.latency || 250
                 }`
             )
-            .outputOptions(["-preset veryfast", "-f mpegts"]);
+            .outputOptions(["-preset veryfast", "-f mpegts"])
+            .videoCodec("libx264")
+            .videoBitrate(options.bitrate);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
+        }
+
+        if (options?.thumbnail) {
+            command
+                .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
+                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+
+            if (Array.isArray(filters)) {
+                command.videoFilters(filters);
+            }
         }
 
         command.on("end", () => {

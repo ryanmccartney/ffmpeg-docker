@@ -17,24 +17,45 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(`${options.address}:${options.port}`);
+        const job = jobManager.start(
+            `${options.address}:${options.port}`,
+            `Encode: File to UDP udp://${options.address}:${options.port}`
+        );
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
             .input(path.join(__dirname, "..", "data", "media", options.filename))
-            .inputOptions([repeat, "-protocol_whitelist", "file,udp,rtp", "-stats", "-re"])
-            .videoCodec("libx264")
-            .videoBitrate(options.bitrate)
+            .inputOptions([
+                repeat,
+                "-protocol_whitelist",
+                "file,udp,rtp",
+                "-stats",
+                "-re",
+                "-probesize 32",
+                "-analyzeduration 0",
+            ])
             .output(
                 `udp://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&buffer_size=${
                     options?.buffer || 65535
                 }`
             )
-            .outputOptions(["-preset veryfast", "-f mpegts"]);
+            .outputOptions(["-preset veryfast", "-f mpegts", "-flags low_delay", "-bufsize 0", "-muxdelay 0"])
+            .videoCodec("libx264")
+            .videoBitrate(options.bitrate);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
+        }
+
+        if (options?.thumbnail) {
+            command
+                .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
+                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+
+            if (Array.isArray(filters)) {
+                command.videoFilters(filters);
+            }
         }
 
         command.on("end", () => {

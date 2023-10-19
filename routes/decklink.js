@@ -10,7 +10,6 @@ const outputDecklinkPause = require("@services/output-decklink-pause");
 const getDecklinkConfig = require("@services/decklink-config-get");
 const setDecklinkConfig = require("@services/decklink-config-set");
 const getDecklinkInfo = require("@services/decklink-info-get");
-const thumbnailGet = require("@services/thumbnail-get");
 const inputDecklinkFile = require("@services/input-decklink-file");
 const inputDecklinkThumbnail = require("@services/input-decklink-thumbnail");
 
@@ -219,35 +218,6 @@ router.get("/:cardIndex/record", async (req, res, next) => {
 router.get("/:cardIndex/bars", async (req, res, next) => {
     const response = await outputDecklinkBars(req.params.cardIndex, req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
-
-/**
- * @swagger
- * /decklink/:cardIndex/thumbnail:
- *    get:
- *      description: Get thumbnail of the decklink output
- *      tags: [decklink]
- *      produces:
- *        - application/json
- *      responses:
- *        '200':
- *          description: Success
- */
-router.get("/:cardIndex/thumbnail", async (req, res, next) => {
-    const response = await thumbnailGet(`./data/decklink-thumbnail-${req.params.cardIndex}.png`, req.body.resize);
-
-    const base64Data = response.replace(/^data:image\/(png|jpeg|jpg);base64,/, "");
-    const img = Buffer.from(base64Data, "base64");
-
-    if (req.body.raw) {
-        hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-    } else {
-        res.writeHead(200, {
-            "Content-Type": "image/png",
-            "Content-Length": img.length,
-        });
-        res.end(img);
-    }
 });
 
 /**
