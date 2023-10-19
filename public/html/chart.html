@@ -1,24 +1,22 @@
 <!DOCTYPE html>
 <html>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/public/chart.js/chart.js"></script>
 
     <title>VMAF Chart</title>
     <body>
-        <canvas id="myChart" style="width:80%;"></canvas>
+        <canvas id="myChart" style="width: 80%"></canvas>
 
         <script>
-
             const queryString = window.location.search;
             const urlParams = new URLSearchParams(queryString);
-  
+
             getData();
 
             async function getData() {
-
-                const filename = urlParams.get('filename');
+                const filename = urlParams.get("filename");
                 console.log(filename);
                 const frames = [];
                 const psnr = [];
@@ -29,19 +27,19 @@
                 const data = await response.json();
 
                 const framesData = data.data.frames;
-                for(let frame of framesData){
+                for (let frame of framesData) {
                     frames.push(frame.frameNum);
-                    console.log(frame.metrics.vmaf)
+                    console.log(frame.metrics.vmaf);
                     psnr.push(frame.metrics.psnr);
                     ssim.push(frame.metrics.ssim);
                     vmaf.push(frame.metrics.vmaf);
                 }
-                
+
                 new Chart("myChart", {
                     type: "line",
                     data: {
                         labels: frames,
-                            datasets: [
+                        datasets: [
                             {
                                 label: "PSNR",
                                 fill: false,
@@ -49,7 +47,7 @@
                                 backgroundColor: "rgba(0,0,255,0.6)",
                                 borderColor: "rgba(0,0,255,0.6)",
                                 pointRadius: 0,
-                                data: psnr
+                                data: psnr,
                             },
                             // {
                             //     label: "SSIM",
@@ -67,50 +65,49 @@
                                 backgroundColor: "rgba(255,0,0,0.6)",
                                 borderColor: "rgba(255,0,0,0.6)",
                                 pointRadius: 0,
-                                data: vmaf
-                            }
-                        ]
+                                data: vmaf,
+                            },
+                        ],
                     },
                     options: {
-                        plugins:{
-                            legend:{
-                                position:"bottom",
+                        plugins: {
+                            legend: {
+                                position: "bottom",
                                 display: true,
                             },
-                            title: 
-                            {
-                            display: true,
-                            text: `VMAF Results for ${filename}`
+                            title: {
+                                display: true,
+                                text: `VMAF Results for ${filename}`,
                             },
                         },
                         responsive: true,
                         scales: {
-                            x: {             
+                            x: {
                                 display: true,
                                 title: {
                                     display: true,
-                                    text: 'Frames',
-                                    padding: {top: 20, left: 0, right: 0, bottom: 0}
+                                    text: "Frames",
+                                    padding: { top: 20, left: 0, right: 0, bottom: 0 },
                                 },
                                 ticks: {
-                                    stepSize: 10
-                                }
+                                    stepSize: 10,
+                                },
                             },
                             y: {
                                 display: true,
                                 title: {
                                     display: true,
-                                    text: 'Percentage (0-100%)',
+                                    text: "Percentage (0-100%)",
                                 },
                                 max: 100,
                                 min: 0,
                                 ticks: {
-                                    stepSize: 2
+                                    stepSize: 2,
                                 },
-                                padding: {top: 20, left: 0, right: 0, bottom: 0}
-                            }
-                        }
-                    }
+                                padding: { top: 20, left: 0, right: 0, bottom: 0 },
+                            },
+                        },
+                    },
                 });
             }
         </script>

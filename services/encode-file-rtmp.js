@@ -46,12 +46,13 @@ const process = async (options) => {
 
         command.on("end", () => {
             logger.info("Finished processing");
+            jobManager.end(job?.jobId, false);
         });
 
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
             jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
-            return { options: options, command: commandString };
+            return response;
         });
 
         command.on("progress", (progress) => {

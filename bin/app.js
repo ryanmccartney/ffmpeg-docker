@@ -72,8 +72,9 @@ app.use("/api", function (req, res, next) {
 });
 
 // development: serve files in the public folder
-app.use(express.static(path.join(__dirname, "..", "public")));
-app.use(express.static(path.join(__dirname, "..", "node_modules", "bootstrap", "dist")));
+app.use("/public", express.static(path.join(__dirname, "..", "public")));
+app.use("/public/bootstrap", express.static(path.join(__dirname, "..", "node_modules", "bootstrap", "dist")));
+app.use("/public/chart.js", express.static(path.join(__dirname, "..", "node_modules", "chart.js", "dist")));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

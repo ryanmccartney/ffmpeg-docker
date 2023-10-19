@@ -5,9 +5,11 @@ const hashResponse = require("@utils/hash-response");
 const encodeFileUdp = require("@services/encode-file-udp");
 const encodeFileSrt = require("@services/encode-file-srt");
 const encodeFileRtmp = require("@services/encode-file-rtmp");
+const encodeFileHls = require("@services/encode-file-hls");
 const encodeBarsRtmp = require("@services/encode-bars-rtmp");
 const encodeBarsUdp = require("@services/encode-bars-udp");
 const encodeBarsSrt = require("@services/encode-bars-srt");
+const encodeBarsHls = require("@services/encode-bars-hls");
 const encodeDecklinkSrt = require("@services/encode-decklink-srt");
 const encodeDecklinkRtmp = require("@services/encode-decklink-rtmp");
 const encodeDecklinkHls = require("@services/encode-decklink-hls");
@@ -111,6 +113,23 @@ router.get("/file/rtmp", async (req, res, next) => {
 
 /**
  * @swagger
+ * /encode/file/hls:
+ *    get:
+ *      description: HLS encode a file.
+ *      tags: [encode]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/file/hls", async (req, res, next) => {
+    const response = await encodeFileHls(req.body);
+    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+});
+
+/**
+ * @swagger
  * /encode/bars/srt:
  *    get:
  *      description: SRT encode test bars.
@@ -157,6 +176,23 @@ router.get("/bars/rtmp", async (req, res, next) => {
  */
 router.get("/bars/udp", async (req, res, next) => {
     const response = await encodeBarsUdp(req.body);
+    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+});
+
+/**
+ * @swagger
+ * /encode/bars/hls:
+ *    get:
+ *      description: HLS encode test bars.
+ *      tags: [encode]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/bars/hls", async (req, res, next) => {
+    const response = await encodeBarsHls(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 

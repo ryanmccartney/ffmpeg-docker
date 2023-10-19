@@ -48,13 +48,9 @@ const process = async (options) => {
                     "vmaf",
                     "model",
                     `${options?.model || "vmaf_v0.6.1.json"}`
-                )}:log_fmt=json:psnr=1:ssim=1:ms_ssim=1:log_path=${path.join(
-                    __dirname,
-                    "..",
-                    "data",
-                    "vmaf",
-                    options?.output || defaultOutputFile
-                )}:n_threads=${options.threads || 20}`,
+                )}:log_fmt=json:psnr=1:ssim=1:ms_ssim=1:log_path=${options?.output || defaultOutputFile}:n_threads=${
+                    options.threads || 20
+                }`,
                 "-f",
                 "null"
             );

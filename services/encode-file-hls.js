@@ -3,29 +3,42 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
-const jobManager = require("@utils/jobManager");
 const filterCombine = require("@services/filter-combine");
 const filterText = require("@services/filter-text");
+const jobManager = require("@utils/jobManager");
 
-module.exports = async (options) => {
+const process = async (options) => {
     const response = { options: options };
+    let repeat = "-stream_loop 0";
+    if (options.repeat) {
+        repeat = `-stream_loop -1`;
+    }
+
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(options.cardName, `Encode: Decklink to HLS (${options?.output || "JobID"}.m3u8)`, [
-            "encode",
-            "hls",
-            "decklink",
-        ]);
+        const job = jobManager.start(
+            `${options?.output || path.join(__dirname, "..", "data", "media", options.filename)}`,
+            `Encode: File to HLS (${options?.output || "JobID"}.m3u8)`,
+            ["encode", "hls"]
+        );
 
         response.hls = `/api/hls/${options?.output || job.jobId}.m3u8`;
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
-            .input(options.cardName)
-            .inputFormat("decklink")
-            .output(`${path.join(__dirname, "..", "data", "hls", options?.output || job?.jobId)}.m3u8`)
+            .input(path.join(__dirname, "..", "data", "media", options.filename))
+            .inputOptions([
+                repeat,
+                "-protocol_whitelist",
+                "file,udp,rtp",
+                "-stats",
+                "-re",
+                "-probesize 32",
+                "-analyzeduration 0",
+            ])
+            .output(`${path.join(__dirname, "..", "data", "hls", options?.output || job.jobId)}.m3u8`)
             .outputOptions([
                 "-c:v libx264",
                 "-preset ultrafast",
@@ -55,13 +68,19 @@ module.exports = async (options) => {
         }
 
         command.on("end", () => {
-            logger.info("Finished encoding decklink to HLS");
+            logger.info("Finished encoding bars to HLS");
+            jobManager.end(job?.jobId, false);
         });
 
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
             jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
-            return { options: options, command: commandString };
+            return response;
+        });
+
+        command.on("progress", (progress) => {
+            logger.info("ffmpeg-progress: " + Math.floor(progress.percent) + "% done");
+            jobManager.update(job?.jobId, { progress: Math.floor(progress.percent) });
         });
 
         command.on("stderr", function (stderrLine) {
@@ -71,12 +90,6 @@ module.exports = async (options) => {
         command.on("error", function (error) {
             logger.error(error);
             jobManager.end(job?.jobId, false);
-
-            //If IO Error (Network error, restart)
-            if (error.toString().includes("Input/output error") || error.toString().includes("Conversion failed!")) {
-                logger.info("Restarting due to IO error");
-                process(options);
-            }
         });
 
         command.run();

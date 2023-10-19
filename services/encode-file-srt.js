@@ -26,7 +26,15 @@ const process = async (options) => {
 
         const command = ffmpeg({ logger: logger })
             .input(path.join(__dirname, "..", "data", "media", options.filename))
-            .inputOptions([repeat, "-protocol_whitelist", "file,udp,rtp", "-stats", "-re"])
+            .inputOptions([
+                repeat,
+                "-protocol_whitelist",
+                "file,udp,rtp",
+                "-stats",
+                "-re",
+                "-probesize 32",
+                "-analyzeduration 0",
+            ])
             .output(
                 `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize | 1316}&latency=${
                     options?.latency | 250
@@ -58,7 +66,7 @@ const process = async (options) => {
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
             jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
-            return { options: options, command: commandString };
+            return response;
         });
 
         command.on("progress", (progress) => {
