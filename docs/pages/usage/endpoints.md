@@ -264,6 +264,20 @@ RTMP encode a file.
 | ---- | ----------- |
 | 200  | Success     |
 
+### /encode/file/hls
+
+#### GET
+
+##### Description
+
+HLS encode a file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
 ### /encode/bars/srt
 
 #### GET
@@ -299,6 +313,20 @@ RTMP encode test bars.
 ##### Description
 
 UDP encode test bars.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /encode/bars/hls
+
+#### GET
+
+##### Description
+
+HLS encode test bars.
 
 ##### Responses
 
@@ -434,6 +462,50 @@ Add a single file to the playlist.
 
 ---
 
+### /clock
+
+#### GET
+
+##### Description
+
+An HTML page with a live clock showing server time - suitable for latency measurements
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /jobs
+
+#### GET
+
+##### Description
+
+An HTML page showing a simple job manager
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /chart
+
+#### GET
+
+##### Description
+
+An HTML page showing VMAF test results as a chart
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+---
+
 ### /system/hello
 
 #### GET
@@ -537,34 +609,6 @@ Gets a thumnail for a job by it's Job ID
 ##### Description
 
 Gets a job by ID
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-### /system/job
-
-#### GET
-
-##### Description
-
-An HTML page with a simple job manager
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-### /system/clock
-
-#### GET
-
-##### Description
-
-An HTML page with a live clock showing server time - suitable for latency measurements
 
 ##### Responses
 

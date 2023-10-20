@@ -13,6 +13,7 @@ const nodeEnv = process.env.NODE_ENV || "production";
 
 // load routes
 const documentation = require("@utils/documentation");
+const pageRouter = require("@routes/page");
 const systemRouter = require("@routes/system");
 const encodeRouter = require("@routes/encode");
 const decodeRouter = require("@routes/decode");
@@ -71,10 +72,13 @@ app.use("/api", function (req, res, next) {
     res.redirect("/documentation");
 });
 
-// development: serve files in the public folder
-app.use("/public", express.static(path.join(__dirname, "..", "public")));
-app.use("/public/bootstrap", express.static(path.join(__dirname, "..", "node_modules", "bootstrap", "dist")));
-app.use("/public/chart.js", express.static(path.join(__dirname, "..", "node_modules", "chart.js", "dist")));
+// Server routes for web GUI
+if (process.env.WEB_GUI) {
+    app.use("/", pageRouter);
+    app.use("/public", express.static(path.join(__dirname, "..", "public")));
+    app.use("/public/bootstrap", express.static(path.join(__dirname, "..", "node_modules", "bootstrap", "dist")));
+    app.use("/public/chart.js", express.static(path.join(__dirname, "..", "node_modules", "chart.js", "dist")));
+}
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

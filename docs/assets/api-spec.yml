@@ -291,6 +291,16 @@ paths:
       responses:
         "200":
           description: Success
+  /encode/file/hls:
+    get:
+      description: HLS encode a file.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
   /encode/bars/srt:
     get:
       description: SRT encode test bars.
@@ -314,6 +324,16 @@ paths:
   /encode/bars/udp:
     get:
       description: UDP encode test bars.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /encode/bars/hls:
+    get:
+      description: HLS encode test bars.
       tags:
         - encode
       produces:
@@ -376,6 +396,37 @@ paths:
       description: Download file by name.
       tags:
         - files
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /clock:
+    get:
+      description: An HTML page with a live clock showing server time - suitable for
+        latency measurements
+      tags:
+        - page
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /jobs:
+    get:
+      description: An HTML page showing a simple job manager
+      tags:
+        - page
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /chart:
+    get:
+      description: An HTML page showing VMAF test results as a chart
+      tags:
+        - page
       produces:
         - application/json
       responses:
@@ -482,27 +533,6 @@ paths:
   /system/job/:jobId:
     get:
       description: Gets a job by ID
-      tags:
-        - system
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /system/job:
-    get:
-      description: An HTML page with a simple job manager
-      tags:
-        - system
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /system/clock:
-    get:
-      description: An HTML page with a live clock showing server time - suitable for
-        latency measurements
       tags:
         - system
       produces:

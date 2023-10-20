@@ -165,36 +165,4 @@ router.get("/job/:jobId", async (req, res, next) => {
     hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
 });
 
-/**
- * @swagger
- * /system/job:
- *    get:
- *      description: An HTML page with a simple job manager
- *      tags: [system]
- *      produces:
- *        - application/json
- *      responses:
- *        '200':
- *          description: Success
- */
-router.get("/job", async (req, res, next) => {
-    res.sendFile(path.join(__dirname, "..", "public", "html", "job.html"));
-});
-
-/**
- * @swagger
- * /system/clock:
- *    get:
- *      description: An HTML page with a live clock showing server time - suitable for latency measurements
- *      tags: [system]
- *      produces:
- *        - application/json
- *      responses:
- *        '200':
- *          description: Success
- */
-router.get("/clock", async (req, res, next) => {
-    res.sendFile(path.join(__dirname, "..", "public", "html", "clock.html"));
-});
-
 module.exports = router;
