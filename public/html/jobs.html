@@ -6,27 +6,55 @@
     <script language="javascript" src="/public/bootstrap/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="/public/bootstrap/css/bootstrap.min.css" />
 
+    <style>
+        .img-thumbnail {
+            width: 200px;
+            height: 100px;
+            overflow: hidden;
+            margin: auto;
+        }
+    </style>
+
     <title>Job Manager</title>
-    <body>
-        <table id="jobTable" class="table">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Job Name</th>
-                    <th scope="col">Job ID</th>
-                    <th scope="col">Started</th>
-                    <th scope="col">Progress</th>
-                    <th scope="col">Thumbnail</th>
-                    <th scope="col">
-                        <button onclick="killAll()" type="button" class="btn btn-danger">Kill All</button>
-                    </th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
+    <body class="bg-light">
+        <nav class="navbar bg-light fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <img
+                        src="/public/images/favicon.ico"
+                        alt="Logo"
+                        width="30"
+                        height="24"
+                        class="d-inline-block align-text-top"
+                    />
+                    FFMPEG Docker
+                </a>
+            </div>
+        </nav>
+
+        <div class="container" style="margin-top: 80px">
+            <table id="jobTable" class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Job Name</th>
+                        <th scope="col">Job ID</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Started</th>
+                        <th scope="col">Progress</th>
+                        <th scope="col">Thumbnail</th>
+                        <th scope="col">
+                            <button onclick="killAll()" type="button" class="btn btn-danger">Kill All</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
 
         <script>
             const table = document.getElementById("jobTable");
+            let interval;
 
             getJobs();
 
@@ -41,34 +69,56 @@
             }
 
             async function getJobs() {
+                for (let i = table.rows.length; i >= 1; i--) {
+                    try {
+                        await table.deleteRow(i);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+
                 const response = await fetch(`/api/system/job/all`);
                 const data = await response.json();
 
                 for (let [jobId, job] of Object.entries(data?.jobs)) {
-                    const row = table.insertRow(job?.jobNumber);
+                    const row = await table.insertRow(table.rows.length);
 
-                    const cell1 = row.insertCell(0);
-                    const cell2 = row.insertCell(1);
-                    const cell3 = row.insertCell(2);
-                    const cell4 = row.insertCell(3);
-                    const cell5 = row.insertCell(4);
-                    const cell6 = row.insertCell(5);
-                    const cell7 = row.insertCell(6);
+                    const cell1 = await row.insertCell(0);
+                    const cell2 = await row.insertCell(1);
+                    const cell3 = await row.insertCell(2);
+                    const cell4 = await row.insertCell(3);
+                    const cell5 = await row.insertCell(4);
+                    const cell6 = await row.insertCell(5);
+                    const cell7 = await row.insertCell(6);
+                    const cell8 = await row.insertCell(7);
 
                     // Add some text to the new cells:
                     cell1.innerHTML = job?.jobNumber || "-";
                     cell2.innerHTML = job?.jobName || "-";
                     cell3.innerHTML = job?.jobId || "-";
-                    cell4.innerHTML = job?.started || "-";
-                    cell5.innerHTML = job?.progress
+
+                    for (let tag of job?.type) {
+                        if (tag === "encode") {
+                            cell4.innerHTML += `<span class="badge badge-pill bg-danger">${tag}</span>`;
+                        } else if (tag === "decode") {
+                            cell4.innerHTML += `<span class="badge badge-pill bg-success">${tag}</span>`;
+                        } else {
+                            cell4.innerHTML += `<span class="badge badge-pill bg-info">${tag}</span>`;
+                        }
+                    }
+
+                    cell5.innerHTML = job?.started || "-";
+                    cell6.innerHTML = job?.progress
                         ? `<div class="progress">
                         <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 25%" aria-valuenow="${job?.progress}" aria-valuemin="0" aria-valuemax="100"></div>${job?.progress}%
                     </div>`
                         : "-";
-                    cell6.innerHTML = `<img src="/api/system/job/thumbnail/${jobId}" alt="No Image" class="img-thumbnail">`;
-                    cell7.innerHTML = `<button onclick="killJob('${jobId}')" type="button" class="btn btn-danger">Kill</button>`;
+                    cell7.innerHTML = `<a href="/api/system/job/thumbnail/${jobId}"><img src="/api/system/job/thumbnail/${jobId}?cahce=${Math.random()}" alt="No Image" class="img-thumbnail"></a>`;
+                    cell8.innerHTML = `<button onclick="killJob('${jobId}')" type="button" class="btn btn-danger">Kill</button>`;
                 }
             }
+
+            interval = setInterval(getJobs, 2000);
         </script>
     </body>
 </html>

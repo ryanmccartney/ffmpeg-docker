@@ -15,7 +15,7 @@ const process = async (options) => {
         const job = jobManager.start(
             `${options.address}:${options.port}`,
             `Encode: Bars to UDP udp://${options.address}:${options.port}`,
-            ["encode","udp"]
+            ["encode", "udp"]
         );
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
@@ -50,7 +50,7 @@ const process = async (options) => {
 
         command.on("end", () => {
             logger.info("Finished processing");
-            jobManager.end(job?.jobId);
+            jobManager.end(job?.jobId, false);
         });
 
         command.on("start", (commandString) => {

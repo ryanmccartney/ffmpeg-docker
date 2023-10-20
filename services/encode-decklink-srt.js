@@ -43,6 +43,7 @@ const process = async (options) => {
 
         command.on("end", () => {
             logger.info("Finished encoding decklink card to SRT");
+            jobManager.end(job?.jobId, false);
         });
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);

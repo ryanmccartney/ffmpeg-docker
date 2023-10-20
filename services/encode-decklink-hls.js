@@ -56,6 +56,7 @@ module.exports = async (options) => {
 
         command.on("end", () => {
             logger.info("Finished encoding decklink to HLS");
+            jobManager.end(job?.jobId, false);
         });
 
         command.on("start", (commandString) => {

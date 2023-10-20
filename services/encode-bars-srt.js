@@ -15,7 +15,7 @@ const process = async (options) => {
         const job = jobManager.start(
             `${options.address}:${options.port}`,
             `Encode: Bars to SRT srt://${options.address}:${options.port}`,
-            ["encode","srt"]
+            ["encode", "srt"]
         );
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
@@ -49,7 +49,7 @@ const process = async (options) => {
 
         command.on("end", () => {
             logger.info("Finished processing");
-            jobManager.end(job?.jobId);
+            jobManager.end(job?.jobId, false);
         });
 
         command.on("start", (commandString) => {

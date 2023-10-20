@@ -67,8 +67,8 @@ jobs:
                   platforms: ${{ matrix.architecture}}
                   push: ${{ github.event_name != 'pull_request' }}
                   tags: |
-                      ${{env.regsitry}}/ryanmccartney/ffmpeg-api:latest
-                      ${{env.regsitry}}/ryanmccartney/ffmpeg-api:${{steps.version.outputs.current-version}}
+                      ${{env.regsitry}}/ryanmccartney/ffmpeg-docker:latest
+                      ${{env.regsitry}}/ryanmccartney/ffmpeg-docker:${{steps.version.outputs.current-version}}
                   outputs: type=registry
                   labels: |
                       author=${{github.actor}}

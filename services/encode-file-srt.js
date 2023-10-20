@@ -60,7 +60,7 @@ const process = async (options) => {
 
         command.on("end", () => {
             logger.info("Finished processing");
-            jobManager.end(job?.jobId);
+            jobManager.end(job?.jobId, false);
         });
 
         command.on("start", (commandString) => {

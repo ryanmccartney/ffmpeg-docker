@@ -150,7 +150,7 @@ RUN git clone https://git.ffmpeg.org/ffmpeg.git
 WORKDIR $HOME/ffmpeg_sources/ffmpeg
 RUN git checkout n5.0
 RUN git config --global user.email "hello@mccartney.info"
-RUN git config --global user.name "FFmpeg Docker"
+RUN git config --global user.name "FFMPEG Docker"
 
 # Static source files option - now using git for NDI patching
 #RUN wget -O ffmpeg-snapshot.tar.bz2 https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
