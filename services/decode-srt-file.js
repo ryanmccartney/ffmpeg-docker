@@ -26,9 +26,11 @@ const process = async (options) => {
 
         let command = ffmpeg({ logger: logger })
             .input(
-                `srt://${options?.address}:${options?.port}?latency=${options?.latency}&mode=${
-                    options?.mode || "caller"
-                }&passphrase=${options.passphrase}`
+                `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&latency=${
+                    parseInt(options?.latency) * 1000 || "250000"
+                }&mode=${options?.mode || "caller"}&ipttl=${options?.ttl || "64"}&iptos=${
+                    options?.tos || "104"
+                }&transtype=${options?.transtype || "live"}&passphrase=${options.passphrase}`
             )
             .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats"]);
 

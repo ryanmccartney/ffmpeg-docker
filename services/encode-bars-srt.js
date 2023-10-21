@@ -26,8 +26,10 @@ const process = async (options) => {
             .inputOptions(["-f lavfi"])
             .output(
                 `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&latency=${
-                    options?.latency || 250
-                }`
+                    parseInt(options?.latency) * 1000 || "250000"
+                }&mode=${options?.mode || "caller"}&ipttl=${options?.ttl || "64"}&iptos=${
+                    options?.tos || "104"
+                }&transtype=${options?.transtype || "live"}`
             )
             .outputOptions(["-preset veryfast", "-f mpegts"])
             .videoCodec("libx264")
