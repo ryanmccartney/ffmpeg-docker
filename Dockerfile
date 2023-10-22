@@ -4,6 +4,7 @@
 # DESC: FFmpeg compiled with configurable options link BMD Decklink or Newtec NDI
 
 FROM ubuntu:jammy
+USER root
 
 ARG DECKLINK_SUPPORT="false"
 ARG DECLINK_SDK_URL="https://swr.cloud.blackmagicdesign.com/DeckLink/v12.4.1/Blackmagic_DeckLink_SDK_12.4.1.zip?verify=1697909201-45BDvNhH%2Fz5NbY6ai6b6cMKMIuFPZk3DUylMOXgCfvM%3D"

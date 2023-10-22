@@ -7,16 +7,16 @@ const jobManager = require("@utils/jobManager");
 const filterCombine = require("@services/filter-combine");
 const filterText = require("@services/filter-text");
 
-module.exports = async (options) => {
+const process = async (options) => {
     const response = { options: options };
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(options.cardName, `Encode: Decklink to HLS (${options?.output || "JobID"}.m3u8)`, [
-            "encode",
-            "hls",
-            "decklink",
-        ]);
+        const job = await jobManager.start(
+            options.cardName,
+            `Encode: Decklink to HLS (${options?.output || "JobID"}.m3u8)`,
+            ["encode", "hls", "decklink"]
+        );
 
         response.hls = `/api/hls/${options?.output || job.jobId}.m3u8`;
 
@@ -61,8 +61,12 @@ module.exports = async (options) => {
 
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
-            jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
-            return { options: options, command: commandString };
+            response.job = jobManager.update(job?.jobId, {
+                command: commandString,
+                pid: command.ffmpegProc.pid,
+                options: options,
+            });
+            return response;
         });
 
         command.on("stderr", function (stderrLine) {
@@ -86,7 +90,7 @@ module.exports = async (options) => {
         response.error = error.message;
     }
 
-    response.job = jobManager.get(`${options.address}:${options.port}`);
+    response.job = await jobManager.get(options.cardName);
     return response;
 };
 

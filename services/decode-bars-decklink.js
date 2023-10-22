@@ -72,7 +72,7 @@ const process = async (options) => {
         response.error = error.message;
     }
 
-    response.job = jobManager.get(`${options.address}:${options.port}`);
+    response.job = await jobManager.get(options.cardName);
     return response;
 };
 

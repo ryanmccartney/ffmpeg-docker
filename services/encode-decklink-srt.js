@@ -12,11 +12,11 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(options.cardName, `Encode: ${options.cardName} to SRT srt://${options.address}:${options.port}`, [
-            "encode",
-            "srt",
-            "decklink",
-        ]);
+        const job = jobManager.start(
+            options.cardName,
+            `Encode: ${options.cardName} to SRT srt://${options.address}:${options.port}`,
+            ["encode", "srt", "decklink"]
+        );
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
@@ -79,6 +79,9 @@ const process = async (options) => {
         logger.error(error.message);
         response.error = error.message;
     }
+
+    response.job = await jobManager.get(options.cardName);
+    return response;
 };
 
 module.exports = process;

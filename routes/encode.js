@@ -10,7 +10,9 @@ const encodeBarsRtmp = require("@services/encode-bars-rtmp");
 const encodeBarsUdp = require("@services/encode-bars-udp");
 const encodeBarsSrt = require("@services/encode-bars-srt");
 const encodeBarsHls = require("@services/encode-bars-hls");
+const encodeDecklinkFile = require("@services/encode-decklink-file");
 const encodeDecklinkSrt = require("@services/encode-decklink-srt");
+const encodeDecklinkUdp = require("@services/encode-decklink-udp");
 const encodeDecklinkRtmp = require("@services/encode-decklink-rtmp");
 const encodeDecklinkHls = require("@services/encode-decklink-hls");
 
@@ -198,6 +200,23 @@ router.get("/bars/hls", async (req, res, next) => {
 
 /**
  * @swagger
+ * /encode/decklink/file:
+ *    get:
+ *      description: Takes Decklink input in SDI and encodes it as a file.
+ *      tags: [encode]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/decklink/file", async (req, res, next) => {
+    const response = await encodeDecklinkFile(req.body);
+    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+});
+
+/**
+ * @swagger
  * /encode/decklink/srt:
  *    get:
  *      description: Takes Decklink input in SDI and encodes it as SRT.
@@ -210,6 +229,23 @@ router.get("/bars/hls", async (req, res, next) => {
  */
 router.get("/decklink/srt", async (req, res, next) => {
     const response = await encodeDecklinkSrt(req.body);
+    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+});
+
+/**
+ * @swagger
+ * /encode/decklink/udp:
+ *    get:
+ *      description: Takes Decklink input in SDI and encodes it as UDP.
+ *      tags: [encode]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/decklink/udp", async (req, res, next) => {
+    const response = await encodeDecklinkUdp(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 

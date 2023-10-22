@@ -17,3 +17,11 @@
 # VMAF
 /data/vmaf/*
 !/data/vmaf/.gitkeep
+
+# HLS
+/data/hls/*
+!/data/hls/.gitkeep
+
+# QR
+/data/qr/*
+!/data/qr/.gitkeep
