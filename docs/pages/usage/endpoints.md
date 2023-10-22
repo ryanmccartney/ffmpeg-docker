@@ -60,31 +60,6 @@ Sets the config for an individual Decklink card
 | ---- | ----------- |
 | 200  | Success     |
 
-### /decklink/:cardIndex/file
-
-#### GET
-
-##### Description
-
-Sends a file to a decklink output
-
-##### Parameters
-
-| Name     | Located in | Description                                                                                              | Required | Schema  |
-| -------- | ---------- | -------------------------------------------------------------------------------------------------------- | -------- | ------- |
-| filename | formData   | Filename and extension of media to playout. E.g - test.mp4                                               | Yes      | string  |
-| cardName | formData   | The name of the BMD Decklink cards. E.g - "DeckLink SDI"                                                 | Yes      | string  |
-| font     | formData   | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes      | string  |
-| offset   | formData   | Offset for time in hours. E.g 3, -3                                                                      | No       | number  |
-| timecode | formData   | Show the timecode line - true,false                                                                      | No       | boolean |
-| repeat   | formData   | Decides whether the media loops or not                                                                   | No       | boolean |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
 ### /decklink/:cardIndex/audio
 
 #### GET
@@ -127,20 +102,6 @@ Record the input of a decklink card index to file
 | offset   | formData   | Offset for time in hours. E.g 3, -3                                                                      | No       | number  |
 | timecode | formData   | Show the timecode line - true,false                                                                      | No       | boolean |
 | repeat   | formData   | Decides whether the media loops or not                                                                   | No       | boolean |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-### /decklink/:cardIndex/bars
-
-#### GET
-
-##### Description
-
-Sends some SMPTE bars to a decklink output
 
 ##### Responses
 
@@ -198,7 +159,46 @@ Takes an SRT input and turns it into a file.
 
 ##### Description
 
-Takes an SRT input and turns it into a file.
+Takes an SRT input and outputs it to a decklink card.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /decode/udp/decklink
+
+#### GET
+
+##### Description
+
+Takes an UDP input and outputs it to a decklink card.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /decode/bars/decklink
+
+#### GET
+
+##### Description
+
+Takes a set of test Bars as an input and outputs it to a decklink card.
+
+##### Parameters
+
+| Name     | Located in | Description                                                                                              | Required | Schema  |
+| -------- | ---------- | -------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| filename | formData   | Filename and extension of media to playout. E.g - test.mp4                                               | Yes      | string  |
+| cardName | formData   | The name of the BMD Decklink cards. E.g - "DeckLink SDI"                                                 | Yes      | string  |
+| font     | formData   | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes      | string  |
+| offset   | formData   | Offset for time in hours. E.g 3, -3                                                                      | No       | number  |
+| timecode | formData   | Show the timecode line - true,false                                                                      | No       | boolean |
+| repeat   | formData   | Decides whether the media loops or not                                                                   | No       | boolean |
 
 ##### Responses
 
