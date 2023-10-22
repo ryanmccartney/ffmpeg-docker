@@ -1,4 +1,19 @@
 /logs
 /node_modules
-/data
 .DS_Store
+
+# Media
+/data/media/*
+!/data/media/.gitkeep
+
+# Playlist
+/data/playlist/*
+!/data/playlist/.gitkeep
+
+# Thumbnail
+/data/thumbnail/*
+!/data/thumbnail/.gitkeep
+
+# VMAF
+/data/vmaf/*
+!/data/vmaf/.gitkeep

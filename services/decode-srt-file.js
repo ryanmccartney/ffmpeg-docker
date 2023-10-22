@@ -30,7 +30,9 @@ const process = async (options) => {
                     parseInt(options?.latency) * 1000 || "250000"
                 }&mode=${options?.mode || "caller"}&ipttl=${options?.ttl || "64"}&iptos=${
                     options?.tos || "104"
-                }&transtype=${options?.transtype || "live"}&passphrase=${options.passphrase}`
+                }&transtype=${options?.transtype || "live"}${
+                    options.passphrase ? `&passphrase=${options.passphrase}` : ""
+                }`
             )
             .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats"]);
 
@@ -75,8 +77,12 @@ const process = async (options) => {
 
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
-            jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
-            return { options: options, command: commandString };
+            response.job = jobManager.update(job?.jobId, {
+                command: commandString,
+                pid: command.ffmpegProc.pid,
+                options: options,
+            });
+            return response;
         });
 
         command.on("stderr", function (stderrLine) {

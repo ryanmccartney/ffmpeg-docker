@@ -1,5 +1,0 @@
-ffconcat version 1.0
-# This is a comment.  For options see https://ffmpeg.org/ffmpeg-all.html#Syntax-1
-file 1.flv
-file 2.flv
-file 3.flv

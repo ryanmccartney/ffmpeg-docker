@@ -28,6 +28,7 @@
     "node-cache": "^5.1.2",
     "node-gyp": "^9.4.0",
     "ntp-time": "^2.0.2",
+    "os": "^0.1.2",
     "qrcode": "^1.5.3",
     "serve-favicon": "^2.5.0",
     "sharp": "^0.32.6",

@@ -2,9 +2,9 @@
 # Install host dependencies for BMD Decklink
 
 #Set download link and driver version as below
-DEKSTOP_VIDEO_DRIVER_URL="https://sw.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz?Key-Pair-Id=APKAJTKA3ZJMJRQITVEA&Signature=UjDtda2H6z/WMC1uYZ5Nm2l85Nbja0HGtWrMkSkCPjB8zUENNwAlyI8B5auUkH22znBETsVaa0jNCjndy9DxGfZE3e0nbx83KJA4ZZE2DkVOk2z+eKiYdrMkij5lKkUvZmyACs2HtRi6bDlKX/YETzmq1+48xyONKxhUZa27KZIh4tzqNP8TWkeGGbynQGn6TNsdtyeFQVomBWPAPvFrZMidyYra3Zk6uA6uTjyCu8j+5ZpZCk7mWq94AoWYpSH0YzbeT1+c4W11VaXQcJGQRSBImgZxkYiEDmnoR6rSa9wJm0HBxz++Ou1X1oLlaBXOB+fj0YSI9St/dcewg6I6og==&Expires=1688676477"
+DEKSTOP_VIDEO_DRIVER_URL="https://swr.cloud.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz?verify=1697908812-1f7rrMkhP0aqofYc4hhVOuLdCJhqpWd2B2Dl8%2Bten0k%3D"
 DESKTOP_VIDEO_DRIVER_VERSION="12.4.1"
-DESKTOP_VIDEO_DRIVER_DEB="desktopvideo_12.4a4_amd64.deb"
+DESKTOP_VIDEO_DRIVER_DEB="desktopvideo_12.4.1a15_amd64"
 
 apt update
 apt install -y wget dkms dctrl-tools

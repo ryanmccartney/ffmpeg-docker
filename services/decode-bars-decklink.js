@@ -3,37 +3,30 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
-const jobManager = require("@utils/jobManager");
 const filterCombine = require("@services/filter-combine");
 const filterText = require("@services/filter-text");
+const jobManager = require("@utils/jobManager");
 
 const process = async (options) => {
     const response = { options: options };
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(options.cardName, `Encode: ${options.cardName} to SRT srt://${options.address}:${options.port}`, [
-            "encode",
-            "srt",
+        const job = jobManager.start(`${options.cardName}`, `Decode: Bars to ${options.cardName}`, [
+            "decode",
+            "bars",
             "decklink",
         ]);
 
-        const filters = await filterCombine(await filterText({ ...options, ...job }));
+        const filters = await filterCombine(await filterText(options));
 
         const command = ffmpeg({ logger: logger })
-            .input(options.cardName)
-            .inputFormat("decklink")
-            .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats", "-re"])
-            .output(
-                `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&latency=${
-                    parseInt(options?.latency) * 1000 || "250000"
-                }&mode=${options?.mode || "caller"}&ipttl=${options?.ttl || "64"}&iptos=${
-                    options?.tos || "104"
-                }&transtype=${options?.transtype || "live"}`
-            )
-            .outputOptions(["-preset veryfast", "-f mpegts"])
-            .videoCodec("libx264")
-            .videoBitrate(options.bitrate);
+            .addInput(`${options.type || "smptehdbars"}=rate=25:size=1920x1080`)
+            .inputOptions(["-re", "-f lavfi"])
+            .addInput(`sine=frequency=${options.frequency || 1000}:sample_rate=48000`)
+            .inputOptions(["-f lavfi"])
+            .outputOptions(["-pix_fmt uyvy422", "-s 1920x1080", "-ac 2", "-f decklink"])
+            .output(options.cardName);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -50,13 +43,18 @@ const process = async (options) => {
         }
 
         command.on("end", () => {
-            logger.info("Finished encoding decklink card to SRT");
+            logger.info("Finished processing");
             jobManager.end(job?.jobId, false);
         });
+
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
-            jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
-            return { options: options, command: commandString };
+            response.job = jobManager.update(job?.jobId, {
+                command: commandString,
+                pid: command.ffmpegProc.pid,
+                options: options,
+            });
+            return response;
         });
 
         command.on("stderr", function (stderrLine) {
@@ -66,12 +64,6 @@ const process = async (options) => {
         command.on("error", function (error) {
             logger.error(error);
             jobManager.end(job?.jobId, false);
-
-            //If IO Error (Network error, restart)
-            if (error.toString().includes("Input/output error") || error.toString().includes("Conversion failed!")) {
-                logger.info("Restarting due to IO error");
-                process(options);
-            }
         });
 
         command.run();
@@ -79,6 +71,9 @@ const process = async (options) => {
         logger.error(error.message);
         response.error = error.message;
     }
+
+    response.job = jobManager.get(`${options.address}:${options.port}`);
+    return response;
 };
 
 module.exports = process;

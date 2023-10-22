@@ -6,8 +6,8 @@
 FROM ubuntu:jammy
 
 ARG DECKLINK_SUPPORT="false"
-ARG DECLINK_SDK_URL="https://sw.blackmagicdesign.com/DeckLink/v12.4.1/Blackmagic_DeckLink_SDK_12.4.1.zip"
-ARG DECKLINK_DRIVER_URL="https://sw.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz"
+ARG DECLINK_SDK_URL="https://swr.cloud.blackmagicdesign.com/DeckLink/v12.4.1/Blackmagic_DeckLink_SDK_12.4.1.zip?verify=1697909201-45BDvNhH%2Fz5NbY6ai6b6cMKMIuFPZk3DUylMOXgCfvM%3D"
+ARG DECKLINK_DRIVER_URL="https://swr.cloud.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz?verify=1697908812-1f7rrMkhP0aqofYc4hhVOuLdCJhqpWd2B2Dl8%2Bten0k%3D"
 ARG DECKLINK_DRIVER_VERSION="12.4.1"
 
 ARG NDI_SUPPORT="false"
@@ -59,9 +59,9 @@ RUN apt -y install \
   libaom-dev \
   libdav1d-dev \
   libopus-dev \
-  libarchive-tools 
-#   linux-oem-22.04c \
-#   linux-tools-oem-22.04c
+  libarchive-tools \
+  linux-oem-22.04c \
+  linux-tools-oem-22.04c
 
 # Get Blackmagic Desktop Video SDK (Link expires... You'll need to get a new one)
 RUN if [ "$DECKLINK_SUPPORT" = "true" ];\
@@ -222,7 +222,7 @@ RUN ./configure \
         --enable-gpl \
         --enable-nonfree \
         #--enable-libndi_newtek \
-        #--enable-decklink \
+        --enable-decklink \
         --enable-libsrt \
         --disable-libaom \
         --disable-libsvtav1\

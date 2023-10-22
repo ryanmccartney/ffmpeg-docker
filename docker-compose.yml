@@ -8,24 +8,25 @@ version: "3.8"
 services:
     ffmpeg:
         container_name: ffmpeg
+        network_mode: "host"
         build:
             context: "."
             args:
-                DECKLINK_SUPPORT: "false"
-                DECLINK_SDK_URL: "https://sw.blackmagicdesign.com/DeckLink/v12.4.1/Blackmagic_DeckLink_SDK_12.4.1.zip?Key-Pair-Id=APKAJTKA3ZJMJRQITVEA&Signature=MxoRQCMnu9Ag46rAfF7TbLiYNiFXb8D8PmRi3QDZ+M8FZVfTe08DOk4xGQHcpfeMnpKs2kUs6K8Sd0wwLYmw8sUvBY1iBWU40slDYwi0PRp6O2wyJfWvd8yJpV4/oepnovGpJoboqnaWQCIUwdm2e5F8VpDP8ambdchTyTHCLWbDUgK8kXTpLLFN7kDE3Et4dbsDhjosWcr7Tat4MBWpYSLF7jkMO63eTclB/v0Bx2jI/QPzzK2eIWOftHw0nVeooduueQfggrSWnakfykMuOUKouxp+R84p+zVYhJ2ONht+Wx3k1FNs89QIuBD6p7WUYskqKah8pRcOkv25sThbDg==&Expires=1689078171"
-                DECKLINK_DRIVER_URL: "https://sw.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz?Key-Pair-Id=APKAJTKA3ZJMJRQITVEA&Signature=PVEpuAZiRv0qCD6P4Ulv8/0XEsFftbYhJZMMF3tY1S+afb+RxBy3SW/JhXzgXSP3oXBd1JNVyTPxYrpHpa198yYl8ZrZsw862MCHzkBKwupqKv0o9bpucb7padXUFvSSxOoLa4piw15jobD9BjFPDaaDr7cZHd7Mi9ci9hhGnZ68qB6/d1rP+AUV1rMpsbsr5lG7zYZNklnCOQBPTmyZmuGm+SEp6RmOks6Bp9dBAQx+R4Cde1ym4K7q5gsVKk9QvQguOzVl/EZ7tWxMWanPlajIqFlSv7ETHQRacdy74tBJVMT3oa0tSPCtGp/tUrBudlRdRc7EA7sdRDsfjwmHXQ==&Expires=1689078142"
+                DECKLINK_SUPPORT: "true"
+                DECLINK_SDK_URL: "https://swr.cloud.blackmagicdesign.com/DeckLink/v12.4.1/Blackmagic_DeckLink_SDK_12.4.1.zip?verify=1697909201-45BDvNhH%2Fz5NbY6ai6b6cMKMIuFPZk3DUylMOXgCfvM%3D"
+                DECKLINK_DRIVER_URL: "https://swr.cloud.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz?verify=1697908812-1f7rrMkhP0aqofYc4hhVOuLdCJhqpWd2B2Dl8%2Bten0k%3D"
                 DECKLINK_DRIVER_VERSION: "12.4.1"
                 NDI_SUPPORT: "false"
                 NDI_SDK_URL: "https://downloads.ndi.tv/SDK/NDI_SDK_Linux/Install_NDI_SDK_v5_Linux.tar.gz"
         restart: always
         volumes:
             - ./:/home/node/app
-        # devices:
-        #     - /dev/blackmagic/dv0:/dev/blackmagic/dv0
+        devices:
+             - /dev/blackmagic/io0:/dev/blackmagic/io0
         environment:
             NODE_ENV: "development"
             PORT: 80
-            HOST: "192.168.88.251"
+            HOST: "172.26.108.42"
             WEB_GUI: "true"
         ports:
             - 80:80

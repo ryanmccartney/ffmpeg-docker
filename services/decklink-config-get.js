@@ -1,8 +1,8 @@
 const logger = require("@utils/logger")(module);
+const os = require("os");
 
 module.exports = async (index) => {
-    console.log(os.arch());
-    if (os.arch()) {
+    if (os.arch() === "x64") {
         const macadam = require("macadam");
         const deviceInfo = await macadam.getDeviceConfig(parseInt(index));
         return deviceInfo;
