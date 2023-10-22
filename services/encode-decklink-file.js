@@ -14,11 +14,11 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(
-            options.cardName,
-            `Encode: ${options.cardName} to file srt://${options.address}:${options.port}`,
-            ["decode", "file", "decklink"]
-        );
+        const job = jobManager.start(`${options.cardName}in`, `Encode: ${options.cardName} to file`, [
+            "decode",
+            "file",
+            "decklink",
+        ]);
 
         const fileName = `${options.filename || job.jobId}${getFileExtension(options?.format)}`;
 
@@ -27,7 +27,14 @@ const process = async (options) => {
         let command = ffmpeg({ logger: logger })
             .input(options.cardName)
             .inputFormat("decklink")
-            .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats", "-re"]);
+            .inputOptions([
+                "-protocol_whitelist",
+                "srt,udp,rtp",
+                "-stats",
+                "-re",
+                "-duplex_mode",
+                `${options?.duplexMode || "unset"}`,
+            ]);
 
         if (options.chunkSize) {
             command

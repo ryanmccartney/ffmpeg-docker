@@ -1,13 +1,13 @@
 const logger = require("@utils/logger")(module);
 const os = require("os");
 
-module.exports = async (index) => {
-    if (os.arch() === "x64") {
+module.exports = async (options) => {
+    if (os.arch() === "x64" && os.platform() === "linux") {
         const macadam = require("macadam");
         let status;
         try {
             status = await macadam.setDeviceConfig({
-                deviceIndex: parseInt(index),
+                deviceIndex: parseInt(options?.cardIndex || 0),
                 duplexMode: macadam.bmdDuplexModeFull,
             });
         } catch (error) {

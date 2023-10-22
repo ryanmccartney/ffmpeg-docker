@@ -55,8 +55,8 @@ router.get("/:cardIndex", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/:cardIndex", async (req, res, next) => {
-    const response = await setDecklinkConfig(req.params.cardIndex, req.body);
+router.post("/", async (req, res, next) => {
+    const response = await setDecklinkConfig(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 

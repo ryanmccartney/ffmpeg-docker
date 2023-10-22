@@ -3,6 +3,7 @@
 const router = require("express").Router();
 const hashResponse = require("@utils/hash-response");
 const setTime = require("@services/system-time-set");
+const systemStats = require("@services/system-stats");
 const jobKill = require("@services/system-job-kill");
 const jobGet = require("@services/system-job-get");
 const jobGetAll = require("@services/system-job-getall");
@@ -66,6 +67,23 @@ router.get("/time", async (req, res, next) => {
         },
     };
     hashResponse(res, req, response);
+});
+
+/**
+ * @swagger
+ * /system/stas:
+ *    get:
+ *      description: Get system stats; CPU, memory, etc.
+ *      tags: [system]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/stats", async (req, res, next) => {
+    const response = await systemStats();
+    hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
 });
 
 /**

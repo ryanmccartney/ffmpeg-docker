@@ -13,7 +13,7 @@ const process = async (options) => {
 
     try {
         const job = jobManager.start(
-            options.cardName,
+            `${options.cardName}in`,
             `Encode: ${options.cardName} to SRT srt://${options.address}:${options.port}`,
             ["encode", "srt", "decklink"]
         );
@@ -23,13 +23,22 @@ const process = async (options) => {
         const command = ffmpeg({ logger: logger })
             .input(options.cardName)
             .inputFormat("decklink")
-            .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats", "-re"])
+            .inputOptions([
+                "-protocol_whitelist",
+                "srt,udp,rtp",
+                "-stats",
+                "-re",
+                "-flags low_delay",
+                "-async 1",
+                "-duplex_mode",
+                `${options?.duplexMode || "unset"}`,
+            ])
             .output(
                 `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&latency=${
                     parseInt(options?.latency) * 1000 || "250000"
                 }&mode=${options?.mode || "caller"}&ipttl=${options?.ttl || "64"}&iptos=${
                     options?.tos || "104"
-                }&transtype=${options?.transtype || "live"}`
+                }&transtype=${options?.transtype || "live"}&maxbw=-1`
             )
             .outputOptions(["-preset veryfast", "-f mpegts"])
             .videoCodec("libx264")

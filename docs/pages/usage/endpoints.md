@@ -85,30 +85,6 @@ Sends an audio file to a decklink output
 | ---- | ----------- |
 | 200  | Success     |
 
-### /decklink/:cardIndex/record
-
-#### GET
-
-##### Description
-
-Record the input of a decklink card index to file
-
-##### Parameters
-
-| Name     | Located in | Description                                                                                              | Required | Schema  |
-| -------- | ---------- | -------------------------------------------------------------------------------------------------------- | -------- | ------- |
-| cardName | formData   | The name of the BMD Decklink cards. E.g - "DeckLink SDI"                                                 | Yes      | string  |
-| font     | formData   | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes      | string  |
-| offset   | formData   | Offset for time in hours. E.g 3, -3                                                                      | No       | number  |
-| timecode | formData   | Show the timecode line - true,false                                                                      | No       | boolean |
-| repeat   | formData   | Decides whether the media loops or not                                                                   | No       | boolean |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
 ### /decklink/:cardIndex/stop
 
 #### GET
@@ -334,6 +310,20 @@ HLS encode test bars.
 | ---- | ----------- |
 | 200  | Success     |
 
+### /encode/decklink/file
+
+#### GET
+
+##### Description
+
+Takes Decklink input in SDI and encodes it as a file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
 ### /encode/decklink/srt
 
 #### GET
@@ -341,6 +331,20 @@ HLS encode test bars.
 ##### Description
 
 Takes Decklink input in SDI and encodes it as SRT.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /encode/decklink/udp
+
+#### GET
+
+##### Description
+
+Takes Decklink input in SDI and encodes it as UDP.
 
 ##### Responses
 
@@ -539,6 +543,20 @@ Set NTP server and sync.
 ##### Description
 
 Get server time.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /system/stas
+
+#### GET
+
+##### Description
+
+Get system stats; CPU, memory, etc.
 
 ##### Responses
 

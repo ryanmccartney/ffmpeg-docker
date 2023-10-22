@@ -84,43 +84,6 @@ paths:
       responses:
         "200":
           description: Success
-  /decklink/:cardIndex/record:
-    get:
-      description: Record the input of a decklink card index to file
-      tags:
-        - decklink
-      parameters:
-        - in: formData
-          name: cardName
-          type: string
-          description: The name of the BMD Decklink cards. E.g - "DeckLink SDI"
-          required: true
-        - in: formData
-          name: font
-          type: string
-          description: The name of the font file to use for text overlay. Must use the
-            TrueType fonts. E.g - "swansea-bold.ttf"
-          required: font
-        - in: formData
-          name: offset
-          type: number
-          description: Offset for time in hours. E.g 3, -3
-          required: false
-        - in: formData
-          name: timecode
-          type: boolean
-          description: Show the timecode line - true,false
-          required: false
-        - in: formData
-          name: repeat
-          type: boolean
-          description: Decides whether the media loops or not
-          required: false
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
   /decklink/:cardIndex/stop:
     get:
       description: Stops the decklink output on a particular index
@@ -341,9 +304,29 @@ paths:
       responses:
         "200":
           description: Success
+  /encode/decklink/file:
+    get:
+      description: Takes Decklink input in SDI and encodes it as a file.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
   /encode/decklink/srt:
     get:
       description: Takes Decklink input in SDI and encodes it as SRT.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /encode/decklink/udp:
+    get:
+      description: Takes Decklink input in SDI and encodes it as UDP.
       tags:
         - encode
       produces:
@@ -483,6 +466,16 @@ paths:
           description: Success
     get:
       description: Get server time.
+      tags:
+        - system
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /system/stas:
+    get:
+      description: Get system stats; CPU, memory, etc.
       tags:
         - system
       produces:

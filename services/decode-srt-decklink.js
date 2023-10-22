@@ -12,7 +12,7 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(options.cardName, `Decode: SRT to ${options.cardName}`, [
+        const job = jobManager.start(`${options.cardName}out`, `Decode: SRT to ${options.cardName}`, [
             "decode",
             "srt",
             "decklink",
@@ -44,6 +44,8 @@ const process = async (options) => {
                 "-ac 16",
                 "-f decklink",
                 `-af volume=${options?.volume || 0.25}`,
+                "-duplex_mode",
+                `${options?.duplexMode || "unset"}`,
                 "-flags low_delay",
                 "-bufsize 0",
                 "-muxdelay 0",
