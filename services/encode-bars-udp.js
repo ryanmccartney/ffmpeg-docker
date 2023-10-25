@@ -34,6 +34,20 @@ const process = async (options) => {
             .videoCodec("libx264")
             .videoBitrate(options.bitrate);
 
+        if (!options.vbr) {
+            command.outputOptions([
+                `-minrate ${options?.bitrate || "5M"}`,
+                `-maxrate ${options?.bitrate || "5M"}`,
+                `-bufsize 500K`,
+            ]);
+        } else {
+            command.outputOptions([
+                `-minrate ${options?.minBitrate || "5M"}`,
+                `-maxrate ${options?.mBitrate || "5M"}`,
+                `-bufsize 500K`,
+            ]);
+        }
+
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
         }
