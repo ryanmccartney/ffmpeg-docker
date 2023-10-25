@@ -39,12 +39,13 @@ const process = async (options) => {
             command.outputOptions([
                 `-minrate ${options?.bitrate || "5M"}`,
                 `-maxrate ${options?.bitrate || "5M"}`,
+                `-muxrate ${options?.bitrate || "5M"}`,
                 `-bufsize 500K`,
             ]);
         } else {
             command.outputOptions([
                 `-minrate ${options?.minBitrate || "5M"}`,
-                `-maxrate ${options?.mBitrate || "5M"}`,
+                `-maxrate ${options?.maxBitrate || "5M"}`,
                 `-bufsize 500K`,
             ]);
         }
