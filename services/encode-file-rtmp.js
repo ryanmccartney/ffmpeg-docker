@@ -28,7 +28,7 @@ const process = async (options) => {
             .output(rtmpAddress)
             .outputOptions(["-f flv"])
             .videoCodec("libx264")
-            .videoBitrate(options.bitrate);
+            .outputOptions(`-b:v ${options?.bitrate || "5M"}`);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);

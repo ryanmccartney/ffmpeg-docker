@@ -33,7 +33,7 @@ const process = async (options) => {
             )
             .outputOptions(["-preset veryfast", "-f mpegts"])
             .videoCodec("libx264")
-            .videoBitrate(options.bitrate);
+            .outputOptions(`-b:v ${options?.bitrate || "5M"}`);
 
         if (!options.vbr) {
             command.outputOptions([
