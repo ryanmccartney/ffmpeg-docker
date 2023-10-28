@@ -5,7 +5,9 @@ const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
 const filterCombine = require("@services/filter-combine");
 const filterText = require("@services/filter-text");
+const filterInterlace = require("@services/filter-interlace");
 const jobManager = require("@utils/jobManager");
+const setCodec = require("@utils/set-codec");
 
 const process = async (options) => {
     const response = { options: options };
@@ -23,9 +25,12 @@ const process = async (options) => {
             ["encode", "udp"]
         );
 
-        const filters = await filterCombine(await filterText({ ...options, ...job }));
+        const filters = await filterCombine(
+            await filterText({ ...options, ...job }),
+            await filterInterlace(options?.interlace)
+        );
 
-        const command = ffmpeg({ logger: logger })
+        let command = ffmpeg({ logger: logger })
             .input(path.join(__dirname, "..", "data", "media", options.filename))
             .inputOptions([
                 repeat,
@@ -41,15 +46,18 @@ const process = async (options) => {
                     options?.buffer || 65535
                 }`
             )
-            .outputOptions(["-preset veryfast", "-f mpegts", "-flags low_delay", "-bufsize 0", "-muxdelay 0"])
-            .videoCodec("libx264")
+            .outputOptions([
+                "-f mpegts",
+                `-reorder_queue_size ${options?.jitterBuffer || "25"}`,
+                "-flags low_delay",
+                "-muxdelay 0",
+            ])
             .outputOptions(`-b:v ${options?.bitrate || "5M"}`);
 
         if (!options.vbr) {
             command.outputOptions([
                 `-minrate ${options?.bitrate || "5M"}`,
                 `-maxrate ${options?.bitrate || "5M"}`,
-                `-muxrate ${options?.bitrate || "5M"}`,
                 `-bufsize 500K`,
             ]);
         } else {
@@ -59,6 +67,8 @@ const process = async (options) => {
                 `-bufsize 500K`,
             ]);
         }
+
+        command = setCodec(command, options);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
