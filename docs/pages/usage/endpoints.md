@@ -20,144 +20,7 @@ ryan@mccartney.info
 
 ---
 
-### /decklink
-
-#### GET
-
-##### Description
-
-Gets the info about currently attached Decklink cards
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-### /decklink/:cardIndex
-
-#### GET
-
-##### Description
-
-Gets the config for an individual Decklink card
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-#### POST
-
-##### Description
-
-Sets the config for an individual Decklink card
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-### /decklink/:cardIndex/audio
-
-#### GET
-
-##### Description
-
-Sends an audio file to a decklink output
-
-##### Parameters
-
-| Name     | Located in | Description                                                                                              | Required | Schema  |
-| -------- | ---------- | -------------------------------------------------------------------------------------------------------- | -------- | ------- |
-| filename | formData   | Filename and extension of media to playout. E.g - test.mp4                                               | Yes      | string  |
-| cardName | formData   | The name of the BMD Decklink cards. E.g - "DeckLink SDI"                                                 | Yes      | string  |
-| font     | formData   | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes      | string  |
-| offset   | formData   | Offset for time in hours. E.g 3, -3                                                                      | No       | number  |
-| timecode | formData   | Show the timecode line - true,false                                                                      | No       | boolean |
-| repeat   | formData   | Decides whether the media loops or not                                                                   | No       | boolean |
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-### /decklink/:cardIndex/stop
-
-#### GET
-
-##### Description
-
-Stops the decklink output on a particular index
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-### /decklink/:cardIndex/pause
-
-#### GET
-
-##### Description
-
-Pauses the decklink output on a particular index
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
----
-
-### /decode/srt/file
-
-#### GET
-
-##### Description
-
-Takes an SRT input and turns it into a file.
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-### /decode/srt/decklink
-
-#### GET
-
-##### Description
-
-Takes an SRT input and outputs it to a decklink card.
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-### /decode/udp/decklink
-
-#### GET
-
-##### Description
-
-Takes an UDP input and outputs it to a decklink card.
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-### /decode/bars/decklink
+### /bars/decklink
 
 #### GET
 
@@ -169,6 +32,102 @@ Takes a set of test Bars as an input and outputs it to a decklink card.
 
 | Name     | Located in | Description                                                                                              | Required | Schema  |
 | -------- | ---------- | -------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| cardName | formData   | The name of the BMD Decklink cards. E.g - "DeckLink SDI"                                                 | Yes      | string  |
+| font     | formData   | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes      | string  |
+| offset   | formData   | Offset for time in hours. E.g 3, -3                                                                      | No       | number  |
+| timecode | formData   | Show the timecode line - true,false                                                                      | No       | boolean |
+| repeat   | formData   | Decides whether the media loops or not                                                                   | No       | boolean |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /bars/srt
+
+#### GET
+
+##### Description
+
+SRT encode test bars.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /bars/rtmp
+
+#### GET
+
+##### Description
+
+RTMP encode test bars.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /bars/udp
+
+#### GET
+
+##### Description
+
+UDP encode test bars.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /bars/hls
+
+#### GET
+
+##### Description
+
+HLS encode test bars.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+---
+
+### /file
+
+#### GET
+
+##### Description
+
+Download file by name.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /file/decklink
+
+#### GET
+
+##### Description
+
+Takes a file as an input and outputs it to a decklink card.
+
+##### Parameters
+
+| Name     | Located in | Description                                                                                              | Required | Schema  |
+| -------- | ---------- | -------------------------------------------------------------------------------------------------------- | -------- | ------- |
 | filename | formData   | Filename and extension of media to playout. E.g - test.mp4                                               | Yes      | string  |
 | cardName | formData   | The name of the BMD Decklink cards. E.g - "DeckLink SDI"                                                 | Yes      | string  |
 | font     | formData   | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes      | string  |
@@ -182,9 +141,7 @@ Takes a set of test Bars as an input and outputs it to a decklink card.
 | ---- | ----------- |
 | 200  | Success     |
 
----
-
-### /encode/file/srt
+### /file/srt
 
 #### GET
 
@@ -212,7 +169,7 @@ SRT encode a file.
 | ---- | ----------- |
 | 200  | Success     |
 
-### /encode/file/udp
+### /file/udp
 
 #### GET
 
@@ -226,7 +183,7 @@ UDP encode a file.
 | ---- | ----------- |
 | 200  | Success     |
 
-### /encode/file/rtmp
+### /file/rtmp
 
 #### GET
 
@@ -240,7 +197,7 @@ RTMP encode a file.
 | ---- | ----------- |
 | 200  | Success     |
 
-### /encode/file/hls
+### /file/hls
 
 #### GET
 
@@ -254,63 +211,9 @@ HLS encode a file.
 | ---- | ----------- |
 | 200  | Success     |
 
-### /encode/bars/srt
+---
 
-#### GET
-
-##### Description
-
-SRT encode test bars.
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-### /encode/bars/rtmp
-
-#### GET
-
-##### Description
-
-RTMP encode test bars.
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-### /encode/bars/udp
-
-#### GET
-
-##### Description
-
-UDP encode test bars.
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-### /encode/bars/hls
-
-#### GET
-
-##### Description
-
-HLS encode test bars.
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-### /encode/decklink/file
+### /decklink/file
 
 #### GET
 
@@ -324,7 +227,7 @@ Takes Decklink input in SDI and encodes it as a file.
 | ---- | ----------- |
 | 200  | Success     |
 
-### /encode/decklink/srt
+### /decklink/srt
 
 #### GET
 
@@ -338,7 +241,7 @@ Takes Decklink input in SDI and encodes it as SRT.
 | ---- | ----------- |
 | 200  | Success     |
 
-### /encode/decklink/udp
+### /decklink/udp
 
 #### GET
 
@@ -352,7 +255,7 @@ Takes Decklink input in SDI and encodes it as UDP.
 | ---- | ----------- |
 | 200  | Success     |
 
-### /encode/decklink/rtmp
+### /decklink/rtmp
 
 #### GET
 
@@ -366,13 +269,41 @@ Takes Decklink input in SDI and encodes it as RTMP.
 | ---- | ----------- |
 | 200  | Success     |
 
-### /encode/decklink/hls
+### /decklink/hls
 
 #### GET
 
 ##### Description
 
 Takes Decklink input in SDI and encodes it as HLS.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+---
+
+### /decklink
+
+#### GET
+
+##### Description
+
+Gets the info about currently attached Decklink cards
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+#### POST
+
+##### Description
+
+Sets the config for an individual Decklink card
 
 ##### Responses
 
@@ -389,34 +320,6 @@ Takes Decklink input in SDI and encodes it as HLS.
 ##### Description
 
 Get the metadata in a media file.
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-### /file/bars
-
-#### GET
-
-##### Description
-
-Generate custom ident bars.
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-### /file/download
-
-#### GET
-
-##### Description
-
-Download file by name.
 
 ##### Responses
 
@@ -501,6 +404,52 @@ An HTML page showing a simple job manager
 ##### Description
 
 An HTML page showing VMAF test results as a chart
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+---
+
+### /udp/decklink
+
+#### GET
+
+##### Description
+
+Takes an UDP input and outputs it to a decklink card.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+---
+
+### /srt/file
+
+#### GET
+
+##### Description
+
+Takes an SRT input and turns it into a file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /srt/decklink
+
+#### GET
+
+##### Description
+
+Takes an SRT input and outputs it to a decklink card.
 
 ##### Responses
 

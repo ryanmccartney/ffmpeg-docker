@@ -15,12 +15,15 @@ const nodeEnv = process.env.NODE_ENV || "production";
 const documentation = require("@utils/documentation");
 const pageRouter = require("@routes/page");
 const systemRouter = require("@routes/system");
-const encodeRouter = require("@routes/encode");
-const decodeRouter = require("@routes/decode");
+const playlistRouter = require("@routes/playlist");
+
+const udpRouter = require("@routes/udp");
+const rtpRouter = require("@routes/rtp");
+const srtRouter = require("@routes/srt");
+const barsRouter = require("@routes/bars");
+const fileRouter = require("@routes/file");
 const vmafRouter = require("@routes/vmaf");
 const decklinkRouter = require("@routes/decklink");
-const fileRouter = require("@routes/file");
-const playlistRouter = require("@routes/playlist");
 
 const app = express();
 
@@ -59,13 +62,17 @@ app.use(cookieParser());
 
 app.use("/documentation", documentation);
 app.use("/api/system", systemRouter);
-app.use("/api/encode", encodeRouter);
-app.use("/api/decode", decodeRouter);
+app.use("/api/playlist", playlistRouter);
+app.use("/api/hls", express.static(path.join(__dirname, "..", "data", "hls")));
+
+//Input Routes /api/INPUT_FORMAT/OUTPUT_FORMAT
 app.use("/api/vmaf", vmafRouter);
 app.use("/api/decklink", decklinkRouter);
 app.use("/api/file", fileRouter);
-app.use("/api/playlist", playlistRouter);
-app.use("/api/hls", express.static(path.join(__dirname, "..", "data", "hls")));
+app.use("/api/udp", udpRouter);
+app.use("/api/srt", srtRouter);
+app.use("/api/rtp", rtpRouter);
+app.use("/api/bars", barsRouter);
 
 // Redirect /api to /documentation
 app.use("/api", function (req, res, next) {

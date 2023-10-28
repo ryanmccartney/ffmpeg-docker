@@ -3,58 +3,36 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
-const filterCombine = require("@services/filter-combine");
-const filterText = require("@services/filter-text");
-const setCodec = require("@utils/set-codec");
+const filterCombine = require("@utils/filter-combine");
+const filterText = require("@utils/filter-text");
 const jobManager = require("@utils/jobManager");
-const getFileExtension = require("@utils/get-extension");
 
 const process = async (options) => {
     const response = { options: options };
+
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(`${options.cardName}in`, `Encode: ${options.cardName} to file`, [
-            "decode",
-            "file",
-            "decklink",
-        ]);
+        const job = jobManager.start(`${options.cardName}`, `Bars to ${options.cardName}`, ["bars", "decklink"]);
 
-        const fileName = `${options.filename || job.jobId}${getFileExtension(options?.format)}`;
+        const filters = await filterCombine(await filterText(options));
 
-        const filters = await filterCombine(await filterText({ ...options, ...job }));
-
-        let command = ffmpeg({ logger: logger })
-            .input(options.cardName)
-            .inputFormat("decklink")
-            .inputOptions([
-                "-protocol_whitelist",
-                "srt,udp,rtp",
-                "-stats",
-                "-re",
-                "-duplex_mode",
-                `${options?.duplexMode || "unset"}`,
-            ]);
-
-        if (options.chunkSize) {
-            command
-                .outputOptions("-f", "segment")
-                .outputOptions("-segment_time", parseInt(options.chunkSize))
-                .outputOptions("-reset_timestamps", 1, "-y")
-                .output(
-                    `${path.join(
-                        __dirname,
-                        "..",
-                        "data",
-                        "media",
-                        `${fileName.split(".")[0]}-%03d.${fileName.split(".")[1]}`
-                    )}`
-                );
-        } else {
-            command.output(`${path.join(__dirname, "..", "data", "media", fileName)}`);
-        }
-
-        command = setCodec(command, options);
+        const command = ffmpeg({ logger: logger })
+            .addInput(`${options.type || "smptehdbars"}=rate=25:size=1920x1080`)
+            .inputOptions(["-re", "-f lavfi"])
+            .addInput(`sine=frequency=${options.frequency || 1000}:sample_rate=48000`)
+            .inputOptions(["-f lavfi"])
+            .outputOptions([
+                "-pix_fmt uyvy422",
+                "-s 1920x1080",
+                "-ac 16",
+                "-f decklink",
+                `-af volume=${options?.volume || 0.25}`,
+                "-flags low_delay",
+                "-bufsize 0",
+                "-muxdelay 0",
+            ])
+            .output(options.cardName);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);

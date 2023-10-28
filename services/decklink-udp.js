@@ -4,8 +4,8 @@ const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
 const jobManager = require("@utils/jobManager");
-const filterCombine = require("@services/filter-combine");
-const filterText = require("@services/filter-text");
+const filterCombine = require("@utils/filter-combine");
+const filterText = require("@utils/filter-text");
 
 const process = async (options) => {
     const response = { options: options };
@@ -14,7 +14,7 @@ const process = async (options) => {
     try {
         const job = jobManager.start(
             options.cardName,
-            `Encode: ${options.cardName} to UDP udp://${options.address}:${options.port}`,
+            `${options.cardName} to UDP udp://${options.address}:${options.port}`,
             ["encode", "udp", "decklink"]
         );
 

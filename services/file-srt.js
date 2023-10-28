@@ -3,8 +3,8 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
-const filterCombine = require("@services/filter-combine");
-const filterText = require("@services/filter-text");
+const filterCombine = require("@utils/filter-combine");
+const filterText = require("@utils/filter-text");
 const jobManager = require("@utils/jobManager");
 
 const process = async (options) => {
@@ -18,40 +18,40 @@ const process = async (options) => {
 
     try {
         const job = jobManager.start(
-            `${options?.output || path.join(__dirname, "..", "data", "media", options.filename)}`,
-            `Encode: File to HLS (${options?.output || "JobID"}.m3u8)`,
-            ["encode", "hls"]
+            `${options.address}:${options.port}`,
+            `File to SRT srt://${options.address}:${options.port}`,
+            ["encode", "srt"]
         );
-
-        response.hls = `/api/hls/${options?.output || job.jobId}.m3u8`;
-
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
             .input(path.join(__dirname, "..", "data", "media", options.filename))
-            .inputOptions([
-                repeat,
-                "-protocol_whitelist",
-                "file,udp,rtp",
-                "-stats",
-                "-re",
-                "-probesize 32",
-                "-analyzeduration 0",
-            ])
-            .output(`${path.join(__dirname, "..", "data", "hls", options?.output || job.jobId)}.m3u8`)
-            .outputOptions([
-                "-c:v libx264",
-                "-preset ultrafast",
-                "-tune zerolatency",
-                "-g 30",
-                "-c:a aac",
-                "-strict experimental",
-                "-movflags faststart",
-                "-f hls",
-                `-hls_time ${options?.hls?.chunkTime | 0.5}`,
-                `-hls_list_size ${options?.hls?.chunks | 5}`,
-                "-hls_flags independent_segments",
+            .inputOptions([repeat, "-protocol_whitelist", "file,udp,rtp", "-stats", "-re"])
+            .output(
+                `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&latency=${
+                    parseInt(options?.latency) * 1000 || "250000"
+                }&mode=${options?.mode || "caller"}&ipttl=${options?.ttl || "64"}&iptos=${
+                    options?.tos || "104"
+                }&transtype=${options?.transtype || "live"}&maxbw==${options?.maxbw || "-1"}&`
+            )
+            .outputOptions(["-preset veryfast", "-f mpegts"])
+            .videoCodec("libx264")
+            .outputOptions(`-b:v ${options?.bitrate || "5M"}`);
+
+        if (!options.vbr) {
+            command.outputOptions([
+                `-minrate ${options?.bitrate || "5M"}`,
+                `-maxrate ${options?.bitrate || "5M"}`,
+                `-muxrate ${options?.bitrate || "5M"}`,
+                `-bufsize 500K`,
             ]);
+        } else {
+            command.outputOptions([
+                `-minrate ${options?.minBitrate || "5M"}`,
+                `-maxrate ${options?.maxBitrate || "5M"}`,
+                `-bufsize 500K`,
+            ]);
+        }
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -68,7 +68,7 @@ const process = async (options) => {
         }
 
         command.on("end", () => {
-            logger.info("Finished encoding bars to HLS");
+            logger.info("Finished processing");
             jobManager.end(job?.jobId, false);
         });
 
@@ -90,6 +90,11 @@ const process = async (options) => {
         command.on("error", function (error) {
             logger.error(error);
             jobManager.end(job?.jobId, false);
+            //If IO Error (Network error, restart)
+            if (error.toString().includes("Input/output error") || error.toString().includes("Conversion failed!")) {
+                logger.info("Restarting due to IO error");
+                process(options);
+            }
         });
 
         command.run();

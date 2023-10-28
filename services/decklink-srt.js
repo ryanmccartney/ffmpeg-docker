@@ -3,32 +3,61 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
-const filterCombine = require("@services/filter-combine");
-const filterText = require("@services/filter-text");
 const jobManager = require("@utils/jobManager");
-const getRtmpAddress = require("@utils/rtmp-address");
+const filterCombine = require("@utils/filter-combine");
+const filterText = require("@utils/filter-text");
 
 const process = async (options) => {
     const response = { options: options };
-    let repeat = "-stream_loop 0";
-    if (options.repeat) {
-        repeat = `-stream_loop -1`;
-    }
-
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const rtmpAddress = getRtmpAddress(options.address, options.key);
-        const job = jobManager.start(rtmpAddress, `Encode: File to RTMP ${rtmpAddress}`, ["encode", "rtmp"]);
+        const job = jobManager.start(
+            `${options.cardName}in`,
+            `${options.cardName} to SRT srt://${options.address}:${options.port}`,
+            ["encode", "srt", "decklink"]
+        );
+
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
-            .input(path.join(__dirname, "..", "data", "media", options.filename))
-            .inputOptions([repeat, "-protocol_whitelist", "file,udp,rtp", "-stats", "-re"])
-            .output(rtmpAddress)
-            .outputOptions(["-f flv"])
+            .input(options.cardName)
+            .inputFormat("decklink")
+            .inputOptions([
+                "-protocol_whitelist",
+                "srt,udp,rtp",
+                "-stats",
+                "-re",
+                "-flags low_delay",
+                "-async 1",
+                "-duplex_mode",
+                `${options?.duplexMode || "unset"}`,
+            ])
+            .output(
+                `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&latency=${
+                    parseInt(options?.latency) * 1000 || "250000"
+                }&mode=${options?.mode || "caller"}&ipttl=${options?.ttl || "64"}&iptos=${
+                    options?.tos || "104"
+                }&transtype=${options?.transtype || "live"}&maxbw==${options?.maxbw || "-1"}&`
+            )
+            .outputOptions([`-preset ${options?.encodePreset || "veryfast"}`, "-f mpegts"])
             .videoCodec("libx264")
             .outputOptions(`-b:v ${options?.bitrate || "5M"}`);
+
+        if (!options.vbr) {
+            command.outputOptions([
+                `-minrate ${options?.bitrate || "5M"}`,
+                `-maxrate ${options?.bitrate || "5M"}`,
+                `-muxrate ${options?.bitrate || "5M"}`,
+                `-bufsize 500K`,
+            ]);
+        } else {
+            command.outputOptions([
+                `-minrate ${options?.minBitrate || "5M"}`,
+                `-maxrate ${options?.maxBitrate || "5M"}`,
+                `-bufsize 500K`,
+            ]);
+        }
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -45,19 +74,13 @@ const process = async (options) => {
         }
 
         command.on("end", () => {
-            logger.info("Finished processing");
+            logger.info("Finished encoding decklink card to SRT");
             jobManager.end(job?.jobId, false);
         });
-
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
             jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
-            return response;
-        });
-
-        command.on("progress", (progress) => {
-            logger.info("ffmpeg-progress: " + Math.floor(progress.percent) + "% done");
-            jobManager.update(job?.jobId, { progress: Math.floor(progress.percent) });
+            return { options: options, command: commandString };
         });
 
         command.on("stderr", function (stderrLine) {
@@ -81,7 +104,7 @@ const process = async (options) => {
         response.error = error.message;
     }
 
-    response.job = jobManager.get(`${options.address}:${options.port}`);
+    response.job = await jobManager.get(options.cardName);
     return response;
 };
 

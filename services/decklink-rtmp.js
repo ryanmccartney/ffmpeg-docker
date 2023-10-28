@@ -3,49 +3,34 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
-const filterCombine = require("@services/filter-combine");
-const filterText = require("@services/filter-text");
 const jobManager = require("@utils/jobManager");
+const filterCombine = require("@utils/filter-combine");
+const filterText = require("@utils/filter-text");
+const getRtmpAddress = require("@utils/rtmp-address");
 
 const process = async (options) => {
     const response = { options: options };
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(options.cardName, `Decode: UDP to ${options.cardName}`, [
-            "decode",
-            "udp",
+        const rtmpAddress = getRtmpAddress(options.address, options.key);
+
+        const job = jobManager.start(options.cardName, `Decklink to RTMP ${rtmpAddress}`, [
+            "encode",
+            "rtmp",
             "decklink",
         ]);
 
-        const filters = await filterCombine(await filterText(options));
+        const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
-            .input(
-                `udp://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&buffer_size=${
-                    options?.buffer || 65535
-                }`
-            )
-            .inputOptions([
-                "-protocol_whitelist",
-                "srt,udp,rtp",
-                "-stats",
-                "-re",
-                "-probesize 1M",
-                "-analyzeduration 1M",
-            ])
-            .outputOptions([
-                "-pix_fmt uyvy422",
-                "-s 1920x1080",
-                "-ac 16",
-                "-f decklink",
-                `-af volume=${options?.volume || 0.25}`,
-                "-flags low_delay",
-                "-bufsize 0",
-                "-muxdelay 0",
-                "-async 1",
-            ])
-            .output(options.cardName);
+            .input(options.cardName)
+            .inputFormat("decklink")
+            .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats", "-re"])
+            .output(getRtmpAddress(options.address, options.key))
+            .outputOptions(["-f flv"])
+            .videoCodec("libx264")
+            .outputOptions(`-b:v ${options?.bitrate || "5M"}`);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -62,18 +47,13 @@ const process = async (options) => {
         }
 
         command.on("end", () => {
-            logger.info("Finished processing");
+            logger.info("Finished encoding decklink card to RTMP");
             jobManager.end(job?.jobId, false);
         });
-
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
-            response.job = jobManager.update(job?.jobId, {
-                command: commandString,
-                pid: command.ffmpegProc.pid,
-                options: options,
-            });
-            return response;
+            jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
+            return { options: options, command: commandString };
         });
 
         command.on("stderr", function (stderrLine) {
@@ -100,5 +80,3 @@ const process = async (options) => {
     response.job = await jobManager.get(options.cardName);
     return response;
 };
-
-module.exports = process;

@@ -13,19 +13,146 @@ info:
 servers:
   - url: http://localhost:80/api/
 paths:
-  /decklink:
+  /bars/decklink:
     get:
-      description: Gets the info about currently attached Decklink cards
+      description: Takes a set of test Bars as an input and outputs it to a decklink card.
       tags:
-        - decklink
+        - bars
+      parameters:
+        - in: formData
+          name: cardName
+          type: string
+          description: The name of the BMD Decklink cards. E.g - "DeckLink SDI"
+          required: true
+        - in: formData
+          name: font
+          type: string
+          description: The name of the font file to use for text overlay. Must use the
+            TrueType fonts. E.g - "swansea-bold.ttf"
+          required: font
+        - in: formData
+          name: offset
+          type: number
+          description: Offset for time in hours. E.g 3, -3
+          required: false
+        - in: formData
+          name: timecode
+          type: boolean
+          description: Show the timecode line - true,false
+          required: false
+        - in: formData
+          name: repeat
+          type: boolean
+          description: Decides whether the media loops or not
+          required: false
       produces:
         - application/json
       responses:
         "200":
           description: Success
-  /decklink/:cardIndex:
+  /file:
     get:
-      description: Gets the config for an individual Decklink card
+      description: Download file by name.
+      tags:
+        - file
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /bars/srt:
+    get:
+      description: SRT encode test bars.
+      tags:
+        - bars
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /bars/rtmp:
+    get:
+      description: RTMP encode test bars.
+      tags:
+        - bars
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /bars/udp:
+    get:
+      description: UDP encode test bars.
+      tags:
+        - bars
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /bars/hls:
+    get:
+      description: HLS encode test bars.
+      tags:
+        - bars
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /decklink/file:
+    get:
+      description: Takes Decklink input in SDI and encodes it as a file.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /decklink/srt:
+    get:
+      description: Takes Decklink input in SDI and encodes it as SRT.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /decklink/udp:
+    get:
+      description: Takes Decklink input in SDI and encodes it as UDP.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /decklink/rtmp:
+    get:
+      description: Takes Decklink input in SDI and encodes it as RTMP.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /decklink/hls:
+    get:
+      description: Takes Decklink input in SDI and encodes it as HLS.
+      tags:
+        - encode
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /decklink:
+    get:
+      description: Gets the info about currently attached Decklink cards
       tags:
         - decklink
       produces:
@@ -42,11 +169,11 @@ paths:
       responses:
         "200":
           description: Success
-  /decklink/:cardIndex/audio:
+  /file/decklink:
     get:
-      description: Sends an audio file to a decklink output
+      description: Takes a file as an input and outputs it to a decklink card.
       tags:
-        - decklink
+        - file
       parameters:
         - in: formData
           name: filename
@@ -84,103 +211,11 @@ paths:
       responses:
         "200":
           description: Success
-  /decklink/:cardIndex/stop:
-    get:
-      description: Stops the decklink output on a particular index
-      tags:
-        - decklink
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /decklink/:cardIndex/pause:
-    get:
-      description: Pauses the decklink output on a particular index
-      tags:
-        - decklink
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /decode/srt/file:
-    get:
-      description: Takes an SRT input and turns it into a file.
-      tags:
-        - decode
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /decode/srt/decklink:
-    get:
-      description: Takes an SRT input and outputs it to a decklink card.
-      tags:
-        - decode
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /decode/udp/decklink:
-    get:
-      description: Takes an UDP input and outputs it to a decklink card.
-      tags:
-        - decode
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /decode/bars/decklink:
-    get:
-      description: Takes a set of test Bars as an input and outputs it to a decklink card.
-      tags:
-        - decode
-      parameters:
-        - in: formData
-          name: filename
-          type: string
-          description: Filename and extension of media to playout. E.g - test.mp4
-          required: true
-        - in: formData
-          name: cardName
-          type: string
-          description: The name of the BMD Decklink cards. E.g - "DeckLink SDI"
-          required: true
-        - in: formData
-          name: font
-          type: string
-          description: The name of the font file to use for text overlay. Must use the
-            TrueType fonts. E.g - "swansea-bold.ttf"
-          required: font
-        - in: formData
-          name: offset
-          type: number
-          description: Offset for time in hours. E.g 3, -3
-          required: false
-        - in: formData
-          name: timecode
-          type: boolean
-          description: Show the timecode line - true,false
-          required: false
-        - in: formData
-          name: repeat
-          type: boolean
-          description: Decides whether the media loops or not
-          required: false
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /encode/file/srt:
+  /file/srt:
     get:
       description: SRT encode a file.
       tags:
-        - encode
+        - file
       parameters:
         - in: formData
           name: filename
@@ -234,121 +269,31 @@ paths:
       responses:
         "200":
           description: Success
-  /encode/file/udp:
+  /file/udp:
     get:
       description: UDP encode a file.
       tags:
-        - encode
+        - file
       produces:
         - application/json
       responses:
         "200":
           description: Success
-  /encode/file/rtmp:
+  /file/rtmp:
     get:
       description: RTMP encode a file.
       tags:
-        - encode
+        - file
       produces:
         - application/json
       responses:
         "200":
           description: Success
-  /encode/file/hls:
+  /file/hls:
     get:
       description: HLS encode a file.
       tags:
-        - encode
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /encode/bars/srt:
-    get:
-      description: SRT encode test bars.
-      tags:
-        - encode
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /encode/bars/rtmp:
-    get:
-      description: RTMP encode test bars.
-      tags:
-        - encode
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /encode/bars/udp:
-    get:
-      description: UDP encode test bars.
-      tags:
-        - encode
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /encode/bars/hls:
-    get:
-      description: HLS encode test bars.
-      tags:
-        - encode
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /encode/decklink/file:
-    get:
-      description: Takes Decklink input in SDI and encodes it as a file.
-      tags:
-        - encode
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /encode/decklink/srt:
-    get:
-      description: Takes Decklink input in SDI and encodes it as SRT.
-      tags:
-        - encode
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /encode/decklink/udp:
-    get:
-      description: Takes Decklink input in SDI and encodes it as UDP.
-      tags:
-        - encode
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /encode/decklink/rtmp:
-    get:
-      description: Takes Decklink input in SDI and encodes it as RTMP.
-      tags:
-        - encode
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /encode/decklink/hls:
-    get:
-      description: Takes Decklink input in SDI and encodes it as HLS.
-      tags:
-        - encode
+        - file
       produces:
         - application/json
       responses:
@@ -357,26 +302,6 @@ paths:
   /file/metadata:
     get:
       description: Get the metadata in a media file.
-      tags:
-        - files
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /file/bars:
-    get:
-      description: Generate custom ident bars.
-      tags:
-        - files
-      produces:
-        - application/json
-      responses:
-        "200":
-          description: Success
-  /file/download:
-    get:
-      description: Download file by name.
       tags:
         - files
       produces:
@@ -439,6 +364,36 @@ paths:
       description: Add a single file to the playlist.
       tags:
         - files
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /udp/decklink:
+    get:
+      description: Takes an UDP input and outputs it to a decklink card.
+      tags:
+        - udp
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /srt/file:
+    get:
+      description: Takes an SRT input and turns it into a file.
+      tags:
+        - srt
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /srt/decklink:
+    get:
+      description: Takes an SRT input and outputs it to a decklink card.
+      tags:
+        - srt
       produces:
         - application/json
       responses:

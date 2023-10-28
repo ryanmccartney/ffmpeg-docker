@@ -3,40 +3,34 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
-const filterCombine = require("@services/filter-combine");
-const filterText = require("@services/filter-text");
+const filterCombine = require("@utils/filter-combine");
+const filterText = require("@utils/filter-text");
 const jobManager = require("@utils/jobManager");
 
 const process = async (options) => {
     const response = { options: options };
+    let repeat = "-stream_loop 0";
+    if (options.repeat) {
+        repeat = `-stream_loop -1`;
+    }
+
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(`${options.cardName}out`, `Decode: SRT to ${options.cardName}`, [
-            "decode",
-            "srt",
-            "decklink",
-        ]);
+        const job = jobManager.start(options.cardName, `File to ${options.cardName}`, ["decode", "file", "decklink"]);
 
         const filters = await filterCombine(await filterText(options));
 
         const command = ffmpeg({ logger: logger })
-            .input(
-                `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&latency=${
-                    parseInt(options?.latency) * 1000 || "250000"
-                }&mode=${options?.mode || "caller"}&ipttl=${options?.ttl || "64"}&iptos=${
-                    options?.tos || "104"
-                }&transtype=${options?.transtype || "live"}${
-                    options.passphrase ? `&passphrase=${options.passphrase}` : ""
-                }`
-            )
+            .input(`${path.join(__dirname, "..", "data", "media", options.filename)}`)
             .inputOptions([
+                repeat,
                 "-protocol_whitelist",
-                "srt,udp,rtp",
+                "file,udp,rtp",
                 "-stats",
                 "-re",
-                "-probesize 1M",
-                "-analyzeduration 1M",
+                "-probesize 32",
+                "-analyzeduration 0",
             ])
             .outputOptions([
                 "-pix_fmt uyvy422",
@@ -44,8 +38,6 @@ const process = async (options) => {
                 "-ac 16",
                 "-f decklink",
                 `-af volume=${options?.volume || 0.25}`,
-                "-duplex_mode",
-                `${options?.duplexMode || "unset"}`,
                 "-flags low_delay",
                 "-bufsize 0",
                 "-muxdelay 0",
@@ -82,6 +74,11 @@ const process = async (options) => {
             return response;
         });
 
+        command.on("progress", (progress) => {
+            logger.info("ffmpeg-progress: " + Math.floor(progress.percent) + "% done");
+            jobManager.update(job?.jobId, { progress: Math.floor(progress.percent) });
+        });
+
         command.on("stderr", function (stderrLine) {
             logger.info("ffmpeg: " + stderrLine);
         });
@@ -89,12 +86,6 @@ const process = async (options) => {
         command.on("error", function (error) {
             logger.error(error);
             jobManager.end(job?.jobId, false);
-
-            //If IO Error (Network error, restart)
-            if (error.toString().includes("Input/output error") || error.toString().includes("Conversion failed!")) {
-                logger.info("Restarting due to IO error");
-                process(options);
-            }
         });
 
         command.run();

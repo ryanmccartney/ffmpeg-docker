@@ -3,44 +3,30 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
-const filterCombine = require("@services/filter-combine");
-const filterText = require("@services/filter-text");
+const filterCombine = require("@utils/filter-combine");
+const filterText = require("@utils/filter-text");
 const jobManager = require("@utils/jobManager");
+const getRtmpAddress = require("@utils/rtmp-address");
 
 const process = async (options) => {
     const response = { options: options };
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(
-            `${options?.output || options.toString()}`,
-            `Encode: Bars to HLS (${options?.output || "JobID"}.m3u8)`,
-            ["encode", "hls"]
-        );
-
-        response.hls = `/api/hls/${options?.output || job.jobId}.m3u8`;
+        const rtmpAddress = getRtmpAddress(options.address, options.key);
+        const job = jobManager.start(rtmpAddress, `Bars to RTMP ${rtmpAddress}`, ["encode", "rtmp"]);
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
-            .addInput(`${options.bars || "smptehdbars"}=rate=25:size=1920x1080`)
+            .addInput(`${options.type || "smptehdbars"}=rate=25:size=1920x1080`)
             .inputOptions(["-re", "-f lavfi"])
             .addInput(`sine=frequency=${options.frequency || 1000}:sample_rate=48000`)
             .inputOptions(["-f lavfi"])
-            .output(`${path.join(__dirname, "..", "data", "hls", options?.output || job.jobId)}.m3u8`)
-            .outputOptions([
-                "-c:v libx264",
-                "-preset ultrafast",
-                "-tune zerolatency",
-                "-g 30",
-                "-c:a aac",
-                "-strict experimental",
-                "-movflags faststart",
-                "-f hls",
-                `-hls_time ${options?.hls?.chunkTime | 0.5}`,
-                `-hls_list_size ${options?.hls?.chunks | 5}`,
-                "-hls_flags independent_segments",
-            ]);
+            .output(rtmpAddress)
+            .outputOptions(["-f flv"])
+            .videoCodec("libx264")
+            .outputOptions(`-b:v ${options?.bitrate || "5M"}`);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -57,14 +43,14 @@ const process = async (options) => {
         }
 
         command.on("end", () => {
-            logger.info("Finished encoding bars to HLS");
+            logger.info("Finished processing");
             jobManager.end(job?.jobId, false);
         });
 
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
             jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
-            return response;
+            return { options: options, command: commandString };
         });
 
         command.on("stderr", function (stderrLine) {
@@ -74,6 +60,12 @@ const process = async (options) => {
         command.on("error", function (error) {
             logger.error(error);
             jobManager.end(job?.jobId, false);
+
+            //If IO Error (Network error, restart)
+            if (error.toString().includes("Input/output error") || error.toString().includes("Conversion failed!")) {
+                logger.info("Restarting due to IO error");
+                process(options);
+            }
         });
 
         command.run();

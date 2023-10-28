@@ -3,30 +3,27 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
-const filterCombine = require("@services/filter-combine");
-const filterText = require("@services/filter-text");
+const filterCombine = require("@utils/filter-combine");
+const filterText = require("@utils/filter-text");
 const jobManager = require("@utils/jobManager");
 
 const process = async (options) => {
     const response = { options: options };
-    let repeat = "-stream_loop 0";
-    if (options.repeat) {
-        repeat = `-stream_loop -1`;
-    }
-
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
         const job = jobManager.start(
             `${options.address}:${options.port}`,
-            `Encode: File to SRT srt://${options.address}:${options.port}`,
+            `Bars to SRT srt://${options.address}:${options.port}`,
             ["encode", "srt"]
         );
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
-            .input(path.join(__dirname, "..", "data", "media", options.filename))
-            .inputOptions([repeat, "-protocol_whitelist", "file,udp,rtp", "-stats", "-re"])
+            .addInput(`${options.type || "smptehdbars"}=rate=25:size=1920x1080`)
+            .inputOptions(["-re", "-f lavfi"])
+            .addInput(`sine=frequency=${options.frequency || 1000}:sample_rate=48000`)
+            .inputOptions(["-f lavfi"])
             .output(
                 `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&latency=${
                     parseInt(options?.latency) * 1000 || "250000"
@@ -75,12 +72,7 @@ const process = async (options) => {
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
             jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
-            return response;
-        });
-
-        command.on("progress", (progress) => {
-            logger.info("ffmpeg-progress: " + Math.floor(progress.percent) + "% done");
-            jobManager.update(job?.jobId, { progress: Math.floor(progress.percent) });
+            return { options: options, command: commandString };
         });
 
         command.on("stderr", function (stderrLine) {
@@ -90,6 +82,7 @@ const process = async (options) => {
         command.on("error", function (error) {
             logger.error(error);
             jobManager.end(job?.jobId, false);
+
             //If IO Error (Network error, restart)
             if (error.toString().includes("Input/output error") || error.toString().includes("Conversion failed!")) {
                 logger.info("Restarting due to IO error");

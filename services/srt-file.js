@@ -3,42 +3,58 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
+const filterCombine = require("@utils/filter-combine");
+const filterText = require("@utils/filter-text");
+const setCodec = require("@utils/set-codec");
 const jobManager = require("@utils/jobManager");
-const filterCombine = require("@services/filter-combine");
-const filterText = require("@services/filter-text");
+const getFileExtension = require("@utils/get-extension");
 
 const process = async (options) => {
     const response = { options: options };
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = await jobManager.start(
-            options.cardName,
-            `Encode: Decklink to HLS (${options?.output || "JobID"}.m3u8)`,
-            ["encode", "hls", "decklink"]
+        const job = jobManager.start(
+            `${options.address}:${options.port}`,
+            `SRT to file srt://${options.address}:${options.port}`,
+            ["decode", "srt"]
         );
 
-        response.hls = `/api/hls/${options?.output || job.jobId}.m3u8`;
+        const fileName = `${options.filename || job.jobId}${getFileExtension(options?.format)}`;
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
-        const command = ffmpeg({ logger: logger })
-            .input(options.cardName)
-            .inputFormat("decklink")
-            .output(`${path.join(__dirname, "..", "data", "hls", options?.output || job?.jobId)}.m3u8`)
-            .outputOptions([
-                "-c:v libx264",
-                "-preset ultrafast",
-                "-tune zerolatency",
-                "-g 30",
-                "-c:a aac",
-                "-strict experimental",
-                "-movflags faststart",
-                "-f hls",
-                `-hls_time ${options?.hls?.chunkTime | 0.5}`,
-                `-hls_list_size ${options?.hls?.chunks | 5}`,
-                "-hls_flags independent_segments",
-            ]);
+        let command = ffmpeg({ logger: logger })
+            .input(
+                `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&latency=${
+                    parseInt(options?.latency) * 1000 || "250000"
+                }&mode=${options?.mode || "caller"}&ipttl=${options?.ttl || "64"}&iptos=${
+                    options?.tos || "104"
+                }&transtype=${options?.transtype || "live"}${
+                    options.passphrase ? `&passphrase=${options.passphrase}` : ""
+                }`
+            )
+            .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats"]);
+
+        if (options.chunkSize) {
+            command
+                .outputOptions("-f", "segment")
+                .outputOptions("-segment_time", parseInt(options.chunkSize))
+                .outputOptions("-reset_timestamps", 1, "-y")
+                .output(
+                    `${path.join(
+                        __dirname,
+                        "..",
+                        "data",
+                        "media",
+                        `${fileName.split(".")[0]}-%03d.${fileName.split(".")[1]}`
+                    )}`
+                );
+        } else {
+            command.output(`${path.join(__dirname, "..", "data", "media", fileName)}`);
+        }
+
+        command = setCodec(command, options);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -55,7 +71,7 @@ const process = async (options) => {
         }
 
         command.on("end", () => {
-            logger.info("Finished encoding decklink to HLS");
+            logger.info("Finished processing");
             jobManager.end(job?.jobId, false);
         });
 
@@ -90,7 +106,7 @@ const process = async (options) => {
         response.error = error.message;
     }
 
-    response.job = await jobManager.get(options.cardName);
+    response.job = jobManager.get(`${options.address}:${options.port}`);
     return response;
 };
 
