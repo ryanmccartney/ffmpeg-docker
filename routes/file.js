@@ -6,6 +6,7 @@ const path = require("path");
 
 const fileDecklink = require("@services/file-decklink");
 const fileUdp = require("@services/file-udp");
+const fileRtp = require("@services/file-rtp");
 const fileSrt = require("@services/file-srt");
 const fileRtmp = require("@services/file-rtmp");
 const fileHls = require("@services/file-hls");
@@ -137,6 +138,23 @@ router.get("/srt", async (req, res, next) => {
  */
 router.get("/udp", async (req, res, next) => {
     const response = await fileUdp(req.body);
+    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+});
+
+/**
+ * @swagger
+ * /file/rtp:
+ *    get:
+ *      description: RTP encode a file.
+ *      tags: [file]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/rtp", async (req, res, next) => {
+    const response = await fileRtp(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 

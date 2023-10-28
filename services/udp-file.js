@@ -5,7 +5,9 @@ const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
 const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
+const setCodec = require("@utils/set-codec");
 const jobManager = require("@utils/jobManager");
+const getFileExtension = require("@utils/get-extension");
 
 const process = async (options) => {
     const response = { options: options };
@@ -14,40 +16,41 @@ const process = async (options) => {
     try {
         const job = jobManager.start(
             `${options.address}:${options.port}`,
-            `Bars to UDP udp://${options.address}:${options.port}`,
-            ["encode", "udp", "bars"]
+            `UDP to file udp://${options.address}:${options.port}`,
+            ["decode", "file", "udp"]
         );
+
+        const fileName = `${options.filename || job.jobId}${getFileExtension(options?.format)}`;
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
-        const command = ffmpeg({ logger: logger })
-            .addInput(`${options.type || "smptehdbars"}=rate=25:size=1920x1080`)
-            .inputOptions(["-re", "-f lavfi"])
-            .addInput(`sine=frequency=${options.frequency || 1000}:sample_rate=48000`)
-            .inputOptions(["-f lavfi"])
-            .output(
+        let command = ffmpeg({ logger: logger })
+            .input(
                 `udp://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&buffer_size=${
                     options?.buffer || 65535
                 }`
             )
-            .outputOptions(["-preset veryfast", "-f mpegts"])
-            .videoCodec("libx264")
-            .outputOptions(`-b:v ${options?.bitrate || "5M"}`);
+            .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats"]);
 
-        if (!options.vbr) {
-            command.outputOptions([
-                `-minrate ${options?.bitrate || "5M"}`,
-                `-maxrate ${options?.bitrate || "5M"}`,
-                `-muxrate ${options?.bitrate || "5M"}`,
-                `-bufsize 500K`,
-            ]);
+        if (options.chunkSize) {
+            command
+                .outputOptions("-f", "segment")
+                .outputOptions("-segment_time", parseInt(options.chunkSize))
+                .outputOptions("-reset_timestamps", 1, "-y")
+                .output(
+                    `${path.join(
+                        __dirname,
+                        "..",
+                        "data",
+                        "media",
+                        `${fileName.split(".")[0]}-%03d.${fileName.split(".")[1]}`
+                    )}`
+                );
         } else {
-            command.outputOptions([
-                `-minrate ${options?.minBitrate || "5M"}`,
-                `-maxrate ${options?.maxBitrate || "5M"}`,
-                `-bufsize 500K`,
-            ]);
+            command.output(`${path.join(__dirname, "..", "data", "media", fileName)}`);
         }
+
+        command = setCodec(command, options);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -70,8 +73,12 @@ const process = async (options) => {
 
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
-            jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
-            return { options: options, command: commandString };
+            response.job = jobManager.update(job?.jobId, {
+                command: commandString,
+                pid: command.ffmpegProc.pid,
+                options: options,
+            });
+            return response;
         });
 
         command.on("stderr", function (stderrLine) {

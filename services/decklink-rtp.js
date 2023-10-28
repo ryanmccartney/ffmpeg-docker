@@ -3,9 +3,10 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
+const jobManager = require("@utils/jobManager");
 const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
-const jobManager = require("@utils/jobManager");
+const setCodec = require("@utils/set-codec");
 
 const process = async (options) => {
     const response = { options: options };
@@ -13,32 +14,34 @@ const process = async (options) => {
 
     try {
         const job = jobManager.start(
-            `${options.address}:${options.port}`,
-            `Bars to UDP udp://${options.address}:${options.port}`,
-            ["encode", "udp", "bars"]
+            options.cardName,
+            `${options.cardName} to RTP rtp://${options.address}:${options.port}`,
+            ["encode", "rtp", "decklink"]
         );
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
-            .addInput(`${options.type || "smptehdbars"}=rate=25:size=1920x1080`)
-            .inputOptions(["-re", "-f lavfi"])
-            .addInput(`sine=frequency=${options.frequency || 1000}:sample_rate=48000`)
-            .inputOptions(["-f lavfi"])
+            .input(options.cardName)
+            .inputFormat("decklink")
+            .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats", "-re"])
             .output(
-                `udp://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&buffer_size=${
+                `rtp://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&buffer_size=${
                     options?.buffer || 65535
                 }`
             )
-            .outputOptions(["-preset veryfast", "-f mpegts"])
-            .videoCodec("libx264")
-            .outputOptions(`-b:v ${options?.bitrate || "5M"}`);
+            .outputOptions([
+                "-f rtp",
+                `-reorder_queue_size ${options?.jitterBuffer || "25"}`,
+                "-flags low_delay",
+                "-muxdelay 0",
+                `-b:v ${options?.bitrate || "5M"}`,
+            ]);
 
         if (!options.vbr) {
             command.outputOptions([
                 `-minrate ${options?.bitrate || "5M"}`,
                 `-maxrate ${options?.bitrate || "5M"}`,
-                `-muxrate ${options?.bitrate || "5M"}`,
                 `-bufsize 500K`,
             ]);
         } else {
@@ -48,6 +51,8 @@ const process = async (options) => {
                 `-bufsize 500K`,
             ]);
         }
+
+        command = setCodec(command, options);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -64,10 +69,9 @@ const process = async (options) => {
         }
 
         command.on("end", () => {
-            logger.info("Finished processing");
+            logger.info("Finished encoding decklink card to UDP");
             jobManager.end(job?.jobId, false);
         });
-
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
             jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
@@ -95,7 +99,7 @@ const process = async (options) => {
         response.error = error.message;
     }
 
-    response.job = jobManager.get(`${options.address}:${options.port}`);
+    response.job = await jobManager.get(options.cardName);
     return response;
 };
 

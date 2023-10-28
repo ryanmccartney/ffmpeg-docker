@@ -6,6 +6,7 @@ const hashResponse = require("@utils/hash-response");
 const decklinkFile = require("@services/decklink-file");
 const decklinkSrt = require("@services/decklink-srt");
 const decklinkUdp = require("@services/decklink-udp");
+const decklinkRtp = require("@services/decklink-rtp");
 const decklinkRtmp = require("@services/decklink-rtmp");
 const decklinkHls = require("@services/decklink-hls");
 
@@ -17,7 +18,7 @@ const decklinkConfigSet = require("@services/decklink-config-set");
  * /decklink/file:
  *    get:
  *      description: Takes Decklink input in SDI and encodes it as a file.
- *      tags: [encode]
+ *      tags: [decklink]
  *      produces:
  *        - application/json
  *      responses:
@@ -34,7 +35,7 @@ router.get("/file", async (req, res, next) => {
  * /decklink/srt:
  *    get:
  *      description: Takes Decklink input in SDI and encodes it as SRT.
- *      tags: [encode]
+ *      tags: [decklink]
  *      produces:
  *        - application/json
  *      responses:
@@ -51,7 +52,7 @@ router.get("/srt", async (req, res, next) => {
  * /decklink/udp:
  *    get:
  *      description: Takes Decklink input in SDI and encodes it as UDP.
- *      tags: [encode]
+ *      tags: [decklink]
  *      produces:
  *        - application/json
  *      responses:
@@ -65,10 +66,27 @@ router.get("/udp", async (req, res, next) => {
 
 /**
  * @swagger
+ * /decklink/rtp:
+ *    get:
+ *      description: Takes Decklink input in SDI and encodes it as RTP.
+ *      tags: [decklink]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/rtp", async (req, res, next) => {
+    const response = await decklinkUdp(req.body);
+    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+});
+
+/**
+ * @swagger
  * /decklink/rtmp:
  *    get:
  *      description: Takes Decklink input in SDI and encodes it as RTMP.
- *      tags: [encode]
+ *      tags: [decklink]
  *      produces:
  *        - application/json
  *      responses:
@@ -85,7 +103,7 @@ router.get("/rtmp", async (req, res, next) => {
  * /decklink/hls:
  *    get:
  *      description: Takes Decklink input in SDI and encodes it as HLS.
- *      tags: [encode]
+ *      tags: [decklink]
  *      produces:
  *        - application/json
  *      responses:

@@ -12,6 +12,7 @@ module.exports = (command, options = { format: "h264" }) => {
             .outputOptions("-preset", "ultrafast")
             .outputOptions("-pass", "1")
             .outputOptions("-profile:v", "baseline")
+            .outputOptions("-tune zerolatency")
             .outputOptions("-max_interleave_delta", "500")
             .outputOptions("-max_delay", "100");
     }

@@ -6,6 +6,7 @@ const barsDecklink = require("@services/bars-decklink");
 const barsFile = require("@services/bars-file");
 const barsRtmp = require("@services/bars-rtmp");
 const barsUdp = require("@services/bars-udp");
+const barsRtp = require("@services/bars-rtp");
 const barsSrt = require("@services/bars-srt");
 const barsHls = require("@services/bars-hls");
 
@@ -115,8 +116,25 @@ router.get("/rtmp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/bars/udp", async (req, res, next) => {
+router.get("/udp", async (req, res, next) => {
     const response = await barsUdp(req.body);
+    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+});
+
+/**
+ * @swagger
+ * /bars/rtp:
+ *    get:
+ *      description: RTP encode test bars.
+ *      tags: [bars]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/rtp", async (req, res, next) => {
+    const response = await barsRtp(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
@@ -132,7 +150,7 @@ router.get("/bars/udp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/bars/hls", async (req, res, next) => {
+router.get("/hls", async (req, res, next) => {
     const response = await barsHls(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });

@@ -12,42 +12,42 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(
-            `${options.address}:${options.port}`,
-            `Bars to UDP udp://${options.address}:${options.port}`,
-            ["encode", "udp", "bars"]
-        );
+        const job = jobManager.start(`${options.cardName}out`, `RTP to ${options.cardName}`, [
+            "decode",
+            "rtp",
+            "decklink",
+        ]);
 
-        const filters = await filterCombine(await filterText({ ...options, ...job }));
+        const filters = await filterCombine(await filterText(options));
 
         const command = ffmpeg({ logger: logger })
-            .addInput(`${options.type || "smptehdbars"}=rate=25:size=1920x1080`)
-            .inputOptions(["-re", "-f lavfi"])
-            .addInput(`sine=frequency=${options.frequency || 1000}:sample_rate=48000`)
-            .inputOptions(["-f lavfi"])
-            .output(
-                `udp://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&buffer_size=${
+            .input(
+                `rtp://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&buffer_size=${
                     options?.buffer || 65535
                 }`
             )
-            .outputOptions(["-preset veryfast", "-f mpegts"])
-            .videoCodec("libx264")
-            .outputOptions(`-b:v ${options?.bitrate || "5M"}`);
-
-        if (!options.vbr) {
-            command.outputOptions([
-                `-minrate ${options?.bitrate || "5M"}`,
-                `-maxrate ${options?.bitrate || "5M"}`,
-                `-muxrate ${options?.bitrate || "5M"}`,
-                `-bufsize 500K`,
-            ]);
-        } else {
-            command.outputOptions([
-                `-minrate ${options?.minBitrate || "5M"}`,
-                `-maxrate ${options?.maxBitrate || "5M"}`,
-                `-bufsize 500K`,
-            ]);
-        }
+            .inputOptions([
+                "-protocol_whitelist",
+                "srt,udp,rtp",
+                "-stats",
+                "-re",
+                "-probesize 1M",
+                "-analyzeduration 1M",
+            ])
+            .outputOptions([
+                "-pix_fmt uyvy422",
+                "-s 1920x1080",
+                "-ac 16",
+                "-f decklink",
+                `-af volume=${options?.volume || 0.25}`,
+                "-duplex_mode",
+                `${options?.duplexMode || "unset"}`,
+                "-flags low_delay",
+                "-bufsize 0",
+                "-muxdelay 0",
+                "-async 1",
+            ])
+            .output(options.cardName);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -70,8 +70,12 @@ const process = async (options) => {
 
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
-            jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
-            return { options: options, command: commandString };
+            response.job = jobManager.update(job?.jobId, {
+                command: commandString,
+                pid: command.ffmpegProc.pid,
+                options: options,
+            });
+            return response;
         });
 
         command.on("stderr", function (stderrLine) {
@@ -95,7 +99,7 @@ const process = async (options) => {
         response.error = error.message;
     }
 
-    response.job = jobManager.get(`${options.address}:${options.port}`);
+    response.job = await jobManager.get(options.cardName);
     return response;
 };
 

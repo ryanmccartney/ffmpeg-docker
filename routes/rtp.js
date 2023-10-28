@@ -2,14 +2,32 @@
 
 const router = require("express").Router();
 const hashResponse = require("@utils/hash-response");
-const udpDecklink = require("@services/udp-decklink");
+const rtpFile = require("@services/rtp-file");
+const rtpDecklink = require("@services/rtp-decklink");
 
 /**
  * @swagger
- * /udp/decklink:
+ * /rtp/file:
  *    get:
- *      description: Takes an UDP input and outputs it to a decklink card.
- *      tags: [udp]
+ *      description: Takes an RTP input and turns it into a file.
+ *      tags: [rtp]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/file", async (req, res, next) => {
+    const response = await rtpFile(req.body);
+    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+});
+
+/**
+ * @swagger
+ * /rtp/decklink:
+ *    get:
+ *      description: Takes an RTP input and outputs it to a decklink card.
+ *      tags: [rtp]
  *      produces:
  *        - application/json
  *      responses:
@@ -17,7 +35,7 @@ const udpDecklink = require("@services/udp-decklink");
  *          description: Success
  */
 router.get("/decklink", async (req, res, next) => {
-    const response = await decodeUdpDecklink(req.body);
+    const response = await rtpDecklink(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
