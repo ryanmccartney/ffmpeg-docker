@@ -70,6 +70,10 @@ jobs:
                       ${{env.regsitry}}/ryanmccartney/ffmpeg-docker:latest
                       ${{env.regsitry}}/ryanmccartney/ffmpeg-docker:${{steps.version.outputs.current-version}}
                   outputs: type=registry
+                  build-args: |
+                      DECKLINK_SUPPORT="false"
+                      NDI_SUPPORT="false"
+                      NON_FREE="false"
                   labels: |
                       author=${{github.actor}}
                       version=${{steps.version.outputs.current-version}}
