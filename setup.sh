@@ -1,10 +1,14 @@
 #!/bin/bash
 # Install host dependencies for BMD Decklink
 
-#Set download link and driver version as below
-DEKSTOP_VIDEO_DRIVER_URL="https://swr.cloud.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz?verify=1697908812-1f7rrMkhP0aqofYc4hhVOuLdCJhqpWd2B2Dl8%2Bten0k%3D"
-DESKTOP_VIDEO_DRIVER_VERSION="12.4.1"
-DESKTOP_VIDEO_DRIVER_DEB="desktopvideo_12.4.1a15_amd64"
+echo Input the URL for Blackmagic Video Driver URL:
+read DEKSTOP_VIDEO_DRIVER_URL
+
+echo Input the Version for Blackmagic Video Driver:
+read DESKTOP_VIDEO_DRIVER_VERSION
+
+echo Input the Name of the .deb frole for the Blackmagic Video Driver:
+read DESKTOP_VIDEO_DRIVER_DEB
 
 apt update
 apt install -y wget dkms dctrl-tools
