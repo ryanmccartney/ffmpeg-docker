@@ -19,11 +19,6 @@ If this isn't a problem then you can get the image here;
 
 `docker pull ghcr.io/ryanmccartney/ffmpeg-api:latest`
 
-## Future Work
-
--   SRT/RIST statistics - unavalible in FFMPEG, so dificult to report SRT information like, maxRTT, recovered packets, lost packets, jitter, etc.
--   SRT Bonding - SRT v1.5 supports bonding through socket groups, again this is not implemented in FFMPEG
-
 ## Building
 
 If you want to contribute to this project or you'd like some of the above features, you'll need to build a copy of this image yourself which will compile FFmpeg locally.
@@ -51,14 +46,6 @@ When running the container you'll then need to pass through the device. To do th
 1. Install Decklink Driver on your host machine.
 2. Check device is connected and update any firmware
 3. Determine the Blackmagic device mapping on the host. Expect something like - `dev/blackmagic/dv0`.
-
-### With NDI Support
-
-Using a [patch](https://framagit.org/tytan652/ffmpeg-ndi-patch) to re-add Newtec NDI to FFmpeg on building.
-
-Before building you'll need to set the build argument variable `NDI_SUPPORT` to `true`.
-
--   Work in progress
 
 ## About
 

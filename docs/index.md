@@ -44,6 +44,11 @@ If this isn't a problem then you can get the image here;
 
 `docker pull ghcr.io/ryanmccartney/ffmpeg-api:latest`
 
+## Future Work
+
+-   SRT/RIST statistics - unavalible in FFMPEG, so dificult to report SRT information like, maxRTT, recovered packets, lost packets, jitter, etc.
+-   SRT Bonding - SRT v1.5 supports bonding through socket groups, again this is not implemented in FFMPEG
+
 ## About
 
 This software uses libraries from the FFmpeg project under the LGPLv2.1.

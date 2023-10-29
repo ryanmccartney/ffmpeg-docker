@@ -34,5 +34,3 @@ When running the container you'll then need to pass through the device. To do th
 Using a [patch](https://framagit.org/tytan652/ffmpeg-ndi-patch) to re-add Newtec NDI to FFmpeg on building.
 
 Before building you'll need to set the build argument variable `NDI_SUPPORT` to `true`.
-
--   Work in progress
