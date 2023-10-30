@@ -225,7 +225,7 @@ router.get("/metadata", async (req, res, next) => {
  *        - application/json
  *      parameters:
  *        - in: formData
- *          name: type
+ *          name: extension
  *          type: boolean
  *          description: Includes the file extension in the returned name
  *          required: false
@@ -234,7 +234,7 @@ router.get("/metadata", async (req, res, next) => {
  *          description: Success
  */
 router.get("/list", async (req, res, next) => {
-    const response = await fileList();
+    const response = await fileList(req.body);
     hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
 });
 /**

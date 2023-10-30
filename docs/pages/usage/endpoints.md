@@ -287,9 +287,9 @@ Gets a list of files in the "./data/media" folder.
 
 ##### Parameters
 
-| Name | Located in | Description                                      | Required | Schema  |
-| ---- | ---------- | ------------------------------------------------ | -------- | ------- |
-| type | formData   | Includes the file extension in the returned name | No       | boolean |
+| Name      | Located in | Description                                      | Required | Schema  |
+| --------- | ---------- | ------------------------------------------------ | -------- | ------- |
+| extension | formData   | Includes the file extension in the returned name | No       | boolean |
 
 ##### Responses
 

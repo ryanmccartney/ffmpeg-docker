@@ -363,7 +363,7 @@ paths:
         - application/json
       parameters:
         - in: formData
-          name: type
+          name: extension
           type: boolean
           description: Includes the file extension in the returned name
           required: false

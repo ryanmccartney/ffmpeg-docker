@@ -7,10 +7,10 @@ const util = require("util");
 
 const readdir = util.promisify(fs.readdir);
 
-module.exports = async (options = { types: true }) => {
+module.exports = async (options = { extension: true }) => {
     try {
         const directoryPath = path.join(__dirname, "data", "media");
-        const files = await readdir(directoryPath, { withFileTypes: options?.types });
+        const files = await readdir(directoryPath, { withFileTypes: options?.extension });
         return { files: files };
     } catch (error) {
         logger.warn("Cannot list files " + error.message);
