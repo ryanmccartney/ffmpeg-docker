@@ -46,3 +46,55 @@ To stay compliant with FFMPEG licensing the following libraries are not included
 -   `--enable-libfdk-aac`
 
 If you believe a library has been included in the build distrubuted version in error please get in contact.
+
+## Production
+
+For production you should make sure that the source code is not mounted into the container. If the NODE_ENV option is set it should be set to `production`. This is the default if it is not set.
+
+A sample `docker-compose.yml` file for production is shown below;
+
+```
+# NAME: docker-compose.yml
+# AUTH: Ryan McCartney <ryan@mccartney.info>
+# DATE: 30/10/2023
+# DESC: FFmpeg compiled with configurable options link BMD Decklink
+
+version: "3.8"
+
+services:
+    ffmpeg:
+        container_name: ffmpeg
+        network_mode: "host"
+        build:
+            context: "."
+            args:
+                DECKLINK_SUPPORT: "true"
+                DECLINK_SDK_URL: "decklinkurlhere"
+                DECKLINK_DRIVER_URL: "decklinkurlhere"
+                DECKLINK_DRIVER_VERSION: "12.4.1"
+                NON_FREE: "true"
+        restart: always
+        volumes:
+            - ./data:/home/node/app/data
+        devices:
+            - /dev/blackmagic/io0:/dev/blackmagic/io0
+        environment:
+            PORT: 80
+            WEB_GUI: "true"
+        ports:
+            - 80:80
+
+```
+
+## Development
+
+For development you'll need to locally install the NPM packages and pass through the source code folder to the
+
+1. Change directory to the repository `cd ./ffmpeg-docker`
+2. Locally install the NPM packages using `npm i`
+3. Ensure the source could is mounted as a bind volume in the `docker-compose.yml` file as shown below;
+
+```
+        volumes:
+            - ./:/home/node/app
+```
