@@ -8,7 +8,7 @@ const srtDecklink = require("@services/srt-decklink");
 /**
  * @swagger
  * /srt/file:
- *    get:
+ *    post:
  *      description: Takes an SRT input and turns it into a file.
  *      tags: [srt]
  *      produces:
@@ -17,7 +17,7 @@ const srtDecklink = require("@services/srt-decklink");
  *        '200':
  *          description: Success
  */
-router.get("/file", async (req, res, next) => {
+router.post("/file", async (req, res, next) => {
     const response = await srtFile(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
@@ -25,7 +25,7 @@ router.get("/file", async (req, res, next) => {
 /**
  * @swagger
  * /srt/decklink:
- *    get:
+ *    post:
  *      description: Takes an SRT input and outputs it to a decklink card.
  *      tags: [srt]
  *      produces:
@@ -34,7 +34,7 @@ router.get("/file", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/decklink", async (req, res, next) => {
+router.post("/decklink", async (req, res, next) => {
     const response = await srtDecklink(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });

@@ -30,7 +30,7 @@ router.get("/models", async (req, res, next) => {
 /**
  * @swagger
  * /vmaf/test:
- *    get:
+ *    post:
  *      description: Run a VMAF test specifing a reference file and test file.
  *      tags: [vmaf]
  *      produces:
@@ -39,18 +39,9 @@ router.get("/models", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/test", async (req, res, next) => {
-    if (req.query.filename) {
-        req.body.input = { filename: "" };
-        req.body.input.filename = req.query.filename;
-    }
-    if (req.query.reference) {
-        req.body.reference = { filename: "" };
-        req.body.reference.filename = req.query.reference;
-    }
-
+router.post("/test", async (req, res, next) => {
     const response = await testVmaf(req.body);
-    hashResponse(res, req, response);
+    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
 
 /**

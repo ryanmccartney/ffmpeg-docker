@@ -16,7 +16,7 @@ const fileMetadata = require("@services/file-metadata");
 /**
  * @swagger
  * /file/decklink:
- *    get:
+ *    post:
  *      description: Takes a file as an input and outputs it to a decklink card.
  *      tags: [file]
  *      parameters:
@@ -56,7 +56,7 @@ const fileMetadata = require("@services/file-metadata");
  *        '200':
  *          description: Success
  */
-router.get("/decklink", async (req, res, next) => {
+router.post("/decklink", async (req, res, next) => {
     const response = await fileDecklink(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
@@ -64,7 +64,7 @@ router.get("/decklink", async (req, res, next) => {
 /**
  * @swagger
  * /file/srt:
- *    get:
+ *    post:
  *      description: SRT encode a file.
  *      tags: [file]
  *      parameters:
@@ -119,7 +119,7 @@ router.get("/decklink", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/srt", async (req, res, next) => {
+router.post("/srt", async (req, res, next) => {
     const response = await fileSrt(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
@@ -127,7 +127,7 @@ router.get("/srt", async (req, res, next) => {
 /**
  * @swagger
  * /file/udp:
- *    get:
+ *    post:
  *      description: UDP encode a file.
  *      tags: [file]
  *      produces:
@@ -136,7 +136,7 @@ router.get("/srt", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/udp", async (req, res, next) => {
+router.post("/udp", async (req, res, next) => {
     const response = await fileUdp(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
@@ -144,7 +144,7 @@ router.get("/udp", async (req, res, next) => {
 /**
  * @swagger
  * /file/rtp:
- *    get:
+ *    post:
  *      description: RTP encode a file.
  *      tags: [file]
  *      produces:
@@ -153,7 +153,7 @@ router.get("/udp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/rtp", async (req, res, next) => {
+router.post("/rtp", async (req, res, next) => {
     const response = await fileRtp(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
@@ -161,7 +161,7 @@ router.get("/rtp", async (req, res, next) => {
 /**
  * @swagger
  * /file/rtmp:
- *    get:
+ *    post:
  *      description: RTMP encode a file.
  *      tags: [file]
  *      produces:
@@ -170,7 +170,7 @@ router.get("/rtp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/rtmp", async (req, res, next) => {
+router.post("/rtmp", async (req, res, next) => {
     const response = await fileRtmp(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
@@ -178,7 +178,7 @@ router.get("/rtmp", async (req, res, next) => {
 /**
  * @swagger
  * /file/hls:
- *    get:
+ *    post:
  *      description: HLS encode a file.
  *      tags: [file]
  *      produces:
@@ -187,7 +187,7 @@ router.get("/rtmp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/hls", async (req, res, next) => {
+router.post("/hls", async (req, res, next) => {
     const response = await fileHls(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });

@@ -34,14 +34,14 @@ router.get("/:playlist", async (req, res, next) => {
  *          description: Success
  */
 router.post("/:playlist", async (req, res, next) => {
-    const response = await ffconcat.set(req.params.playlist,req.body.items);
+    const response = await ffconcat.set(req.params.playlist, req.body.items);
     hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
 });
 
 /**
  * @swagger
  * /playlist/:playlist/add:
- *    get:
+ *    post:
  *      description: Add a single file to the playlist.
  *      tags: [files]
  *      produces:
@@ -50,15 +50,15 @@ router.post("/:playlist", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/:playlist/add", async (req, res, next) => {
-    const response = await ffconcat.add(req.params.playlist,req.body.item);
+router.post("/:playlist/add", async (req, res, next) => {
+    const response = await ffconcat.add(req.params.playlist, req.body.item);
     hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
 });
 
 /**
  * @swagger
- * /playlist/:playlist/add:
- *    get:
+ * /playlist/:playlist/remove:
+ *    post:
  *      description: Add a single file to the playlist.
  *      tags: [files]
  *      produces:
@@ -67,8 +67,8 @@ router.get("/:playlist/add", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/:playlist/remove", async (req, res, next) => {
-    const response = await ffconcat.remove(req.params.playlist,req.body.item);
+router.post("/:playlist/remove", async (req, res, next) => {
+    const response = await ffconcat.remove(req.params.playlist, req.body.item);
     hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
 });
 

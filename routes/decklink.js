@@ -16,7 +16,7 @@ const decklinkConfigSet = require("@services/decklink-config-set");
 /**
  * @swagger
  * /decklink/file:
- *    get:
+ *    post:
  *      description: Takes Decklink input in SDI and encodes it as a file.
  *      tags: [decklink]
  *      produces:
@@ -25,7 +25,7 @@ const decklinkConfigSet = require("@services/decklink-config-set");
  *        '200':
  *          description: Success
  */
-router.get("/file", async (req, res, next) => {
+router.post("/file", async (req, res, next) => {
     const response = await decklinkFile(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
@@ -33,7 +33,7 @@ router.get("/file", async (req, res, next) => {
 /**
  * @swagger
  * /decklink/srt:
- *    get:
+ *    post:
  *      description: Takes Decklink input in SDI and encodes it as SRT.
  *      tags: [decklink]
  *      produces:
@@ -42,7 +42,7 @@ router.get("/file", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/srt", async (req, res, next) => {
+router.post("/srt", async (req, res, next) => {
     const response = await decklinkSrt(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
@@ -50,7 +50,7 @@ router.get("/srt", async (req, res, next) => {
 /**
  * @swagger
  * /decklink/udp:
- *    get:
+ *    post:
  *      description: Takes Decklink input in SDI and encodes it as UDP.
  *      tags: [decklink]
  *      produces:
@@ -59,7 +59,7 @@ router.get("/srt", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/udp", async (req, res, next) => {
+router.post("/udp", async (req, res, next) => {
     const response = await decklinkUdp(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
@@ -67,7 +67,7 @@ router.get("/udp", async (req, res, next) => {
 /**
  * @swagger
  * /decklink/rtp:
- *    get:
+ *    post:
  *      description: Takes Decklink input in SDI and encodes it as RTP.
  *      tags: [decklink]
  *      produces:
@@ -76,7 +76,7 @@ router.get("/udp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/rtp", async (req, res, next) => {
+router.post("/rtp", async (req, res, next) => {
     const response = await decklinkUdp(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
@@ -84,7 +84,7 @@ router.get("/rtp", async (req, res, next) => {
 /**
  * @swagger
  * /decklink/rtmp:
- *    get:
+ *    post:
  *      description: Takes Decklink input in SDI and encodes it as RTMP.
  *      tags: [decklink]
  *      produces:
@@ -93,7 +93,7 @@ router.get("/rtp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/rtmp", async (req, res, next) => {
+router.post("/rtmp", async (req, res, next) => {
     const response = await decklinkRtmp(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
@@ -101,7 +101,7 @@ router.get("/rtmp", async (req, res, next) => {
 /**
  * @swagger
  * /decklink/hls:
- *    get:
+ *    post:
  *      description: Takes Decklink input in SDI and encodes it as HLS.
  *      tags: [decklink]
  *      produces:
@@ -110,7 +110,7 @@ router.get("/rtmp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/hls", async (req, res, next) => {
+router.post("/hls", async (req, res, next) => {
     const response = await decklinkHls(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });

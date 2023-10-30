@@ -8,7 +8,7 @@ const udpFile = require("@services/udp-file");
 /**
  * @swagger
  * /udp/decklink:
- *    get:
+ *    post:
  *      description: Takes an UDP input and outputs it to a decklink card.
  *      tags: [udp]
  *      produces:
@@ -17,7 +17,7 @@ const udpFile = require("@services/udp-file");
  *        '200':
  *          description: Success
  */
-router.get("/decklink", async (req, res, next) => {
+router.post("/decklink", async (req, res, next) => {
     const response = await udpDecklink(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
@@ -25,7 +25,7 @@ router.get("/decklink", async (req, res, next) => {
 /**
  * @swagger
  * /udp/file:
- *    get:
+ *    post:
  *      description: Takes an UDP input and outputs it to a file.
  *      tags: [udp]
  *      produces:
@@ -34,7 +34,7 @@ router.get("/decklink", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/file", async (req, res, next) => {
+router.post("/file", async (req, res, next) => {
     const response = await udpFile(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });

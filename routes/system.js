@@ -89,7 +89,7 @@ router.get("/stats", async (req, res, next) => {
 /**
  * @swagger
  * /system/job/kill/all:
- *    get:
+ *    post:
  *      description: Kill all running jobs
  *      tags: [system]
  *      produces:
@@ -98,7 +98,7 @@ router.get("/stats", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/job/kill/all", async (req, res, next) => {
+router.post("/job/kill/all", async (req, res, next) => {
     const response = await jobKillAll();
     hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
 });
@@ -106,7 +106,7 @@ router.get("/job/kill/all", async (req, res, next) => {
 /**
  * @swagger
  * /system/job/kill/:jobId:
- *    get:
+ *    post:
  *      description: Kills a job by ID
  *      tags: [system]
  *      produces:
@@ -115,7 +115,7 @@ router.get("/job/kill/all", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/job/kill/:jobId", async (req, res, next) => {
+router.post("/job/kill/:jobId", async (req, res, next) => {
     const response = await jobKill(req.params.jobId);
     hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
 });

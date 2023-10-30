@@ -59,12 +59,16 @@
             getJobs();
 
             async function killJob(jobId) {
-                const response = await fetch(`/api/system/job/kill/${jobId}`);
+                const response = await fetch(`/api/system/job/kill/${jobId}`, {
+                    method: "POST",
+                });
                 console.log(`Killed Job ID ${jobId}`);
             }
 
             async function killAll() {
-                const response = await fetch(`/api/system/job/kill/all`);
+                const response = await fetch(`/api/system/job/kill/all`, {
+                    method: "POST",
+                });
                 console.log(`Killed all Jobs`);
             }
 

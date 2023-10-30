@@ -8,7 +8,7 @@ const rtpDecklink = require("@services/rtp-decklink");
 /**
  * @swagger
  * /rtp/file:
- *    get:
+ *    post:
  *      description: Takes an RTP input and turns it into a file.
  *      tags: [rtp]
  *      produces:
@@ -17,7 +17,7 @@ const rtpDecklink = require("@services/rtp-decklink");
  *        '200':
  *          description: Success
  */
-router.get("/file", async (req, res, next) => {
+router.post("/file", async (req, res, next) => {
     const response = await rtpFile(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
@@ -25,7 +25,7 @@ router.get("/file", async (req, res, next) => {
 /**
  * @swagger
  * /rtp/decklink:
- *    get:
+ *    post:
  *      description: Takes an RTP input and outputs it to a decklink card.
  *      tags: [rtp]
  *      produces:
@@ -34,7 +34,7 @@ router.get("/file", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.get("/decklink", async (req, res, next) => {
+router.post("/decklink", async (req, res, next) => {
     const response = await rtpDecklink(req.body);
     hashResponse(res, req, { data: response, status: response ? "success" : "error" });
 });
