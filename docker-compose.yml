@@ -8,21 +8,22 @@ version: "3.8"
 services:
     ffmpeg:
         container_name: ffmpeg
-        network_mode: "host"
+        network_mode: "host" #Change this as required
         build:
             context: "."
             args:
-                DECKLINK_SUPPORT: "true"
+                DECKLINK_SUPPORT: "false"
                 DECLINK_SDK_URL: "https://swr.cloud.blackmagicdesign.com/DeckLink/v12.4.1/Blackmagic_DeckLink_SDK_12.4.1.zip?verify=1697909201-45BDvNhH%2Fz5NbY6ai6b6cMKMIuFPZk3DUylMOXgCfvM%3D"
                 DECKLINK_DRIVER_URL: "https://swr.cloud.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz?verify=1697908812-1f7rrMkhP0aqofYc4hhVOuLdCJhqpWd2B2Dl8%2Bten0k%3D"
                 DECKLINK_DRIVER_VERSION: "12.4.1"
                 NDI_SUPPORT: "false"
                 NDI_SDK_URL: "https://downloads.ndi.tv/SDK/NDI_SDK_Linux/Install_NDI_SDK_v5_Linux.tar.gz"
+                NON_FREE: "true"
         restart: always
         volumes:
             - ./:/home/node/app
         devices:
-             - /dev/blackmagic/io0:/dev/blackmagic/io0
+            - /dev/blackmagic/io0:/dev/blackmagic/io0
         environment:
             NODE_ENV: "development"
             PORT: 80
@@ -30,4 +31,3 @@ services:
             WEB_GUI: "true"
         ports:
             - 80:80
-            - 5004:5004

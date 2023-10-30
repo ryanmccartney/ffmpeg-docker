@@ -22,7 +22,7 @@ You can use the pre-built image straight away - however, this is contains pre-co
 
 If this isn't a problem then you can get the image here;
 
-`docker pull ghcr.io/ryanmccartney/ffmpeg-api:latest`
+`docker pull ghcr.io/ryanmccartney/ffmpeg-docker:latest`
 
 ## Building
 

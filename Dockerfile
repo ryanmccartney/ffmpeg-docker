@@ -1,14 +1,16 @@
 # NAME: Dockerfile
 # AUTH: Ryan McCartney <ryan@mccartney.info>
-# DATE: 08/01/2023
+# DATE: 29/10/2023
 # DESC: FFmpeg compiled with configurable options link BMD Decklink or Newtec NDI
 
 FROM ubuntu:jammy
-USER root
+
+ARG FFMPEG_VERSION="5.0"
+ARG NON_FREE="false"
 
 ARG DECKLINK_SUPPORT="false"
-ARG DECLINK_SDK_URL="https://swr.cloud.blackmagicdesign.com/DeckLink/v12.4.1/Blackmagic_DeckLink_SDK_12.4.1.zip?verify=1697909201-45BDvNhH%2Fz5NbY6ai6b6cMKMIuFPZk3DUylMOXgCfvM%3D"
-ARG DECKLINK_DRIVER_URL="https://swr.cloud.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz?verify=1697908812-1f7rrMkhP0aqofYc4hhVOuLdCJhqpWd2B2Dl8%2Bten0k%3D"
+ARG DECLINK_SDK_URL="https://swr.cloud.blackmagicdesign.com/DeckLink/v12.4.1/Blackmagic_DeckLink_SDK_12.4.1.zip?verify="
+ARG DECKLINK_DRIVER_URL="https://swr.cloud.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz?verify="
 ARG DECKLINK_DRIVER_VERSION="12.4.1"
 
 ARG NDI_SUPPORT="false"
@@ -20,49 +22,56 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN mkdir $HOME/ffmpeg_sources
 RUN mkdir $HOME/bin
 
-# Install additional dependencies
-RUN apt update
-RUN apt -y install \
-  autoconf \
-  automake \
-  build-essential \
-  cmake \
-  git-core \
-  libass-dev \
-  libfreetype6-dev \
-  libgnutls28-dev \
-  libmp3lame-dev \
-  libsdl2-dev \
-  libtool \
-  libva-dev \
-  libvdpau-dev \
-  libvorbis-dev \
-  libxcb1-dev \
-  libxcb-shm0-dev \
-  libxcb-xfixes0-dev \
-  meson \
-  ninja-build \
-  pkg-config \
-  texinfo \
-  wget \
-  yasm \
-  tclsh \
-  zlib1g-dev \
-  nasm \
-  libnuma-dev \
-  libvpx-dev \
-  libmp3lame-dev \
-  libunistring-dev \
-  libopus-dev \
-  libx264-dev \
-  libx265-dev \
-  libssl-dev \
-  libaom-dev \
-  libdav1d-dev \
-  libopus-dev \
-  libarchive-tools \
-  linux-oem-22.04c \
-  linux-tools-oem-22.04c
+RUN LINUX_KERNAL_PACKAGES="" && \
+    # Detect Linux OS and add kernel packages
+    if [[ "$OSTYPE" == "linux-gnu"* ]];\
+    then \
+        LINUX_KERNAL_PACKAGES="linux-oem-22.04c linux-tools-oem-22.04c"; \
+    fi && \
+    # Print any extra packages being added
+    echo "Extra Packages: $LINUX_KERNAL_PACKAGES" && \
+    # Install additional dependencies
+    apt update && \
+    apt -y install \
+        autoconf \
+        automake \
+        build-essential \
+        cmake \
+        git-core \
+        libass-dev \
+        libfreetype6-dev \
+        libgnutls28-dev \
+        libmp3lame-dev \
+        libsdl2-dev \
+        libtool \
+        libva-dev \
+        libvdpau-dev \
+        libvorbis-dev \
+        libxcb1-dev \
+        libxcb-shm0-dev \
+        libxcb-xfixes0-dev \
+        meson \
+        ninja-build \
+        pkg-config \
+        texinfo \
+        wget \
+        yasm \
+        tclsh \
+        zlib1g-dev \
+        nasm \
+        libnuma-dev \
+        libvpx-dev \
+        libmp3lame-dev \
+        libunistring-dev \
+        libopus-dev \
+        libx264-dev \
+        libx265-dev \
+        libssl-dev \
+        libaom-dev \
+        libdav1d-dev \
+        libopus-dev \
+        libarchive-tools \
+        $LINUX_KERNAL_PACKAGES
 
 # Get Blackmagic Desktop Video SDK (Link expires... You'll need to get a new one)
 RUN if [ "$DECKLINK_SUPPORT" = "true" ];\
@@ -102,56 +111,60 @@ WORKDIR $HOME/ffmpeg_sources
 ENV PATH="$HOME/bin:${PATH}"
 RUN echo "export PATH=$HOME/bin:${PATH}" >> "$HOME/.bashrc"
 
-# Add source and compile for Fraunhofer AAC codec support
-RUN git -C fdk-aac pull 2> /dev/null || git clone --depth 1 https://github.com/mstorsjo/fdk-aac && \
-    cd fdk-aac && \
-    autoreconf -fiv && \
-    ./configure --prefix="$HOME/ffmpeg_build" --bindir="$HOME/bin" --disable-shared && \
-    make && \
-    make install
-
-# Add source and compile for AV1 codec support
-RUN git -C SVT-AV1 pull 2> /dev/null || git clone https://gitlab.com/AOMediaCodec/SVT-AV1.git && \
-    mkdir -p SVT-AV1/build && \
-    cd SVT-AV1/build && \
-    cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$HOME/ffmpeg_build" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF .. && \
-    make && \
-    make install
-
-# Add source and compile for Haivision SRT support
-RUN git -C srt pull 2> /dev/null || git clone --depth 1 https://github.com/Haivision/srt.git && \
-    mkdir -p srt/build && \
-    cd srt && \
-    ./configure --prefix="$HOME/ffmpeg_build" --disable-shared --enable-bonding && \
-    cmake -DCMAKE_INSTALL_PREFIX="$HOME/ffmpeg_build" -DENABLE_C_DEPS=ON -DENABLE_SHARED=OFF -DENABLE_STATIC=ON && \
-    make && \
-    make install && \
-    ldconfig
-
-# Add source and compile for libklvanc support
-RUN git -C libklvanc pull 2> /dev/null || git clone --depth 1 https://github.com/stoth68000/libklvanc && \
-    mkdir -p libklvanc/build && \
-    cd libklvanc && \
-    ./autogen.sh --build &&\
-    ./configure --enable-shared=no --prefix="$HOME/ffmpeg_build" --bindir="$HOME/bin" &&\
-    make &&\
-    make install
-
-# Add source and compile for Netflix VMAF support
-RUN git -C libvmaf pull 2> /dev/null || git clone --depth 1 https://github.com/Netflix/vmaf.git && \
-    cd ./vmaf/libvmaf && \
-    apt -y install ninja-build meson && \
-    meson build --buildtype release && \
-    ninja -vC build && \
-    ninja -vC build install
+# Compile addtional libraries when Non Free option is selected
+RUN if [ "$NON_FREE" = "true" ];\
+    then \
+        # Add source and compile for Fraunhofer AAC codec support
+        cd /ffmpeg_sources && \
+        git -C fdk-aac pull 2> /dev/null || git clone --depth 1 https://github.com/mstorsjo/fdk-aac && \
+        cd fdk-aac && \
+        autoreconf -fiv && \
+        ./configure --prefix="$HOME/ffmpeg_build" --bindir="$HOME/bin" --disable-shared && \
+        make && \
+        make install && \
+        # Add source and compile for AV1 codec support
+        cd /ffmpeg_sources && \
+        git -C SVT-AV1 pull 2> /dev/null || git clone https://gitlab.com/AOMediaCodec/SVT-AV1.git && \
+        mkdir -p SVT-AV1/build && \
+        cd SVT-AV1/build && \
+        cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="$HOME/ffmpeg_build" -DCMAKE_BUILD_TYPE=Release -DBUILD_DEC=OFF -DBUILD_SHARED_LIBS=OFF .. && \
+        make && \
+        make install && \
+        # Add source and compile for Haivision SRT support
+        cd /ffmpeg_sources && \
+        git -C srt pull 2> /dev/null || git clone --depth 1 https://github.com/Haivision/srt.git && \
+        mkdir -p srt/build && \
+        cd srt && \
+        ./configure --prefix='/ffmpeg_build' --disable-shared --enable-bonding && \
+        cmake -DCMAKE_INSTALL_PREFIX='/ffmpeg_build' -DENABLE_C_DEPS=ON -DENABLE_SHARED=OFF -DENABLE_STATIC=ON && \
+        make && \
+        make install && \
+        ldconfig && \
+        # Add source and compile for libklvanc support
+        cd /ffmpeg_sources && \
+        git -C libklvanc pull 2> /dev/null || git clone --depth 1 https://github.com/stoth68000/libklvanc && \
+        mkdir -p libklvanc/build && \
+        cd libklvanc && \
+        ./autogen.sh --build && \
+        ./configure --enable-shared=no --prefix="$HOME/ffmpeg_build" --bindir="$HOME/bin" && \
+        make && \
+        make install && \
+        # Add source and compile for Netflix VMAF support
+        cd /ffmpeg_sources && \
+        git -C libvmaf pull 2> /dev/null || git clone --depth 1 https://github.com/Netflix/vmaf.git && \
+        cd ./vmaf/libvmaf && \
+        apt -y install ninja-build meson && \
+        meson build --buildtype release && \
+        ninja -vC build && \
+        ninja -vC build install;\
+    fi
 
 # Add source for FFMPEG
 WORKDIR $HOME/ffmpeg_sources
 RUN git clone https://git.ffmpeg.org/ffmpeg.git
 WORKDIR $HOME/ffmpeg_sources/ffmpeg
-RUN git checkout n5.0
-RUN git config --global user.email "hello@mccartney.info"
-RUN git config --global user.name "FFMPEG Docker"
+RUN git checkout n$FFMPEG_VERSION
+RUN git config --global user.email "hello@mccartney.info" && git config --global user.name "FFMPEG Docker"
 
 # Static source files option - now using git for NDI patching
 #RUN wget -O ffmpeg-snapshot.tar.bz2 https://ffmpeg.org/releases/ffmpeg-snapshot.tar.bz2
@@ -191,7 +204,7 @@ RUN if [ "$NDI_SUPPORT" = "true" ];\
         # Apply the patch for 5.x and later versions
         git am ../ffmpeg-ndi-patch/master_Revert-lavd-Remove-libndi_newtek.patch &&\
         # Add needed files
-        cp ../ffmpeg-ndi-patch/libavdevice/libndi_newtek_* libavdevice/ ;\
+        cp ../ffmpeg-ndi-patch/libavdevice/libndi_newtek_* libavdevice/;\
     else \
        echo "Newtek NDI flag not set"; \
     fi
@@ -199,9 +212,29 @@ RUN if [ "$NDI_SUPPORT" = "true" ];\
 WORKDIR $HOME/ffmpeg_sources/ffmpeg
 
 ENV PKG_CONFIG_PATH="$HOME/ffmpeg_build/lib/pkgconfig"
-ENV PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$HOME/ffmpeg_sources/srt
+ENV PKG_CONFIG_PATH="$PKG_CONFIG_PATH:$HOME/ffmpeg_sources/srt"
 
-RUN ./configure \
+RUN CONFIGURE_OPTIONS="" && FDK_ACC="" &&\
+    # Add Non Free Config if option is selected
+    if [ "$NON_FREE" = "true" ];\
+    then \
+       CONFIGURE_OPTIONS="--enable-nonfree --enable-libsrt --disable-libaom --disable-libsvtav1 --enable-libklvanc --enable-libvmaf --enable-libfdk-aac " && \
+       FDK_AAC="--enable-libfdk-aac"; \
+    fi && \
+    # Add NDI Config if option is selected
+    if [ "$NDI_SUPPORT" = "true" ];\
+    then \
+        CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS --enable-libndi_newtek ";\
+    fi &&\
+    # Add Decklink Config if option is selected
+    if [ "$DECKLINK_SUPPORT" = "true" ];\
+    then \
+        CONFIGURE_OPTIONS="$CONFIGURE_OPTIONS--enable-decklink "; \
+    fi && \
+    # Print Configuration Options
+    echo "Extra Configured Options: $CONFIGURE_OPTIONS" && \
+    # Configure Make file before compiling
+    ./configure \
         --prefix="$HOME/ffmpeg_build" \
         --pkg-config-flags="--static" \
         --extra-cflags="-I$HOME/ffmpeg_build/include -I$HOME/ffmpeg_sources/BMD_SDK/include" \
@@ -211,7 +244,7 @@ RUN ./configure \
         --bindir="$HOME/bin" \
         --enable-gnutls \
         --enable-libass \
-        --enable-libfdk-aac \
+        $FDK_AAC \
         --enable-libfreetype \
         --enable-libmp3lame \
         --enable-libopus \
@@ -221,14 +254,7 @@ RUN ./configure \
         --enable-libx264 \
         --enable-libx265 \
         --enable-gpl \
-        --enable-nonfree \
-        #--enable-libndi_newtek \
-        --enable-decklink \
-        --enable-libsrt \
-        --disable-libaom \
-        --disable-libsvtav1\
-        --enable-libklvanc\
-        --enable-libvmaf
+        $CONFIGURE_OPTIONS
 
 RUN make && \
     make install && \
