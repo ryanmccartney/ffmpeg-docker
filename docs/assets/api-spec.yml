@@ -14,7 +14,7 @@ servers:
   - url: http://localhost:80/api/
 paths:
   /bars/decklink:
-    get:
+    post:
       description: Takes a set of test Bars as an input and outputs it to a decklink card.
       tags:
         - bars
@@ -51,6 +51,15 @@ paths:
         "200":
           description: Success
   /file:
+    post:
+      description: Generate custom ident bars.
+      tags:
+        - bars
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
     get:
       description: Download file by name.
       tags:
@@ -61,7 +70,7 @@ paths:
         "200":
           description: Success
   /bars/srt:
-    get:
+    post:
       description: SRT encode test bars.
       tags:
         - bars
@@ -71,7 +80,7 @@ paths:
         "200":
           description: Success
   /bars/rtmp:
-    get:
+    post:
       description: RTMP encode test bars.
       tags:
         - bars
@@ -81,7 +90,7 @@ paths:
         "200":
           description: Success
   /bars/udp:
-    get:
+    post:
       description: UDP encode test bars.
       tags:
         - bars
@@ -90,8 +99,18 @@ paths:
       responses:
         "200":
           description: Success
+  /bars/rtp:
+    post:
+      description: RTP encode test bars.
+      tags:
+        - bars
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
   /bars/hls:
-    get:
+    post:
       description: HLS encode test bars.
       tags:
         - bars
@@ -101,50 +120,60 @@ paths:
         "200":
           description: Success
   /decklink/file:
-    get:
+    post:
       description: Takes Decklink input in SDI and encodes it as a file.
       tags:
-        - encode
+        - decklink
       produces:
         - application/json
       responses:
         "200":
           description: Success
   /decklink/srt:
-    get:
+    post:
       description: Takes Decklink input in SDI and encodes it as SRT.
       tags:
-        - encode
+        - decklink
       produces:
         - application/json
       responses:
         "200":
           description: Success
   /decklink/udp:
-    get:
+    post:
       description: Takes Decklink input in SDI and encodes it as UDP.
       tags:
-        - encode
+        - decklink
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /decklink/rtp:
+    post:
+      description: Takes Decklink input in SDI and encodes it as RTP.
+      tags:
+        - decklink
       produces:
         - application/json
       responses:
         "200":
           description: Success
   /decklink/rtmp:
-    get:
+    post:
       description: Takes Decklink input in SDI and encodes it as RTMP.
       tags:
-        - encode
+        - decklink
       produces:
         - application/json
       responses:
         "200":
           description: Success
   /decklink/hls:
-    get:
+    post:
       description: Takes Decklink input in SDI and encodes it as HLS.
       tags:
-        - encode
+        - decklink
       produces:
         - application/json
       responses:
@@ -170,7 +199,7 @@ paths:
         "200":
           description: Success
   /file/decklink:
-    get:
+    post:
       description: Takes a file as an input and outputs it to a decklink card.
       tags:
         - file
@@ -212,7 +241,7 @@ paths:
         "200":
           description: Success
   /file/srt:
-    get:
+    post:
       description: SRT encode a file.
       tags:
         - file
@@ -270,7 +299,7 @@ paths:
         "200":
           description: Success
   /file/udp:
-    get:
+    post:
       description: UDP encode a file.
       tags:
         - file
@@ -279,8 +308,18 @@ paths:
       responses:
         "200":
           description: Success
+  /file/rtp:
+    post:
+      description: RTP encode a file.
+      tags:
+        - file
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
   /file/rtmp:
-    get:
+    post:
       description: RTMP encode a file.
       tags:
         - file
@@ -290,7 +329,7 @@ paths:
         "200":
           description: Success
   /file/hls:
-    get:
+    post:
       description: HLS encode a file.
       tags:
         - file
@@ -360,7 +399,7 @@ paths:
         "200":
           description: Success
   /playlist/:playlist/add:
-    get:
+    post:
       description: Add a single file to the playlist.
       tags:
         - files
@@ -369,18 +408,38 @@ paths:
       responses:
         "200":
           description: Success
-  /udp/decklink:
-    get:
-      description: Takes an UDP input and outputs it to a decklink card.
+  /playlist/:playlist/remove:
+    post:
+      description: Add a single file to the playlist.
       tags:
-        - udp
+        - files
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /rtp/file:
+    post:
+      description: Takes an RTP input and turns it into a file.
+      tags:
+        - rtp
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /rtp/decklink:
+    post:
+      description: Takes an RTP input and outputs it to a decklink card.
+      tags:
+        - rtp
       produces:
         - application/json
       responses:
         "200":
           description: Success
   /srt/file:
-    get:
+    post:
       description: Takes an SRT input and turns it into a file.
       tags:
         - srt
@@ -390,7 +449,7 @@ paths:
         "200":
           description: Success
   /srt/decklink:
-    get:
+    post:
       description: Takes an SRT input and outputs it to a decklink card.
       tags:
         - srt
@@ -439,7 +498,7 @@ paths:
         "200":
           description: Success
   /system/job/kill/all:
-    get:
+    post:
       description: Kill all running jobs
       tags:
         - system
@@ -449,7 +508,7 @@ paths:
         "200":
           description: Success
   /system/job/kill/:jobId:
-    get:
+    post:
       description: Kills a job by ID
       tags:
         - system
@@ -488,6 +547,26 @@ paths:
       responses:
         "200":
           description: Success
+  /udp/decklink:
+    post:
+      description: Takes an UDP input and outputs it to a decklink card.
+      tags:
+        - udp
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /udp/file:
+    post:
+      description: Takes an UDP input and outputs it to a file.
+      tags:
+        - udp
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
   /vmaf/models:
     get:
       description: Returns a list of VMAF models.
@@ -499,7 +578,7 @@ paths:
         "200":
           description: Success
   /vmaf/test:
-    get:
+    post:
       description: Run a VMAF test specifing a reference file and test file.
       tags:
         - vmaf

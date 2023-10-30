@@ -22,7 +22,7 @@ ryan@mccartney.info
 
 ### /bars/decklink
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -44,9 +44,35 @@ Takes a set of test Bars as an input and outputs it to a decklink card.
 | ---- | ----------- |
 | 200  | Success     |
 
-### /bars/srt
+### /file
+
+#### POST
+
+##### Description
+
+Generate custom ident bars.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
 
 #### GET
+
+##### Description
+
+Download file by name.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /bars/srt
+
+#### POST
 
 ##### Description
 
@@ -60,7 +86,7 @@ SRT encode test bars.
 
 ### /bars/rtmp
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -74,7 +100,7 @@ RTMP encode test bars.
 
 ### /bars/udp
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -86,9 +112,23 @@ UDP encode test bars.
 | ---- | ----------- |
 | 200  | Success     |
 
+### /bars/rtp
+
+#### POST
+
+##### Description
+
+RTP encode test bars.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
 ### /bars/hls
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -104,6 +144,18 @@ HLS encode test bars.
 
 ### /file
 
+#### POST
+
+##### Description
+
+Generate custom ident bars.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
 #### GET
 
 ##### Description
@@ -118,7 +170,7 @@ Download file by name.
 
 ### /file/decklink
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -143,7 +195,7 @@ Takes a file as an input and outputs it to a decklink card.
 
 ### /file/srt
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -171,7 +223,7 @@ SRT encode a file.
 
 ### /file/udp
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -183,9 +235,23 @@ UDP encode a file.
 | ---- | ----------- |
 | 200  | Success     |
 
+### /file/rtp
+
+#### POST
+
+##### Description
+
+RTP encode a file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
 ### /file/rtmp
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -199,7 +265,7 @@ RTMP encode a file.
 
 ### /file/hls
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -215,7 +281,7 @@ HLS encode a file.
 
 ### /decklink/file
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -229,7 +295,7 @@ Takes Decklink input in SDI and encodes it as a file.
 
 ### /decklink/srt
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -243,7 +309,7 @@ Takes Decklink input in SDI and encodes it as SRT.
 
 ### /decklink/udp
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -255,9 +321,23 @@ Takes Decklink input in SDI and encodes it as UDP.
 | ---- | ----------- |
 | 200  | Success     |
 
+### /decklink/rtp
+
+#### POST
+
+##### Description
+
+Takes Decklink input in SDI and encodes it as RTP.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
 ### /decklink/rtmp
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -271,7 +351,7 @@ Takes Decklink input in SDI and encodes it as RTMP.
 
 ### /decklink/hls
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -282,8 +362,6 @@ Takes Decklink input in SDI and encodes it as HLS.
 | Code | Description |
 | ---- | ----------- |
 | 200  | Success     |
-
----
 
 ### /decklink
 
@@ -355,7 +433,21 @@ Set all the items in a playlist
 
 ### /playlist/:playlist/add
 
-#### GET
+#### POST
+
+##### Description
+
+Add a single file to the playlist.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /playlist/:playlist/remove
+
+#### POST
 
 ##### Description
 
@@ -413,13 +505,27 @@ An HTML page showing VMAF test results as a chart
 
 ---
 
-### /udp/decklink
+### /rtp/file
 
-#### GET
+#### POST
 
 ##### Description
 
-Takes an UDP input and outputs it to a decklink card.
+Takes an RTP input and turns it into a file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /rtp/decklink
+
+#### POST
+
+##### Description
+
+Takes an RTP input and outputs it to a decklink card.
 
 ##### Responses
 
@@ -431,7 +537,7 @@ Takes an UDP input and outputs it to a decklink card.
 
 ### /srt/file
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -445,7 +551,7 @@ Takes an SRT input and turns it into a file.
 
 ### /srt/decklink
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -515,7 +621,7 @@ Get system stats; CPU, memory, etc.
 
 ### /system/job/kill/all
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -529,7 +635,7 @@ Kill all running jobs
 
 ### /system/job/kill/:jobId
 
-#### GET
+#### POST
 
 ##### Description
 
@@ -585,6 +691,36 @@ Gets a job by ID
 
 ---
 
+### /udp/decklink
+
+#### POST
+
+##### Description
+
+Takes an UDP input and outputs it to a decklink card.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /udp/file
+
+#### POST
+
+##### Description
+
+Takes an UDP input and outputs it to a file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+---
+
 ### /vmaf/models
 
 #### GET
@@ -601,7 +737,7 @@ Returns a list of VMAF models.
 
 ### /vmaf/test
 
-#### GET
+#### POST
 
 ##### Description
 

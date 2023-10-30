@@ -10,10 +10,15 @@ For more informations read the [documentation](https://ryan.mccartney.info/ffmpe
 
 You can use the pre-built image straight away - however, this is contains pre-compiled FFmpeg as a result it does not have the following options enabled to comply with FFmpeg licensing;
 
--   `--enable-gpl`
 -   `--enable-nonfree`
 -   `--enable-libndi_newtek`
 -   `--enable-decklink`
+-   `--enable-libsrt`
+-   `--disable-libaom`
+-   `--disable-libsvtav1`
+-   `--enable-libklvanc`
+-   `--enable-libvmaf`
+-   `--enable-libfdk-aac`
 
 If this isn't a problem then you can get the image here;
 
