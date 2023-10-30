@@ -129,7 +129,7 @@ router.post("/hls", async (req, res, next) => {
  */
 router.get("/", async (req, res, next) => {
     const response = await decklinkConfigGet();
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
+    hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
 });
 
 /**
