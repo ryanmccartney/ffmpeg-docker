@@ -277,6 +277,20 @@ HLS encode a file.
 | ---- | ----------- |
 | 200  | Success     |
 
+### /file/list
+
+#### GET
+
+##### Description
+
+Gets a list of files in the "./data/media" folder.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
 ---
 
 ### /decklink/file

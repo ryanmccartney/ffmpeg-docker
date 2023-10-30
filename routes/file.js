@@ -211,6 +211,22 @@ router.get("/metadata", async (req, res, next) => {
 
 /**
  * @swagger
+ * /file/list:
+ *    get:
+ *      description: Gets a list of files in the "./data/media" folder.
+ *      tags: [file]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/list", async (req, res, next) => {
+    const response = await fileList();
+    hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
+});
+/**
+ * @swagger
  * /file:
  *    get:
  *      description: Download file by name.
