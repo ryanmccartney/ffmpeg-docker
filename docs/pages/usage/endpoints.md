@@ -285,6 +285,12 @@ HLS encode a file.
 
 Gets a list of files in the "./data/media" folder.
 
+##### Parameters
+
+| Name | Located in | Description                                      | Required | Schema  |
+| ---- | ---------- | ------------------------------------------------ | -------- | ------- |
+| type | formData   | Includes the file extension in the returned name | No       | boolean |
+
 ##### Responses
 
 | Code | Description |
@@ -412,6 +418,12 @@ Sets the config for an individual Decklink card
 ##### Description
 
 Get the metadata in a media file.
+
+##### Parameters
+
+| Name     | Located in | Description                                                      | Required | Schema |
+| -------- | ---------- | ---------------------------------------------------------------- | -------- | ------ |
+| filename | formData   | The filename including extension in the `./data/media` directory | No       | string |
 
 ##### Responses
 

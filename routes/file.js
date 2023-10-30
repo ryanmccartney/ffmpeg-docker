@@ -200,6 +200,12 @@ router.post("/hls", async (req, res, next) => {
  *      tags: [files]
  *      produces:
  *        - application/json
+ *      parameters:
+ *        - in: formData
+ *          name: filename
+ *          type: string
+ *          description: The filename including extension in the `./data/media` directory
+ *          required: false
  *      responses:
  *        '200':
  *          description: Success
@@ -217,6 +223,12 @@ router.get("/metadata", async (req, res, next) => {
  *      tags: [file]
  *      produces:
  *        - application/json
+ *      parameters:
+ *        - in: formData
+ *          name: type
+ *          type: boolean
+ *          description: Includes the file extension in the returned name
+ *          required: false
  *      responses:
  *        '200':
  *          description: Success
