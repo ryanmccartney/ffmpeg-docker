@@ -12,6 +12,7 @@ const fileRtmp = require("@services/file-rtmp");
 const fileHls = require("@services/file-hls");
 
 const fileMetadata = require("@services/file-metadata");
+const fileList = require("@services/file-list");
 
 /**
  * @swagger
