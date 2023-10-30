@@ -16,6 +16,10 @@ module.exports = async (options) => {
         }
         return status;
     } else {
-        throw new Error(`Invalid Architecute - ${os.arch()}`);
+        logger.error(`Invalid Architecture - this command is not supported on ${os.arch()}`);
+        return {
+            error: "Invalid Architecture - this command is not supported on your system architecture",
+            arch: os.arch(),
+        };
     }
 };
