@@ -17,6 +17,7 @@ ARG NDI_SUPPORT="false"
 ARG NDI_SDK_URL="https://downloads.ndi.tv/SDK/NDI_SDK_Linux/Install_NDI_SDK_v5_Linux.tar.gz"
 
 ENV DEBIAN_FRONTEND=noninteractive
+ENV NODE_MAJOR=18 
 
 # Create folder structure
 RUN mkdir $HOME/ffmpeg_sources
@@ -263,16 +264,10 @@ RUN make && \
 #Install Node.js
 WORKDIR $HOME
 
-RUN apt remove nodejs
-RUN wget -O node.sh https://deb.nodesource.com/setup_18.x
-RUN chmod +x node.sh && ./node.sh
-RUN apt update
-RUN apt -y install nodejs
-RUN node -v
-RUN apt -y install aptitude
-RUN aptitude -y install npm 
-RUN npm -v
-RUN rm ./node.sh
+RUN apt remove nodejs && apt-get install -y ca-certificates curl gnupg && mkdir -p /etc/apt/keyrings
+RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+RUN apt-get update && apt-get install nodejs -y
 
 #Install Node.js API
 WORKDIR $HOME/home/node/app
