@@ -9,7 +9,7 @@ const readdir = util.promisify(fs.readdir);
 
 module.exports = async (options = { extension: true }) => {
     try {
-        const directoryPath = path.join(__dirname, "data", "media");
+        const directoryPath = path.join(process.cwd(), "data", "media");
         const files = await readdir(directoryPath, { withFileTypes: options?.extension });
         return { files: files };
     } catch (error) {
