@@ -6,6 +6,9 @@ FFmpeg compiled with additional libraries and running inside a Docker container.
 
 For more informations read the [documentation](https://ryan.mccartney.info/ffmpeg-docker/).
 
+| :exclamation: This project is a work in progress, it is still in the early stages of development and functions may not work as expected. |
+| ---------------------------------------------------------------------------------------------------------------------------------------- |
+
 ## Pre-built Image
 
 You can use the pre-built image straight away - however, this is contains pre-compiled FFmpeg as a result it does not have the following options enabled to comply with FFmpeg licensing;
