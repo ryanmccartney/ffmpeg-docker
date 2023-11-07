@@ -1,9 +1,17 @@
 "use strict";
 
 const router = require("express").Router();
+const { checkSchema, validationResult } = require("express-validator");
 const hashResponse = require("@utils/hash-response");
+
 const srtFile = require("@services/srt-file");
 const srtDecklink = require("@services/srt-decklink");
+
+const overlayValidator = require("@validators/overlay");
+const thumbnailValidator = require("@validators/thumbnail");
+const decklinkValidator = require("@validators/decklink");
+const fileValidator = require("@validators/srt");
+const srtValidator = require("@validators/srt");
 
 /**
  * @swagger
@@ -17,10 +25,27 @@ const srtDecklink = require("@services/srt-decklink");
  *        '200':
  *          description: Success
  */
-router.post("/file", async (req, res, next) => {
-    const response = await srtFile(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/file",
+    checkSchema({
+        ...srtValidator,
+        ...fileValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await srtFile(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -34,9 +59,26 @@ router.post("/file", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/decklink", async (req, res, next) => {
-    const response = await srtDecklink(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/decklink",
+    checkSchema({
+        ...srtValidator,
+        ...decklinkValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await srtDecklink(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 module.exports = router;

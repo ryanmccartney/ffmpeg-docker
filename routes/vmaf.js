@@ -1,14 +1,16 @@
 "use strict";
 
 const router = require("express").Router();
+const { checkSchema, validationResult } = require("express-validator");
 const hashResponse = require("@utils/hash-response");
+const path = require("path");
+
 const getVmafModels = require("@services/vmaf-models-get");
-const testVmaf = require("@services/vmaf-file-test");
 const getVmafResultsCsv = require("@services/vmaf-results-csv");
 const getVmafResultsJson = require("@services/vmaf-results-json");
-const path = require("path");
+const testVmaf = require("@services/vmaf-file-test");
+
 const fileExists = require("@utils/file-exists");
-const e = require("express");
 
 /**
  * @swagger

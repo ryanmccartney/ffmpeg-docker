@@ -11,24 +11,24 @@ const getRtmpAddress = require("@utils/rtmp-address");
 const process = async (options) => {
     const response = { options: options };
     let repeat = "-stream_loop 0";
-    if (options.repeat) {
+    if (options?.input?.repeat) {
         repeat = `-stream_loop -1`;
     }
 
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const rtmpAddress = getRtmpAddress(options.address, options.key);
-        const job = jobManager.start(rtmpAddress, `File to RTMP ${rtmpAddress}`, ["encode", "rtmp"]);
+        const rtmpAddress = getRtmpAddress(options?.output?.address, options?.output?.key);
+        const job = jobManager.start(rtmpAddress, `File to RTMP ${rtmpAddress}`, ["encode", "rtmp", "file"]);
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
-            .input(path.join(__dirname, "..", "data", "media", options.filename))
+            .input(path.join(__dirname, "..", "data", "media", options?.input?.file))
             .inputOptions([repeat, "-protocol_whitelist", "file,udp,rtp", "-stats", "-re"])
             .output(rtmpAddress)
             .outputOptions(["-f flv"])
             .videoCodec("libx264")
-            .outputOptions(`-b:v ${options?.bitrate || "5M"}`);
+            .outputOptions(`-b:v ${options?.output?.bitrate || "5M"}`);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -37,7 +37,7 @@ const process = async (options) => {
         if (options?.thumbnail) {
             command
                 .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
-                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+                .outputOptions([`-r ${options?.thumbnail?.frequency || 1}`, "-update 1"]);
 
             if (Array.isArray(filters)) {
                 command.videoFilters(filters);
@@ -78,10 +78,10 @@ const process = async (options) => {
         command.run();
     } catch (error) {
         logger.error(error.message);
-        response.error = error.message;
+        response.errors = [error];
     }
 
-    response.job = jobManager.get(`${options.address}:${options.port}`);
+    response.job = jobManager.get(`${options?.output?.address}:${options?.output?.port}`);
     return response;
 };
 

@@ -13,9 +13,9 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const rtmpAddress = getRtmpAddress(options.address, options.key);
+        const rtmpAddress = getRtmpAddress(options?.output?.address, options?.output?.key);
 
-        const job = jobManager.start(options.cardName, `Decklink to RTMP ${rtmpAddress}`, [
+        const job = jobManager.start(options?.input?.cardName, `Decklink to RTMP ${rtmpAddress}`, [
             "encode",
             "rtmp",
             "decklink",
@@ -24,13 +24,13 @@ const process = async (options) => {
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
-            .input(options.cardName)
+            .input(options?.input?.cardName)
             .inputFormat("decklink")
             .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats", "-re"])
-            .output(getRtmpAddress(options.address, options.key))
+            .output(rtmpAddress)
             .outputOptions(["-f flv"])
             .videoCodec("libx264")
-            .outputOptions(`-b:v ${options?.bitrate || "5M"}`);
+            .outputOptions(`-b:v ${options?.output?.bitrate || "5M"}`);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -39,7 +39,7 @@ const process = async (options) => {
         if (options?.thumbnail) {
             command
                 .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
-                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+                .outputOptions([`-r ${options?.thumbnail?.frequency || 1}`, "-update 1"]);
 
             if (Array.isArray(filters)) {
                 command.videoFilters(filters);
@@ -52,8 +52,12 @@ const process = async (options) => {
         });
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
-            jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
-            return { options: options, command: commandString };
+            response.job = jobManager.update(job?.jobId, {
+                command: commandString,
+                pid: command.ffmpegProc.pid,
+                options: options,
+            });
+            return response;
         });
 
         command.on("stderr", function (stderrLine) {
@@ -74,9 +78,9 @@ const process = async (options) => {
         command.run();
     } catch (error) {
         logger.error(error.message);
-        response.error = error.message;
+        response.errors = [error];
     }
 
-    response.job = await jobManager.get(options.cardName);
+    response.job = await jobManager.get(options?.input?.cardName);
     return response;
 };

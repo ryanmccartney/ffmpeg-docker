@@ -28,16 +28,6 @@ ryan@mccartney.info
 
 Takes a set of test Bars as an input and outputs it to a decklink card.
 
-##### Parameters
-
-| Name     | Located in | Description                                                                                              | Required | Schema  |
-| -------- | ---------- | -------------------------------------------------------------------------------------------------------- | -------- | ------- |
-| cardName | formData   | The name of the BMD Decklink cards. E.g - "DeckLink SDI"                                                 | Yes      | string  |
-| font     | formData   | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes      | string  |
-| offset   | formData   | Offset for time in hours. E.g 3, -3                                                                      | No       | number  |
-| timecode | formData   | Show the timecode line - true,false                                                                      | No       | boolean |
-| repeat   | formData   | Decides whether the media loops or not                                                                   | No       | boolean |
-
 ##### Responses
 
 | Code | Description |

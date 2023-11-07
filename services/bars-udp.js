@@ -13,38 +13,38 @@ const process = async (options) => {
 
     try {
         const job = jobManager.start(
-            `${options.address}:${options.port}`,
-            `Bars to UDP udp://${options.address}:${options.port}`,
+            `${options?.output?.address}:${options?.output?.port}`,
+            `Bars to UDP udp://${options?.output?.address}:${options?.output?.port}`,
             ["encode", "udp", "bars"]
         );
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
-            .addInput(`${options.type || "smptehdbars"}=rate=25:size=1920x1080`)
+            .addInput(`${options?.input?.type || "smptehdbars"}=rate=25:size=1920x1080`)
             .inputOptions(["-re", "-f lavfi"])
-            .addInput(`sine=frequency=${options.frequency || 1000}:sample_rate=48000`)
+            .addInput(`sine=frequency=${options?.input?.frequency || 1000}:sample_rate=48000`)
             .inputOptions(["-f lavfi"])
             .output(
-                `udp://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&buffer_size=${
-                    options?.buffer || 65535
-                }`
+                `udp://${options?.output?.address}:${options?.output?.port}?pkt_size=${
+                    options?.output?.packetSize || 1316
+                }&buffer_size=${options?.output?.buffer || 65535}`
             )
-            .outputOptions(["-preset veryfast", "-f mpegts"])
+            .outputOptions([`-preset ${options?.output?.encodePreset || "ultrafast"}`, "-f mpegts"])
             .videoCodec("libx264")
-            .outputOptions(`-b:v ${options?.bitrate || "5M"}`);
+            .outputOptions(`-b:v ${options?.output?.bitrate || "5M"}`);
 
-        if (!options.vbr) {
+        if (!options?.output?.vbr) {
             command.outputOptions([
-                `-minrate ${options?.bitrate || "5M"}`,
-                `-maxrate ${options?.bitrate || "5M"}`,
-                `-muxrate ${options?.bitrate || "5M"}`,
+                `-minrate ${options?.output?.bitrate || "5M"}`,
+                `-maxrate ${options?.output?.bitrate || "5M"}`,
+                `-muxrate ${options?.output?.bitrate || "5M"}`,
                 `-bufsize 500K`,
             ]);
         } else {
             command.outputOptions([
-                `-minrate ${options?.minBitrate || "5M"}`,
-                `-maxrate ${options?.maxBitrate || "5M"}`,
+                `-minrate ${options?.output?.minBitrate || "5M"}`,
+                `-maxrate ${options?.output?.maxBitrate || "5M"}`,
                 `-bufsize 500K`,
             ]);
         }
@@ -56,7 +56,7 @@ const process = async (options) => {
         if (options?.thumbnail) {
             command
                 .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
-                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+                .outputOptions([`-r ${options?.thumbnail?.frequency || 1}`, "-update 1"]);
 
             if (Array.isArray(filters)) {
                 command.videoFilters(filters);
@@ -70,8 +70,12 @@ const process = async (options) => {
 
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
-            jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
-            return { options: options, command: commandString };
+            response.job = jobManager.update(job?.jobId, {
+                command: commandString,
+                pid: command.ffmpegProc.pid,
+                options: options,
+            });
+            return response;
         });
 
         command.on("stderr", function (stderrLine) {
@@ -92,10 +96,10 @@ const process = async (options) => {
         command.run();
     } catch (error) {
         logger.error(error.message);
-        response.error = error.message;
+        response.errors = [error];
     }
 
-    response.job = jobManager.get(`${options.address}:${options.port}`);
+    response.job = jobManager.get(`${options?.output?.address}:${options?.output?.port}`);
     return response;
 };
 

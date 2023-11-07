@@ -36,22 +36,33 @@ The image provides a RESTful API exposing a number of endpoints allowing you to 
 -   `bars`
 -   `rtmp`
 
-Common body options for all these media proccessing endpoints include;
+All commands that run FFMPEG processes in the container are POST requests. They have a common body format for passing arguments with specific variables that are aplicable to indicudual codecs and input/output types
+Common body options for all these media proccessing endpoints shown as follows;
 
-```
+```json
 {
-    "bitrate": "30M",
-    "thumbnail": true,
-    "fontSize": 90,
-    "filename": "blue-sky.mov",
-    "line1": "Line 1 Text",
-    "line2": "Line 2 Text",
-    "timecode": true,
-    "font": "swansea-bold.ttf",
-    "offset": 1,
-    "topRight": {
-        "line1": "%{pts\\:hms}",
-        "line2": "Frame %{n}"
+    "input": {
+        "inputVariable1": "specifically applies to chosen input type",
+        "inputVariable2": "specifically applies to chosen input type"
+    },
+    "output": {
+        "outputVariable1": "specifically applies to chosen output type",
+        "outputVariable2": "specifically applies to chosen output type"
+    },
+    "overlay": {
+        "fontSize": 90,
+        "line1": "Line 1 Text",
+        "line2": "Line 2 Text",
+        "timecode": true,
+        "font": "swansea-bold.ttf",
+        "offset": 1,
+        "topRight": {
+            "line1": "%{pts\\:hms}",
+            "line2": "Frame %{n}"
+        }
+    },
+    "thumbnail": {
+        "frequency": 25
     }
 }
 ```
@@ -60,4 +71,4 @@ Common body options for all these media proccessing endpoints include;
 
 Media can be added into the container at `home/node/app/data/media`. This can then be called relative to this directory.
 
-For example `home/node/app/data/media/test.mp4` can be called using the `filename` parameter in a request body as `test.mp4`.
+For example `home/node/app/data/media/test.mp4` can be called using the `file` parameter in a request body as `test.mp4`.

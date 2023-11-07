@@ -23,12 +23,12 @@ const process = async (options) => {
 
     try {
         const job = jobManager.start(
-            `${options?.input?.filename}${options?.reference?.filename}`,
-            `VMAF: Compare ${options?.input?.filename}  with a reference ${options?.reference?.filename}`,
+            `${options?.input?.file}:${options?.vmaf?.reference}`,
+            `VMAF: Compare ${options?.input?.file}  with a reference ${options?.vmaf?.reference}`,
             ["vmaf"]
         );
 
-        const inputFilePath = path.join(__dirname, "..", "data", "media", options?.input?.filename);
+        const inputFilePath = path.join(__dirname, "..", "data", "media", options?.input?.file);
         const defaultOutputFile = path.join(__dirname, "..", "data", "vmaf", `${job.jobId}.json`);
 
         if (!(await fileExists(inputFilePath))) {
@@ -38,7 +38,7 @@ const process = async (options) => {
         }
 
         const command = ffmpeg({ logger: logger })
-            .input(path.join(__dirname, "..", "data", "media", options?.reference?.filename))
+            .input(path.join(__dirname, "..", "data", "media", options?.vmaf?.reference))
             .input(inputFilePath)
             .output("-")
             .outputOptions(
@@ -47,10 +47,10 @@ const process = async (options) => {
                     "/ffmpeg_sources",
                     "vmaf",
                     "model",
-                    `${options?.model || "vmaf_v0.6.1.json"}`
-                )}:log_fmt=json:psnr=1:ssim=1:ms_ssim=1:log_path=${options?.output || defaultOutputFile}:n_threads=${
-                    options.threads || 20
-                }`,
+                    `${options?.vmaf?.model || "vmaf_v0.6.1.json"}`
+                )}:log_fmt=json:psnr=1:ssim=1:ms_ssim=1:log_path=${
+                    options?.output?.file || defaultOutputFile
+                }:n_threads=${options?.vmaf?.threads || 20}`,
                 "-f",
                 "null"
             );
@@ -58,7 +58,7 @@ const process = async (options) => {
         if (options?.thumbnail) {
             command
                 .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
-                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+                .outputOptions([`-r ${options?.thumbnail?.frequency || 1}`, "-update 1"]);
         }
 
         command.on("end", () => {
@@ -69,8 +69,12 @@ const process = async (options) => {
 
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
-            jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
-            return { options: options, command: commandString };
+            response.job = jobManager.update(job?.jobId, {
+                command: commandString,
+                pid: command.ffmpegProc.pid,
+                options: options,
+            });
+            return response;
         });
 
         command.on("progress", (progress) => {
@@ -78,12 +82,12 @@ const process = async (options) => {
             jobManager.update(job?.jobId, { progress: Math.floor(progress.percent) });
         });
 
-        command.on("stderr", function (stderrLine) {
+        command.on("stderr", (stderrLine) => {
             const vmafScore = parseVMAFScore(stderrLine);
             logger.info("ffmpeg: " + stderrLine);
         });
 
-        command.on("error", function (error) {
+        command.on("error", (error) => {
             logger.error(error);
             jobManager.end(job?.jobId, false);
         });
@@ -95,7 +99,7 @@ const process = async (options) => {
         response.status = false;
     }
 
-    response.job = jobManager.get(`${options.address}:${options.port}`);
+    response.job = jobManager.get(`${options?.input?.file}:${options?.vmaf?.reference}`);
     return response;
 };
 

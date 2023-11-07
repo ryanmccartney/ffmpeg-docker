@@ -15,9 +15,9 @@ module.exports = async (cardIndex, options) => {
     let repeat = "";
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
-    const filters = await filterCombine(await filterText(options));
+    const filters = await filterCombine(await filterText({ ...options, ...job }));
 
-    if (options.repeat) {
+    if (options?.input?.repeat) {
         repeat = "-stream_loop -1";
     }
 
@@ -26,7 +26,7 @@ module.exports = async (cardIndex, options) => {
         await command.kill();
     }
     command = ffmpeg({ logger: logger })
-        .input(`${path.join(__dirname, "..", "data", "media", options.filename)}`)
+        .input(`${path.join(__dirname, "..", "data", "media", options.file)}`)
         .seekInput(options.timestamp)
         .complexFilter([
             {

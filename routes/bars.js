@@ -1,7 +1,9 @@
 "use strict";
 
 const router = require("express").Router();
+const { checkSchema, validationResult } = require("express-validator");
 const hashResponse = require("@utils/hash-response");
+
 const barsDecklink = require("@services/bars-decklink");
 const barsFile = require("@services/bars-file");
 const barsRtmp = require("@services/bars-rtmp");
@@ -10,6 +12,17 @@ const barsRtp = require("@services/bars-rtp");
 const barsSrt = require("@services/bars-srt");
 const barsHls = require("@services/bars-hls");
 
+const overlayValidator = require("@validators/overlay");
+const thumbnailValidator = require("@validators/thumbnail");
+const barsValidator = require("@validators/bars");
+const decklinkValidator = require("@validators/decklink");
+const fileValidator = require("@validators/srt");
+const hlsValidator = require("@validators/srt");
+const srtValidator = require("@validators/srt");
+const rtmpValidator = require("@validators/rtmp");
+const udpValidator = require("@validators/udp");
+const rtpValidator = require("@validators/udp");
+
 /**
  * @swagger
  * /bars/decklink:
@@ -17,41 +30,93 @@ const barsHls = require("@services/bars-hls");
  *      description: Takes a set of test Bars as an input and outputs it to a decklink card.
  *      tags: [bars]
  *      parameters:
- *        - in: formData
- *          name: cardName
- *          type: string
- *          description: The name of the BMD Decklink cards. E.g - "DeckLink SDI"
- *          required: true
- *        - in: formData
- *          name: font
- *          type: string
- *          description: The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf"
- *          required: font
- *        - in: formData
- *          name: offset
- *          type: number
- *          description: Offset for time in hours. E.g 3, -3
- *          required: false
- *        - in: formData
- *          name: timecode
- *          type: boolean
- *          description: Show the timecode line - true,false
- *          required: false
- *        - in: formData
- *          name: repeat
- *          type: boolean
- *          description: Decides whether the media loops or not
- *          required: false
+ *        - in: body
+ *          type: "object"
+ *          properties:
+ *              input:
+ *                  type: "object"
+ *                  properties:
+ *                      type:
+ *                          type: "string"
+ *                          description: "The type of color bars outputed"
+ *                          example: "testsrc2"
+ *                          required: false
+ *                      freqeuncy:
+ *                          type: "number"
+ *                          description: "The audio frequency of color bars outputed in hertz"
+ *                          example: 1000
+ *                          required: false
+ *              output:
+ *                  type: "object"
+ *                  properties:
+ *                      cardName:
+ *                          type: "string"
+ *                          description: The name of the BMD Decklink cards"
+ *                          example: "DeckLink SDI"
+ *                          required: true
+ *                      duplexMode:
+ *                          type: "string"
+ *                          description: Duplex mode of the BMD Decklink card"
+ *                          example: "full"
+ *                          required: false
+ *                      volume:
+ *                          type: "number"
+ *                          description: Volume output of the BMD Decklink card between 0 and 1"
+ *                          example: 0.25
+ *                          required: false
+ *              overlay:
+ *                  type: "object"
+ *                  properties:
+ *                      font:
+ *                          type: "string"
+ *                          description: "The name of the font file to use for text overlay. Must use the TrueType fonts"
+ *                          example: "swansea-bold.ttf"
+ *                          required: false
+ *                      timecode:
+ *                          type: "boolean"
+ *                          description: "Show the timecode line"
+ *                          example: false
+ *                          required: false
+ *                      offset:
+ *                          type: "number"
+ *                          description: "Offset for time in hours. E.g 3, -3"
+ *                          example: 0
+ *                          required: false
+ *              thumbnail:
+ *                  type: "object"
+ *                  properties:
+ *                      frequency:
+ *                          type: "number"
+ *                          description: "Frequency a thumbnail is prodicd in frames."
+ *                          example: 25
+ *                          required: false
  *      produces:
  *        - application/json
  *      responses:
  *        '200':
  *          description: Success
  */
-router.post("/decklink", async (req, res, next) => {
-    const response = await barsDecklink(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/decklink",
+    checkSchema({
+        ...barsValidator,
+        ...decklinkValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await barsDecklink(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -65,10 +130,27 @@ router.post("/decklink", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/file", async (req, res, next) => {
-    const response = await barsFile(req.body);
-    hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
-});
+router.post(
+    "/file",
+    checkSchema({
+        ...barsValidator,
+        ...fileValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await barsFile(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -82,10 +164,27 @@ router.post("/file", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/srt", async (req, res, next) => {
-    const response = await barsSrt(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/srt",
+    checkSchema({
+        ...barsValidator,
+        ...srtValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await barsSrt(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -99,10 +198,27 @@ router.post("/srt", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/rtmp", async (req, res, next) => {
-    const response = await barsRtmp(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/rtmp",
+    checkSchema({
+        ...barsValidator,
+        ...rtmpValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await barsRtmp(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -116,11 +232,27 @@ router.post("/rtmp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/udp", async (req, res, next) => {
-    const response = await barsUdp(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/udp",
+    checkSchema({
+        ...barsValidator,
+        ...udpValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
 
+        if (errors.isEmpty()) {
+            response = await barsUdp(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 /**
  * @swagger
  * /bars/rtp:
@@ -133,10 +265,27 @@ router.post("/udp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/rtp", async (req, res, next) => {
-    const response = await barsRtp(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/rtp",
+    checkSchema({
+        ...barsValidator,
+        ...rtpValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await barsRtp(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -150,9 +299,26 @@ router.post("/rtp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/hls", async (req, res, next) => {
-    const response = await barsHls(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/hls",
+    checkSchema({
+        ...barsValidator,
+        ...hlsValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await barsHls(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 module.exports = router;

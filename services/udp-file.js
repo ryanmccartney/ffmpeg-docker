@@ -20,7 +20,7 @@ const process = async (options) => {
             ["decode", "file", "udp"]
         );
 
-        const fileName = `${options.filename || job.jobId}${getFileExtension(options?.format)}`;
+        const fileName = `${options.file || job.jobId}${getFileExtension(options?.format)}`;
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
@@ -50,7 +50,7 @@ const process = async (options) => {
             command.output(`${path.join(__dirname, "..", "data", "media", fileName)}`);
         }
 
-        command = setCodec(command, options);
+        command = setCodec(command, options?.output);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -59,7 +59,7 @@ const process = async (options) => {
         if (options?.thumbnail) {
             command
                 .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
-                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+                .outputOptions([`-r ${options?.thumbnail?.frequency || 1}`, "-update 1"]);
 
             if (Array.isArray(filters)) {
                 command.videoFilters(filters);
@@ -99,7 +99,7 @@ const process = async (options) => {
         command.run();
     } catch (error) {
         logger.error(error.message);
-        response.error = error.message;
+        response.errors = [error];
     }
 
     response.job = jobManager.get(`${options.address}:${options.port}`);

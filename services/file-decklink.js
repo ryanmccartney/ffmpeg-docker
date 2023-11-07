@@ -10,19 +10,23 @@ const jobManager = require("@utils/jobManager");
 const process = async (options) => {
     const response = { options: options };
     let repeat = "-stream_loop 0";
-    if (options.repeat) {
+    if (options?.input?.repeat) {
         repeat = `-stream_loop -1`;
     }
 
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(options.cardName, `File to ${options.cardName}`, ["decode", "file", "decklink"]);
+        const job = jobManager.start(options?.output?.cardName, `File to ${options?.output?.cardName}`, [
+            "decode",
+            "file",
+            "decklink",
+        ]);
 
-        const filters = await filterCombine(await filterText(options));
+        const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
-            .input(`${path.join(__dirname, "..", "data", "media", options.filename)}`)
+            .input(`${path.join(__dirname, "..", "data", "media", options?.input?.file)}`)
             .inputOptions([
                 repeat,
                 "-protocol_whitelist",
@@ -37,13 +41,13 @@ const process = async (options) => {
                 "-s 1920x1080",
                 "-ac 16",
                 "-f decklink",
-                `-af volume=${options?.volume || 0.25}`,
+                `-af volume=${options?.output?.volume || 0.25}`,
                 "-flags low_delay",
                 "-bufsize 0",
                 "-muxdelay 0",
                 "-async 1",
             ])
-            .output(options.cardName);
+            .output(options.output?.cardName);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -52,7 +56,7 @@ const process = async (options) => {
         if (options?.thumbnail) {
             command
                 .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
-                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+                .outputOptions([`-r ${options?.thumbnail?.frequency || 1}`, "-update 1"]);
 
             if (Array.isArray(filters)) {
                 command.videoFilters(filters);
@@ -91,10 +95,10 @@ const process = async (options) => {
         command.run();
     } catch (error) {
         logger.error(error.message);
-        response.error = error.message;
+        response.errors = [error];
     }
 
-    response.job = await jobManager.get(options.cardName);
+    response.job = await jobManager.get(options?.output?.cardName);
     return response;
 };
 
