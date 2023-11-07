@@ -8,7 +8,7 @@ version: "3.8"
 services:
     ffmpeg:
         container_name: ffmpeg
-        network_mode: "host" #Change this as required
+        # network_mode: "host" #Change this as required
         build:
             context: "."
             args:
@@ -22,8 +22,8 @@ services:
         restart: always
         volumes:
             - ./:/home/node/app
-        devices:
-            - /dev/blackmagic/io0:/dev/blackmagic/io0
+        #devices:
+        #    - /dev/blackmagic/io0:/dev/blackmagic/io0
         environment:
             NODE_ENV: "development"
             PORT: 80

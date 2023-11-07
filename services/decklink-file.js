@@ -14,18 +14,22 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(`${options.cardName}in`, `${options.cardName} to file`, [
+        const job = jobManager.start(`${options?.input.cardName}`, `${options?.input.cardName} to file`, [
             "decode",
             "file",
             "decklink",
         ]);
 
-        const fileName = `${options.filename || job.jobId}${getFileExtension(options?.format)}`;
+        // DD-MM-YYYY-HH-MM
+        // ./dir/filemap
+        const fileName = `${options?.output?.file || job.jobId}${
+            options?.output?.timestamp ? `-DD-MM-YY-HH-MM` : ``
+        }${getFileExtension(options?.output?.format)}`;
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         let command = ffmpeg({ logger: logger })
-            .input(options.cardName)
+            .input(options?.input.cardName)
             .inputFormat("decklink")
             .inputOptions([
                 "-protocol_whitelist",
@@ -33,13 +37,13 @@ const process = async (options) => {
                 "-stats",
                 "-re",
                 "-duplex_mode",
-                `${options?.duplexMode || "unset"}`,
+                `${options?.input?.duplexMode || "unset"}`,
             ]);
 
         if (options.chunkSize) {
             command
                 .outputOptions("-f", "segment")
-                .outputOptions("-segment_time", parseInt(options.chunkSize))
+                .outputOptions("-segment_time", parseInt(options?.output?.chunkSize))
                 .outputOptions("-reset_timestamps", 1, "-y")
                 .output(
                     `${path.join(
@@ -54,7 +58,7 @@ const process = async (options) => {
             command.output(`${path.join(__dirname, "..", "data", "media", fileName)}`);
         }
 
-        command = setCodec(command, options);
+        command = setCodec(command, options?.output);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -63,7 +67,7 @@ const process = async (options) => {
         if (options?.thumbnail) {
             command
                 .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
-                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+                .outputOptions([`-r ${options?.thumbnail?.frequency || 1}`, "-update 1"]);
 
             if (Array.isArray(filters)) {
                 command.videoFilters(filters);
@@ -81,6 +85,7 @@ const process = async (options) => {
                 command: commandString,
                 pid: command.ffmpegProc.pid,
                 options: options,
+                output: { file: fileName },
             });
             return response;
         });
@@ -97,7 +102,7 @@ const process = async (options) => {
         command.run();
     } catch (error) {
         logger.error(error.message);
-        response.error = error.message;
+        response.errors = [error];
     }
 
     response.job = await jobManager.get(options.cardName);

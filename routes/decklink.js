@@ -1,6 +1,7 @@
 "use strict";
 
 const router = require("express").Router();
+const { checkSchema, validationResult } = require("express-validator");
 const hashResponse = require("@utils/hash-response");
 
 const decklinkFile = require("@services/decklink-file");
@@ -12,6 +13,16 @@ const decklinkHls = require("@services/decklink-hls");
 
 const decklinkConfigGet = require("@services/decklink-config-get");
 const decklinkConfigSet = require("@services/decklink-config-set");
+
+const overlayValidator = require("@validators/overlay");
+const thumbnailValidator = require("@validators/thumbnail");
+const decklinkValidator = require("@validators/decklink");
+const fileValidator = require("@validators/srt");
+const hlsValidator = require("@validators/srt");
+const srtValidator = require("@validators/srt");
+const rtmpValidator = require("@validators/rtmp");
+const udpValidator = require("@validators/udp");
+const rtpValidator = require("@validators/udp");
 
 /**
  * @swagger
@@ -25,10 +36,27 @@ const decklinkConfigSet = require("@services/decklink-config-set");
  *        '200':
  *          description: Success
  */
-router.post("/file", async (req, res, next) => {
-    const response = await decklinkFile(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/file",
+    checkSchema({
+        ...decklinkValidator,
+        ...fileValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await decklinkFile(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -42,10 +70,27 @@ router.post("/file", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/srt", async (req, res, next) => {
-    const response = await decklinkSrt(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/srt",
+    checkSchema({
+        ...decklinkValidator,
+        ...srtValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await decklinkSrt(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -59,10 +104,27 @@ router.post("/srt", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/udp", async (req, res, next) => {
-    const response = await decklinkUdp(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/udp",
+    checkSchema({
+        ...decklinkValidator,
+        ...udpValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await decklinkUdp(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -76,10 +138,27 @@ router.post("/udp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/rtp", async (req, res, next) => {
-    const response = await decklinkUdp(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/rtp",
+    checkSchema({
+        ...decklinkValidator,
+        ...rtpValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await decklinkRtp(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -93,10 +172,27 @@ router.post("/rtp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/rtmp", async (req, res, next) => {
-    const response = await decklinkRtmp(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/rtmp",
+    checkSchema({
+        ...decklinkValidator,
+        ...rtmpValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await decklinkRtmp(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -110,10 +206,27 @@ router.post("/rtmp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/hls", async (req, res, next) => {
-    const response = await decklinkHls(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/hls",
+    checkSchema({
+        ...decklinkValidator,
+        ...hlsValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await decklinkHls(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -129,7 +242,7 @@ router.post("/hls", async (req, res, next) => {
  */
 router.get("/", async (req, res, next) => {
     const response = await decklinkConfigGet();
-    hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
+    hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
 });
 
 /**

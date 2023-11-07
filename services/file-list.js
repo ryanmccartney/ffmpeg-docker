@@ -13,7 +13,7 @@ module.exports = async (options = { extension: true }) => {
         const files = await readdir(directoryPath, { withFileTypes: options?.extension });
         return { files: files };
     } catch (error) {
-        logger.warn("Cannot list files " + error.message);
-        return { error: error.toString() };
+        logger.warn(`Cannot list files ${error.message}`);
+        return { errors: [error] };
     }
 };

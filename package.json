@@ -18,6 +18,7 @@
     "express": "^4.18.1",
     "express-async-handler": "^1.2.0",
     "express-fileupload": "^1.2.1",
+    "express-validator": "^7.0.1",
     "fluent-ffmpeg": "^2.1.2",
     "helmet": "^5.0.1",
     "md5": "^2.3.0",
@@ -59,6 +60,7 @@
     "@bin": "./bin/",
     "@routes": "./routes/",
     "@utils": "./utils/",
-    "@services": "./services/"
+    "@services": "./services/",
+    "@validators": "./validators/"
   }
 }

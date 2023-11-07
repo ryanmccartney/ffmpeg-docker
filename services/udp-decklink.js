@@ -14,7 +14,7 @@ const process = async (options) => {
     try {
         const job = jobManager.start(options.cardName, `UDP to ${options.cardName}`, ["decode", "udp", "decklink"]);
 
-        const filters = await filterCombine(await filterText(options));
+        const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
             .input(
@@ -50,7 +50,7 @@ const process = async (options) => {
         if (options?.thumbnail) {
             command
                 .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
-                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+                .outputOptions([`-r ${options?.thumbnail?.frequency || 1}`, "-update 1"]);
 
             if (Array.isArray(filters)) {
                 command.videoFilters(filters);
@@ -90,7 +90,7 @@ const process = async (options) => {
         command.run();
     } catch (error) {
         logger.error(error.message);
-        response.error = error.message;
+        response.errors = [error];
     }
 
     response.job = await jobManager.get(options.cardName);

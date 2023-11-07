@@ -13,15 +13,15 @@ const process = async (options) => {
 
     try {
         const job = jobManager.start(
-            `${options.cardName}in`,
-            `${options.cardName} to SRT srt://${options.address}:${options.port}`,
+            `${options?.input?.cardName}in`,
+            `${options?.input?.cardName} to SRT srt://${options?.output?.address}:${options?.output?.port}`,
             ["encode", "srt", "decklink"]
         );
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
-            .input(options.cardName)
+            .input(options?.input?.cardName)
             .inputFormat("decklink")
             .inputOptions([
                 "-protocol_whitelist",
@@ -31,30 +31,32 @@ const process = async (options) => {
                 "-flags low_delay",
                 "-async 1",
                 "-duplex_mode",
-                `${options?.duplexMode || "unset"}`,
+                `${options?.input?.duplexMode || "unset"}`,
             ])
             .output(
-                `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&latency=${
-                    parseInt(options?.latency) * 1000 || "250000"
-                }&mode=${options?.mode || "caller"}&ipttl=${options?.ttl || "64"}&iptos=${
-                    options?.tos || "104"
-                }&transtype=${options?.transtype || "live"}&maxbw==${options?.maxbw || "-1"}&`
+                `srt://${options?.output?.address}:${options?.output?.port}?pkt_size=${
+                    options?.output?.packetSize || 1316
+                }&latency=${parseInt(options?.output?.latency) * 1000 || "250000"}&mode=${
+                    options?.output?.mode || "caller"
+                }&ipttl=${options?.output?.ttl || "64"}&iptos=${options?.output?.tos || "104"}&transtype=${
+                    options?.output?.transtype || "live"
+                }&maxbw==${options?.output?.maxbw || "-1"}&`
             )
-            .outputOptions([`-preset ${options?.encodePreset || "veryfast"}`, "-f mpegts"])
+            .outputOptions([`-preset ${options?.output?.encodePreset || "ultrafast"}`, "-f mpegts"])
             .videoCodec("libx264")
-            .outputOptions(`-b:v ${options?.bitrate || "5M"}`);
+            .outputOptions(`-b:v ${options?.output?.bitrate || "5M"}`);
 
         if (!options.vbr) {
             command.outputOptions([
-                `-minrate ${options?.bitrate || "5M"}`,
-                `-maxrate ${options?.bitrate || "5M"}`,
-                `-muxrate ${options?.bitrate || "5M"}`,
+                `-minrate ${options?.output?.bitrate || "5M"}`,
+                `-maxrate ${options?.output?.bitrate || "5M"}`,
+                `-muxrate ${options?.output?.bitrate || "5M"}`,
                 `-bufsize 500K`,
             ]);
         } else {
             command.outputOptions([
-                `-minrate ${options?.minBitrate || "5M"}`,
-                `-maxrate ${options?.maxBitrate || "5M"}`,
+                `-minrate ${options?.output?.minBitrate || "5M"}`,
+                `-maxrate ${options?.output?.maxBitrate || "5M"}`,
                 `-bufsize 500K`,
             ]);
         }
@@ -66,7 +68,7 @@ const process = async (options) => {
         if (options?.thumbnail) {
             command
                 .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
-                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+                .outputOptions([`-r ${options?.thumbnail?.frequency || 1}`, "-update 1"]);
 
             if (Array.isArray(filters)) {
                 command.videoFilters(filters);
@@ -79,8 +81,12 @@ const process = async (options) => {
         });
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
-            jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
-            return { options: options, command: commandString };
+            response.job = jobManager.update(job?.jobId, {
+                command: commandString,
+                pid: command.ffmpegProc.pid,
+                options: options,
+            });
+            return response;
         });
 
         command.on("stderr", function (stderrLine) {
@@ -101,10 +107,10 @@ const process = async (options) => {
         command.run();
     } catch (error) {
         logger.error(error.message);
-        response.error = error.message;
+        response.errors = [error];
     }
 
-    response.job = await jobManager.get(options.cardName);
+    response.job = await jobManager.get(options?.input?.cardName);
     return response;
 };
 

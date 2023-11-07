@@ -18,33 +18,67 @@ paths:
       description: Takes a set of test Bars as an input and outputs it to a decklink card.
       tags:
         - bars
-      parameters:
-        - in: formData
-          name: cardName
-          type: string
-          description: The name of the BMD Decklink cards. E.g - "DeckLink SDI"
-          required: true
-        - in: formData
-          name: font
-          type: string
-          description: The name of the font file to use for text overlay. Must use the
-            TrueType fonts. E.g - "swansea-bold.ttf"
-          required: font
-        - in: formData
-          name: offset
-          type: number
-          description: Offset for time in hours. E.g 3, -3
-          required: false
-        - in: formData
-          name: timecode
-          type: boolean
-          description: Show the timecode line - true,false
-          required: false
-        - in: formData
-          name: repeat
-          type: boolean
-          description: Decides whether the media loops or not
-          required: false
+      schema:
+        type: object
+        properties:
+          input:
+            type: object
+            properties:
+              type:
+                type: string
+                description: The type of color bars outputed
+                example: testsrc2
+                required: false
+              freqeuncy:
+                type: number
+                description: The audio frequency of color bars outputed in hertz
+                example: 1000
+                required: false
+          output:
+            type: object
+            properties:
+              cardName:
+                type: string
+                description: The name of the BMD Decklink cards"
+                example: DeckLink SDI
+                required: true
+              duplexMode:
+                type: string
+                description: Duplex mode of the BMD Decklink card"
+                example: full
+                required: false
+              volume:
+                type: number
+                description: Volume output of the BMD Decklink card between 0 and 1"
+                example: 0.25
+                required: false
+          overlay:
+            type: object
+            properties:
+              font:
+                type: string
+                description: The name of the font file to use for text overlay. Must use the
+                  TrueType fonts
+                example: swansea-bold.ttf
+                required: false
+              timecode:
+                type: boolean
+                description: Show the timecode line
+                example: false
+                required: false
+              offset:
+                type: number
+                description: Offset for time in hours. E.g 3, -3
+                example: 0
+                required: false
+          thumbnail:
+            type: object
+            properties:
+              frequency:
+                type: number
+                description: Frequency a thumbnail is prodicd in frames.
+                example: 25
+                required: false
       produces:
         - application/json
       responses:

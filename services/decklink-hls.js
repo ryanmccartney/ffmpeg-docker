@@ -12,31 +12,31 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = await jobManager.start(options.cardName, `Decklink to HLS (${options?.output || "JobID"}.m3u8)`, [
-            "encode",
-            "hls",
-            "decklink",
-        ]);
+        const job = await jobManager.start(
+            options?.input?.cardName,
+            `Decklink to HLS (${options?.output?.file || "JobID"}.m3u8)`,
+            ["encode", "hls", "decklink"]
+        );
 
-        response.hls = `/api/hls/${options?.output || job.jobId}.m3u8`;
+        response.hls = `/api/hls/${options?.output?.file || job.jobId}.m3u8`;
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
-            .input(options.cardName)
+            .input(options?.input?.cardName)
             .inputFormat("decklink")
-            .output(`${path.join(__dirname, "..", "data", "hls", options?.output || job?.jobId)}.m3u8`)
+            .output(`${path.join(__dirname, "..", "data", "hls", options?.output?.file || job?.jobId)}.m3u8`)
             .outputOptions([
                 "-c:v libx264",
-                "-preset ultrafast",
+                `-preset ${options?.output?.encodePreset || "ultrafast"}`,
                 "-tune zerolatency",
                 "-g 30",
                 "-c:a aac",
                 "-strict experimental",
                 "-movflags faststart",
                 "-f hls",
-                `-hls_time ${options?.hls?.chunkTime | 0.5}`,
-                `-hls_list_size ${options?.hls?.chunks | 5}`,
+                `-hls_time ${options?.output?.chunkDuration | 0.5}`,
+                `-hls_list_size ${options?.output?.chunks | 5}`,
                 "-hls_flags independent_segments",
             ]);
 
@@ -47,7 +47,7 @@ const process = async (options) => {
         if (options?.thumbnail) {
             command
                 .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
-                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+                .outputOptions([`-r ${options?.thumbnail?.frequency || 1}`, "-update 1"]);
 
             if (Array.isArray(filters)) {
                 command.videoFilters(filters);
@@ -87,10 +87,10 @@ const process = async (options) => {
         command.run();
     } catch (error) {
         logger.error(error.message);
-        response.error = error.message;
+        response.errors = [error];
     }
 
-    response.job = await jobManager.get(options.cardName);
+    response.job = await jobManager.get(options?.input?.cardName);
     return response;
 };
 

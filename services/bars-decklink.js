@@ -13,26 +13,29 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(`${options.cardName}`, `Bars to ${options.cardName}`, ["bars", "decklink"]);
+        const job = jobManager.start(`${options?.output?.cardName}`, `Bars to ${options?.output?.cardName}`, [
+            "bars",
+            "decklink",
+        ]);
 
-        const filters = await filterCombine(await filterText(options));
+        const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
-            .addInput(`${options.type || "smptehdbars"}=rate=25:size=1920x1080`)
+            .addInput(`${options.input?.type || "smptehdbars"}=rate=25:size=1920x1080`)
             .inputOptions(["-re", "-f lavfi"])
-            .addInput(`sine=frequency=${options.frequency || 1000}:sample_rate=48000`)
+            .addInput(`sine=frequency=${options.input?.frequency || 1000}:sample_rate=48000`)
             .inputOptions(["-f lavfi"])
             .outputOptions([
                 "-pix_fmt uyvy422",
                 "-s 1920x1080",
                 "-ac 16",
                 "-f decklink",
-                `-af volume=${options?.volume || 0.25}`,
+                `-af volume=${options?.output?.volume || 0.25}`,
                 "-flags low_delay",
                 "-bufsize 0",
                 "-muxdelay 0",
             ])
-            .output(options.cardName);
+            .output(options.output?.cardName);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -41,7 +44,7 @@ const process = async (options) => {
         if (options?.thumbnail) {
             command
                 .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
-                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+                .outputOptions([`-r ${options?.thumbnail?.frequency || 1}`, "-update 1"]);
 
             if (Array.isArray(filters)) {
                 command.videoFilters(filters);
@@ -75,10 +78,10 @@ const process = async (options) => {
         command.run();
     } catch (error) {
         logger.error(error.message);
-        response.error = error.message;
+        response.errors = [error];
     }
 
-    response.job = await jobManager.get(options.cardName);
+    response.job = await jobManager.get(options.input?.cardName);
     return response;
 };
 

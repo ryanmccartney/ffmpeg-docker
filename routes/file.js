@@ -1,6 +1,7 @@
 "use strict";
 
 const router = require("express").Router();
+const { checkSchema, validationResult } = require("express-validator");
 const hashResponse = require("@utils/hash-response");
 const path = require("path");
 
@@ -13,6 +14,16 @@ const fileHls = require("@services/file-hls");
 
 const fileMetadata = require("@services/file-metadata");
 const fileList = require("@services/file-list");
+
+const overlayValidator = require("@validators/overlay");
+const thumbnailValidator = require("@validators/thumbnail");
+const decklinkValidator = require("@validators/decklink");
+const fileValidator = require("@validators/srt");
+const hlsValidator = require("@validators/srt");
+const srtValidator = require("@validators/srt");
+const rtmpValidator = require("@validators/rtmp");
+const udpValidator = require("@validators/udp");
+const rtpValidator = require("@validators/udp");
 
 /**
  * @swagger
@@ -57,10 +68,27 @@ const fileList = require("@services/file-list");
  *        '200':
  *          description: Success
  */
-router.post("/decklink", async (req, res, next) => {
-    const response = await fileDecklink(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/decklink",
+    checkSchema({
+        ...fileValidator,
+        ...decklinkValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await fileDecklink(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -120,10 +148,27 @@ router.post("/decklink", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/srt", async (req, res, next) => {
-    const response = await fileSrt(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/srt",
+    checkSchema({
+        ...fileValidator,
+        ...srtValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await fileSrt(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -137,10 +182,27 @@ router.post("/srt", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/udp", async (req, res, next) => {
-    const response = await fileUdp(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/udp",
+    checkSchema({
+        ...fileValidator,
+        ...udpValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await fileUdp(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -154,10 +216,27 @@ router.post("/udp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/rtp", async (req, res, next) => {
-    const response = await fileRtp(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/rtp",
+    checkSchema({
+        ...fileValidator,
+        ...rtpValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await fileRtp(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -171,10 +250,27 @@ router.post("/rtp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/rtmp", async (req, res, next) => {
-    const response = await fileRtmp(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/rtmp",
+    checkSchema({
+        ...fileValidator,
+        ...rtmpValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await fileRtmp(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger
@@ -188,10 +284,27 @@ router.post("/rtmp", async (req, res, next) => {
  *        '200':
  *          description: Success
  */
-router.post("/hls", async (req, res, next) => {
-    const response = await fileHls(req.body);
-    hashResponse(res, req, { data: response, status: response ? "success" : "error" });
-});
+router.post(
+    "/hls",
+    checkSchema({
+        ...fileValidator,
+        ...hlsValidator,
+        ...thumbnailValidator,
+        ...overlayValidator,
+    }),
+    async (req, res, next) => {
+        let response = {};
+        const errors = await validationResult(req);
+
+        if (errors.isEmpty()) {
+            response = await fileHls(req.body);
+        } else {
+            response.errors = errors.array();
+        }
+
+        hashResponse(res, req, { ...response, ...{ status: response.errors ? "error" : "success" } });
+    }
+);
 
 /**
  * @swagger

@@ -1,15 +1,18 @@
 "use strict";
 
 const router = require("express").Router();
+const { checkSchema, validationResult } = require("express-validator");
+const path = require("path");
 const hashResponse = require("@utils/hash-response");
+
 const setTime = require("@services/system-time-set");
 const systemStats = require("@services/system-stats");
+
 const jobKill = require("@services/system-job-kill");
 const jobGet = require("@services/system-job-get");
 const jobGetAll = require("@services/system-job-getall");
 const jobKillAll = require("@services/system-job-killall");
 const jobThumbnailGet = require("@services/system-job-getthumbnail");
-const path = require("path");
 
 /**
  * @swagger

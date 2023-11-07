@@ -13,32 +13,32 @@ const process = async (options) => {
 
     try {
         const job = jobManager.start(
-            `${options?.output || options.toString()}`,
-            `Bars to HLS (${options?.output || "JobID"}.m3u8)`,
+            `${options?.output?.file || options.toString()}`,
+            `Bars to HLS (${options?.output?.file || "JobID"}.m3u8)`,
             ["encode", "hls"]
         );
 
-        response.hls = `/api/hls/${options?.output || job.jobId}.m3u8`;
+        response.hls = `/api/hls/${options?.output?.file || job.jobId}.m3u8`;
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         const command = ffmpeg({ logger: logger })
-            .addInput(`${options.type || "smptehdbars"}=rate=25:size=1920x1080`)
+            .addInput(`${options.input?.type || "smptehdbars"}=rate=25:size=1920x1080`)
             .inputOptions(["-re", "-f lavfi"])
-            .addInput(`sine=frequency=${options.frequency || 1000}:sample_rate=48000`)
+            .addInput(`sine=frequency=${options.input.frequency || 1000}:sample_rate=48000`)
             .inputOptions(["-f lavfi"])
-            .output(`${path.join(__dirname, "..", "data", "hls", options?.output || job.jobId)}.m3u8`)
+            .output(`${path.join(__dirname, "..", "data", "hls", options?.output?.file || job.jobId)}.m3u8`)
             .outputOptions([
                 "-c:v libx264",
-                "-preset ultrafast",
+                `-preset ${options?.output?.encodePreset || "ultrafast"}`,
                 "-tune zerolatency",
                 "-g 30",
                 "-c:a aac",
                 "-strict experimental",
                 "-movflags faststart",
                 "-f hls",
-                `-hls_time ${options?.hls?.chunkTime | 0.5}`,
-                `-hls_list_size ${options?.hls?.chunks | 5}`,
+                `-hls_time ${options?.output?.chunkDuration || 0.5}`,
+                `-hls_list_size ${options?.output?.chunks || 5}`,
                 "-hls_flags independent_segments",
             ]);
 
@@ -49,7 +49,7 @@ const process = async (options) => {
         if (options?.thumbnail) {
             command
                 .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
-                .outputOptions([`-r ${options?.thumbnailFrequency || 1}`, "-update 1"]);
+                .outputOptions([`-r ${options?.thumbnail?.frequency || 1}`, "-update 1"]);
 
             if (Array.isArray(filters)) {
                 command.videoFilters(filters);
@@ -79,10 +79,10 @@ const process = async (options) => {
         command.run();
     } catch (error) {
         logger.error(error.message);
-        response.error = error.message;
+        response.errors = [error];
     }
 
-    response.job = jobManager.get(`${options.address}:${options.port}`);
+    response.job = jobManager.get(`${options?.output?.file || options.toString()}`);
     return response;
 };
 

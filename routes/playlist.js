@@ -1,6 +1,7 @@
 "use strict";
 
 const router = require("express").Router();
+const { checkSchema, validationResult } = require("express-validator");
 const hashResponse = require("@utils/hash-response");
 const ffconcat = require("@utils/ffconcat");
 

@@ -12,16 +12,24 @@ FFmpeg compiled with additional libraries and running inside a Docker container.
 
 ## Exmaple
 
-Get comand to the following enpoint `http://localhost/api/stream/rtmp/bars` with the JSON body
+`POST` comand to the following endpoint `http://localhost/api/bars/rtmp` with the JSON body
 
 ```json
 {
-    "address": "a.rtmp.youtube.com/live2",
-    "key": "YOUTUBE_STREAM_KEY",
-    "bitrate": "1000k",
-    "line1": "Test RTMP Stream",
-    "line2": "FFmpeg in Docker",
-    "font": "swansea-bold.ttf"
+    "input": {
+        "type": "smptehdbars"
+    },
+    "output": {
+        "address": "a.rtmp.youtube.com/live2",
+        "key": "YOUTUBE_STREAM_KEY",
+        "bitrate": "10M"
+    },
+    "overlay": {
+        "line1": "Test RTMP Stream",
+        "line2": "FFmpeg in Docker",
+        "font": "swansea-bold.ttf"
+    },
+    "thumbnail": true
 }
 ```
 
