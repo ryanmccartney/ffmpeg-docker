@@ -41,7 +41,7 @@ module.exports = (direction = "input") => {
         "output.mode": {
             optional: true,
             isIn: {
-                options: ["listener", "caller"],
+                options: [["listener", "caller"]],
                 default: "caller",
                 errorMessage: "SRT mode must be 'Caller' or 'Listener'",
             },
@@ -56,7 +56,7 @@ module.exports = (direction = "input") => {
         "output.encodePreset": {
             optional: true,
             isIn: {
-                options: encodePresets,
+                options: [encodePresets],
                 default: encodePresets[0],
                 errorMessage: `Encode preset must be one of ${encodePresets.toString()}.`,
             },

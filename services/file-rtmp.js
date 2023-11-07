@@ -7,6 +7,7 @@ const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
 const jobManager = require("@utils/jobManager");
 const getRtmpAddress = require("@utils/rtmp-address");
+const setCodec = require("@utils/set-codec");
 
 const process = async (options) => {
     const response = { options: options };
@@ -22,13 +23,14 @@ const process = async (options) => {
         const job = jobManager.start(rtmpAddress, `File to RTMP ${rtmpAddress}`, ["encode", "rtmp", "file"]);
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
-        const command = ffmpeg({ logger: logger })
+        let command = ffmpeg({ logger: logger })
             .input(path.join(__dirname, "..", "data", "media", options?.input?.file))
             .inputOptions([repeat, "-protocol_whitelist", "file,udp,rtp", "-stats", "-re"])
             .output(rtmpAddress)
             .outputOptions(["-f flv"])
-            .videoCodec("libx264")
             .outputOptions(`-b:v ${options?.output?.bitrate || "5M"}`);
+
+        command = setCodec(command, options);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);

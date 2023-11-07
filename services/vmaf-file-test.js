@@ -37,7 +37,7 @@ const process = async (options) => {
             return response;
         }
 
-        const command = ffmpeg({ logger: logger })
+        let command = ffmpeg({ logger: logger })
             .input(path.join(__dirname, "..", "data", "media", options?.vmaf?.reference))
             .input(inputFilePath)
             .output("-")

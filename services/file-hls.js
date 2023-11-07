@@ -6,6 +6,7 @@ const path = require("path");
 const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
 const jobManager = require("@utils/jobManager");
+const setCodec = require("@utils/set-codec");
 
 const process = async (options) => {
     const response = { options: options };
@@ -27,7 +28,7 @@ const process = async (options) => {
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
-        const command = ffmpeg({ logger: logger })
+        let command = ffmpeg({ logger: logger })
             .input(path.join(__dirname, "..", "data", "media", options?.input?.file))
             .inputOptions([
                 repeat,
@@ -52,6 +53,8 @@ const process = async (options) => {
                 `-hls_list_size ${options?.output?.chunks | 5}`,
                 "-hls_flags independent_segments",
             ]);
+
+        command = setCodec(command, options);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);

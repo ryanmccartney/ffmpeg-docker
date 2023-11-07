@@ -6,6 +6,7 @@ const path = require("path");
 const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
 const jobManager = require("@utils/jobManager");
+const setCodec = require("@utils/set-codec");
 
 const process = async (options) => {
     const response = { options: options };
@@ -20,15 +21,16 @@ const process = async (options) => {
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
-        const command = ffmpeg({ logger: logger })
+        let command = ffmpeg({ logger: logger })
             .addInput(`${options?.input?.type || "smptehdbars"}=rate=25:size=1920x1080`)
             .inputOptions(["-re", "-f lavfi"])
             .addInput(`sine=frequency=${options?.input?.frequency || 1000}:sample_rate=48000`)
             .inputOptions(["-f lavfi"])
-            .videoCodec("libx264")
             .output(`rtp://${options?.output?.address}:${options?.output?.port}`)
             .outputOptions(["-f rtp"])
             .outputOptions(`-b:v ${options?.output?.bitrate || "5M"}`);
+
+        command = setCodec(command, options);
 
         if (!options.vbr) {
             command.outputOptions([

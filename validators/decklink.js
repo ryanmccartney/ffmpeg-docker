@@ -17,7 +17,7 @@ module.exports = (direction = "input") => {
         "output.duplexMode": {
             optional: true,
             isIn: {
-                options: ["full", "half"],
+                options: [["full", "half"]],
                 default: "unset",
                 errorMessage: "Decklink card name must one of 'full', 'half' or 'unset'",
             },
@@ -25,7 +25,7 @@ module.exports = (direction = "input") => {
         "output.encodePreset": {
             optional: true,
             isIn: {
-                options: encodePresets,
+                options: [encodePresets],
                 default: encodePresets[0],
                 errorMessage: `Encode preset must be one of ${encodePresets.toString()}.`,
             },

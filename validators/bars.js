@@ -7,7 +7,7 @@ module.exports = (direction = "input") => {
         [`${direction}.type`]: {
             optional: true,
             isIn: {
-                options: barsType,
+                options: [barsType],
                 default: barsType[0],
                 errorMessage: `Bars type must be one of ${barsType.toString()}`,
             },

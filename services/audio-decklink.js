@@ -26,7 +26,7 @@ const process = async (options) => {
         ]);
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
-        const command = ffmpeg({ logger: logger })
+        let command = ffmpeg({ logger: logger })
             .input(audioFilePath)
             .inputOptions([`-re`, repeat])
             .addInput(`${options?.input?.type || "smptehdbars"}=rate=25:size=1920x1080`)

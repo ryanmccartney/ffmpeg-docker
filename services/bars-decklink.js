@@ -20,7 +20,7 @@ const process = async (options) => {
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
-        const command = ffmpeg({ logger: logger })
+        let command = ffmpeg({ logger: logger })
             .addInput(`${options.input?.type || "smptehdbars"}=rate=25:size=1920x1080`)
             .inputOptions(["-re", "-f lavfi"])
             .addInput(`sine=frequency=${options.input?.frequency || 1000}:sample_rate=48000`)
