@@ -21,7 +21,7 @@ const process = async (options) => {
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
-        const command = ffmpeg({ logger: logger })
+        let command = ffmpeg({ logger: logger })
             .input(options?.input?.cardName)
             .inputFormat("decklink")
             .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats", "-re"])
@@ -37,6 +37,8 @@ const process = async (options) => {
                 "-muxdelay 0",
                 `-b:v ${options?.output?.bitrate || "5M"}`,
             ]);
+
+        command = setCodec(command, options);
 
         if (!options?.output?.vbr) {
             command.outputOptions([

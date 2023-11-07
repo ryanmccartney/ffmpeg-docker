@@ -54,6 +54,8 @@ const process = async (options) => {
             ])
             .outputOptions(`-b:v ${options?.output?.bitrate || "5M"}`);
 
+        command = setCodec(command, options);
+
         if (!options?.output?.vbr) {
             command.outputOptions([
                 `-minrate ${options?.output?.bitrate || "5M"}`,
@@ -67,8 +69,6 @@ const process = async (options) => {
                 `-bufsize 500K`,
             ]);
         }
-
-        command = setCodec(command, options);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);

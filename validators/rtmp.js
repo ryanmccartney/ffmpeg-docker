@@ -47,7 +47,7 @@ module.exports = (direction = "input") => {
         "output.encodePreset": {
             optional: true,
             isIn: {
-                options: encodePresets,
+                options: [encodePresets],
                 default: encodePresets[0],
                 errorMessage: `Encode preset must be one of ${encodePresets.toString()}.`,
             },

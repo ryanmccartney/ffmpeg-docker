@@ -17,15 +17,13 @@ module.exports = (direction = "input") => {
         "overlay.offset": {
             isInt: { min: -12, max: 12, default: 0, errorMessage: "Time offset must be between -12 and +12 hours." },
         },
-        // "overlay.font": {
-        //     optional: true,
-        //     isIn: { values: [], default: "swansea-bold.ttf", errorMessage: "Fonts must be in the fonts folder" },
-        // },
+        "overlay.font": {
+            optional: true,
+            isString: { default: "swansea-bold.ttf", errorMessage: "Fonts must be in the fonts folder" },
+        },
     };
 };
 
-// "font": "swansea-bold.ttf",
-// "offset": 1,
 // "topRight": {
 //     "line1": "%{pts\\:hms}",
 //     "line2": "Frame %{n}"

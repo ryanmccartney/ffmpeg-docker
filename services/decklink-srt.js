@@ -6,6 +6,7 @@ const path = require("path");
 const jobManager = require("@utils/jobManager");
 const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
+const setCodec = require("@utils/set-codec");
 
 const process = async (options) => {
     const response = { options: options };
@@ -20,7 +21,7 @@ const process = async (options) => {
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
-        const command = ffmpeg({ logger: logger })
+        let command = ffmpeg({ logger: logger })
             .input(options?.input?.cardName)
             .inputFormat("decklink")
             .inputOptions([
@@ -43,8 +44,9 @@ const process = async (options) => {
                 }&maxbw==${options?.output?.maxbw || "-1"}&`
             )
             .outputOptions([`-preset ${options?.output?.encodePreset || "ultrafast"}`, "-f mpegts"])
-            .videoCodec("libx264")
             .outputOptions(`-b:v ${options?.output?.bitrate || "5M"}`);
+
+        command = setCodec(command, options);
 
         if (!options.vbr) {
             command.outputOptions([

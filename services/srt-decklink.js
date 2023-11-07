@@ -6,6 +6,7 @@ const path = require("path");
 const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
 const jobManager = require("@utils/jobManager");
+const setCodec = require("@utils/set-codec");
 
 const process = async (options) => {
     const response = { options: options };
@@ -20,7 +21,7 @@ const process = async (options) => {
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
-        const command = ffmpeg({ logger: logger })
+        let command = ffmpeg({ logger: logger })
             .input(
                 `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&latency=${
                     parseInt(options?.latency) * 1000 || "250000"
@@ -52,6 +53,8 @@ const process = async (options) => {
                 "-async 1",
             ])
             .output(options.cardName);
+
+        command = setCodec(command, options);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
