@@ -28,10 +28,10 @@ const udpValidator = require("@validators/udp");
 router.post(
     "/decklink",
     checkSchema({
-        ...udpValidator,
-        ...decklinkValidator,
-        ...thumbnailValidator,
-        ...overlayValidator,
+        ...udpValidator("input"),
+        ...decklinkValidator("output"),
+        ...thumbnailValidator(),
+        ...overlayValidator(),
     }),
     async (req, res, next) => {
         let response = {};
@@ -62,10 +62,10 @@ router.post(
 router.post(
     "/file",
     checkSchema({
-        ...udpValidator,
-        ...fileValidator,
-        ...thumbnailValidator,
-        ...overlayValidator,
+        ...udpValidator("input"),
+        ...fileValidator("output"),
+        ...thumbnailValidator(),
+        ...overlayValidator(),
     }),
     async (req, res, next) => {
         let response = {};

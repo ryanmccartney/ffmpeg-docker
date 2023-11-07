@@ -28,10 +28,10 @@ const rtpValidator = require("@validators/rtp");
 router.post(
     "/file",
     checkSchema({
-        ...rtpValidator,
-        ...fileValidator,
-        ...thumbnailValidator,
-        ...overlayValidator,
+        ...rtpValidator("input"),
+        ...fileValidator("output"),
+        ...thumbnailValidator(),
+        ...overlayValidator(),
     }),
     async (req, res, next) => {
         let response = {};
@@ -62,10 +62,10 @@ router.post(
 router.post(
     "/decklink",
     checkSchema({
-        ...rtpValidator,
-        ...decklinkValidator,
-        ...thumbnailValidator,
-        ...overlayValidator,
+        ...rtpValidator("input"),
+        ...decklinkValidator("output"),
+        ...thumbnailValidator(),
+        ...overlayValidator(),
     }),
     async (req, res, next) => {
         let response = {};

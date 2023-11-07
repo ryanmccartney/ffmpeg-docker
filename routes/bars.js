@@ -99,10 +99,10 @@ const rtpValidator = require("@validators/udp");
 router.post(
     "/decklink",
     checkSchema({
-        ...barsValidator,
-        ...decklinkValidator,
-        ...thumbnailValidator,
-        ...overlayValidator,
+        ...barsValidator("input"),
+        ...decklinkValidator("outpu"),
+        ...thumbnailValidator(),
+        ...overlayValidator(),
     }),
     async (req, res, next) => {
         let response = {};
@@ -133,10 +133,10 @@ router.post(
 router.post(
     "/file",
     checkSchema({
-        ...barsValidator,
-        ...fileValidator,
-        ...thumbnailValidator,
-        ...overlayValidator,
+        ...barsValidator("input"),
+        ...fileValidator("output"),
+        ...thumbnailValidator(),
+        ...overlayValidator(),
     }),
     async (req, res, next) => {
         let response = {};
@@ -167,10 +167,10 @@ router.post(
 router.post(
     "/srt",
     checkSchema({
-        ...barsValidator,
-        ...srtValidator,
-        ...thumbnailValidator,
-        ...overlayValidator,
+        ...barsValidator("input"),
+        ...srtValidator("output"),
+        ...thumbnailValidator(),
+        ...overlayValidator(),
     }),
     async (req, res, next) => {
         let response = {};
@@ -201,10 +201,10 @@ router.post(
 router.post(
     "/rtmp",
     checkSchema({
-        ...barsValidator,
-        ...rtmpValidator,
-        ...thumbnailValidator,
-        ...overlayValidator,
+        ...barsValidator("input"),
+        ...rtmpValidator("output"),
+        ...thumbnailValidator(),
+        ...overlayValidator(),
     }),
     async (req, res, next) => {
         let response = {};
@@ -235,10 +235,10 @@ router.post(
 router.post(
     "/udp",
     checkSchema({
-        ...barsValidator,
-        ...udpValidator,
-        ...thumbnailValidator,
-        ...overlayValidator,
+        ...barsValidator("input"),
+        ...udpValidator("output"),
+        ...thumbnailValidator(),
+        ...overlayValidator(),
     }),
     async (req, res, next) => {
         let response = {};
@@ -268,10 +268,10 @@ router.post(
 router.post(
     "/rtp",
     checkSchema({
-        ...barsValidator,
-        ...rtpValidator,
-        ...thumbnailValidator,
-        ...overlayValidator,
+        ...barsValidator("input"),
+        ...rtpValidator("output"),
+        ...thumbnailValidator(),
+        ...overlayValidator(),
     }),
     async (req, res, next) => {
         let response = {};
@@ -302,10 +302,10 @@ router.post(
 router.post(
     "/hls",
     checkSchema({
-        ...barsValidator,
-        ...hlsValidator,
-        ...thumbnailValidator,
-        ...overlayValidator,
+        ...barsValidator("input"),
+        ...hlsValidator("output"),
+        ...thumbnailValidator(),
+        ...overlayValidator(),
     }),
     async (req, res, next) => {
         let response = {};
