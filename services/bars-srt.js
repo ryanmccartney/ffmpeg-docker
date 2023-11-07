@@ -14,8 +14,8 @@ const process = async (options) => {
 
     try {
         const job = jobManager.start(
-            `${otpions?.input?.address}:${options?.input?.port}`,
-            `Bars to SRT srt://${otpions?.input?.address}:${options?.input?.port}`,
+            `${options?.input?.address}:${options?.input?.port}`,
+            `Bars to SRT srt://${options?.input?.address}:${options?.input?.port}`,
             ["encode", "srt", "bars"]
         );
         const filters = await filterCombine(await filterText({ ...options, ...job }));
@@ -39,7 +39,7 @@ const process = async (options) => {
 
         command = setCodec(command, options);
 
-        if (!options.vbr) {
+        if (!options.output.vbr) {
             command.outputOptions([
                 `-minrate ${options?.output?.bitrate || "5M"}`,
                 `-maxrate ${options?.output?.bitrate || "5M"}`,

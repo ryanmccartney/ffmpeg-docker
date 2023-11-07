@@ -4,15 +4,15 @@ const encodePresets = require("@utils/encodePresets");
 
 module.exports = (direction = "input") => {
     return {
-        "output.address": {
+        [`${direction}.address`]: {
             exists: { errorMessage: "Must provide and address required." },
             isIP: { errorMessage: "Address must be a valid IP Address." },
         },
-        "output.port": {
+        [`${direction}.port`]: {
             exists: { errorMessage: "Must provide a port number as an integar" },
             isInt: { min: 1024, max: 65535, errorMessage: "Must be a valid port number between 1024 to 65535" },
         },
-        "output.packetSize": {
+        [`${direction}.packetSize`]: {
             optional: true,
             isInt: {
                 min: 0,
@@ -21,18 +21,18 @@ module.exports = (direction = "input") => {
                 errorMessage: "RTP Packet size must be between 0 and 65535 bytes",
             },
         },
-        "output.buffer": {
+        [`${direction}.buffer`]: {
             optional: true,
             isInt: { min: 0, max: 255, default: 65535, errorMessage: "RTP buffer must be between 0 and 65535 bytes" },
         },
-        "output.bitrate": {
+        [`${direction}.bitrate`]: {
             optional: true,
             isString: {
                 default: "5000k",
                 errorMessage: "Bitrate must be a string.",
             },
         },
-        "output.encodePreset": {
+        [`${direction}.encodePreset`]: {
             optional: true,
             isIn: {
                 options: [encodePresets],

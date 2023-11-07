@@ -6,6 +6,8 @@ const path = require("path");
 const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
 const jobManager = require("@utils/jobManager");
+const getRtmpAddress = require("@utils/rtmp-address");
+const setCodec = require("@utils/set-codec");
 
 const process = async (options) => {
     const response = { options: options };
@@ -17,13 +19,14 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     const audioFilePath = path.join(__dirname, "..", "data", "media", options?.input?.file);
+    const rtmpAddress = getRtmpAddress(options?.output?.address, options?.output?.key);
 
     try {
-        const job = jobManager.start(options?.output?.cardName, `File to ${options?.output?.cardName}`, [
-            "audio",
-            "file",
-            "decklink",
-        ]);
+        const job = jobManager.start(
+            rtmpAddress,
+            `Audio file to rtmp://${options?.output?.address}:${options?.output?.port}`,
+            ["audio", "file", "rtmp"]
+        );
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
         let command = ffmpeg({ logger: logger })
@@ -33,18 +36,11 @@ const process = async (options) => {
             .inputOptions(["-re", "-f lavfi"])
             .outputOptions("-ar 48000")
             .outputOptions("-shortest")
-            .outputOptions([
-                "-pix_fmt uyvy422",
-                "-s 1920x1080",
-                "-ac 16",
-                "-f decklink",
-                `-af volume=${options?.output?.volume || 0.25}`,
-                "-flags low_delay",
-                "-bufsize 0",
-                "-muxdelay 0",
-                "-async 1",
-            ])
-            .output(options?.output?.cardName);
+            .output(rtmpAddress)
+            .outputOptions(["-f flv"])
+            .outputOptions(`-b:v ${options?.output?.bitrate || "5M"}`);
+
+        command = setCodec(command, options);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -67,11 +63,7 @@ const process = async (options) => {
 
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
-            response.job = jobManager.update(job?.jobId, {
-                command: commandString,
-                pid: command.ffmpegProc.pid,
-                options: options,
-            });
+            jobManager.update(job?.jobId, { command: commandString, pid: command.ffmpegProc.pid, options: options });
             return response;
         });
 
@@ -87,6 +79,12 @@ const process = async (options) => {
         command.on("error", function (error) {
             logger.error(error);
             jobManager.end(job?.jobId, false);
+
+            //If IO Error (Network error, restart)
+            if (error.toString().includes("Input/output error") || error.toString().includes("Conversion failed!")) {
+                logger.info("Restarting due to IO error");
+                process(options);
+            }
         });
 
         command.run();
@@ -95,7 +93,7 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = await jobManager.get(options?.output?.cardName);
+    response.job = jobManager.get(rtmpAddress);
     return response;
 };
 

@@ -4,17 +4,17 @@ const encodePresets = require("@utils/encodePresets");
 
 module.exports = (direction = "input") => {
     return {
-        "output.cardName": {
+        [`${direction}.cardName`]: {
             exists: {
                 errorMessage: "Decklink card name required",
             },
             isString: { errorMessage: "Decklink card name must be a string" },
         },
-        "output.volume": {
+        [`${direction}.volume`]: {
             optional: true,
             isFloat: { min: 0, max: 1, default: 0.25, errorMessage: "Volume must be a float between 0 and 1" },
         },
-        "output.duplexMode": {
+        [`${direction}.duplexMode`]: {
             optional: true,
             isIn: {
                 options: [["full", "half"]],
@@ -22,7 +22,7 @@ module.exports = (direction = "input") => {
                 errorMessage: "Decklink card name must one of 'full', 'half' or 'unset'",
             },
         },
-        "output.encodePreset": {
+        [`${direction}.encodePreset`]: {
             optional: true,
             isIn: {
                 options: [encodePresets],

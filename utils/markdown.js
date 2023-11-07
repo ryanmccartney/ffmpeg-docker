@@ -1,6 +1,6 @@
-const swaggerJsdoc = require('swagger-jsdoc');
-const YAML = require('yaml')
-const fs = require('fs');
+const swaggerJsdoc = require("swagger-jsdoc");
+const YAML = require("yaml");
+const fs = require("fs");
 const path = require("path");
 
 const host = process.env.HOST || "localhost";
@@ -19,7 +19,7 @@ const options = {
                 url: "https://www.gnu.org/licenses/gpl-3.0.en.html",
             },
             contact: {
-                name: "Ryan McCarntney",
+                name: "Ryan McCartney",
                 url: "https://ryan.mccartney.info/ffmpeg-docker",
                 email: "ryan@mccartney.info",
             },
@@ -37,6 +37,6 @@ const main = async () => {
     const swaggerJsonSpec = swaggerJsdoc(options);
     const swaggerYamlSpec = YAML.stringify(swaggerJsonSpec);
     fs.writeFileSync(path.join("docs", "assets", "api-spec.yml"), swaggerYamlSpec);
-}
+};
 
-main()
+main();

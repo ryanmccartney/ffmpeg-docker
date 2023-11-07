@@ -4,11 +4,11 @@ const encodePresets = require("@utils/encodePresets");
 
 module.exports = (direction = "input") => {
     return {
-        "output.file": {
+        [`${direction}.file`]: {
             optional: true,
             isString: { errorMessage: "HLS filename must be a string" },
         },
-        "output.chunkDuration": {
+        [`${direction}.chunkDuration`]: {
             optional: true,
             isFloat: {
                 min: 0,
@@ -17,7 +17,7 @@ module.exports = (direction = "input") => {
                 errorMessage: "Chunk duration must be a float between 0 and 10 seconds",
             },
         },
-        "output.chunks": {
+        [`${direction}.chunks`]: {
             optional: true,
             isInt: {
                 min: 1,
@@ -26,7 +26,7 @@ module.exports = (direction = "input") => {
                 errorMessage: "Number of chunks must be an integar between 1 and 50",
             },
         },
-        "output.encodePreset": {
+        [`${direction}.encodePreset`]: {
             optional: true,
             isIn: {
                 options: [encodePresets],

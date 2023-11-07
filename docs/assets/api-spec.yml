@@ -7,78 +7,261 @@ info:
     name: GPLv3
     url: https://www.gnu.org/licenses/gpl-3.0.en.html
   contact:
-    name: Ryan McCarntney
+    name: Ryan McCartney
     url: https://ryan.mccartney.info/ffmpeg-docker
     email: ryan@mccartney.info
 servers:
   - url: http://localhost:80/api/
 paths:
+  /audio/decklink:
+    post:
+      description: Takes an audio file as an input and outputs it to a decklink card.
+      tags:
+        - audio
+      parameters:
+        - in: formData
+          name: file
+          type: string
+          description: Filename and extension of media to playout. E.g - test.mp4
+          required: true
+        - in: formData
+          name: cardName
+          type: string
+          description: The name of the BMD Decklink cards. E.g - "DeckLink SDI"
+          required: true
+        - in: formData
+          name: font
+          type: string
+          description: The name of the font audio to use for text overlay. Must use the
+            TrueType fonts. E.g - "swansea-bold.ttf"
+          required: font
+        - in: formData
+          name: offset
+          type: number
+          description: Offset for time in hours. E.g 3, -3
+          required: false
+        - in: formData
+          name: timecode
+          type: boolean
+          description: Show the timecode line - true,false
+          required: false
+        - in: formData
+          name: repeat
+          type: boolean
+          description: Decides whether the media loops or not
+          required: false
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /audio/srt:
+    post:
+      description: SRT encode an audio file.
+      tags:
+        - audio
+      parameters:
+        - in: formData
+          name: file
+          type: string
+          description: Filename and extension of media to playout. E.g - test.mp4.
+            Relative to ./data/media/
+          required: true
+        - in: formData
+          name: address
+          type: string
+          description: Address to direct stream towards
+          required: true
+        - in: formData
+          name: port
+          type: number
+          description: Port to direct stream towards
+          required: true
+        - in: formData
+          name: latency
+          type: number
+          description: SRT latency in milliseconds, default is 250ms
+          required: false
+        - in: formData
+          name: bitrate
+          type: number
+          description: The bitrate of the encoded stream in kilobits per second
+          required: true
+        - in: formData
+          name: font
+          type: string
+          description: The name of the font audio to use for text overlay. Must use the
+            TrueType fonts. E.g - "swansea-bold.ttf"
+          required: false
+        - in: formData
+          name: offset
+          type: number
+          description: Offset for time in hours. E.g 3, -3
+          required: false
+        - in: formData
+          name: timecode
+          type: boolean
+          description: Show the timecode line - true,false
+          required: false
+        - in: formData
+          name: repeat
+          type: boolean
+          description: Decides whether the media loops or not
+          required: false
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /audio/udp:
+    post:
+      description: UDP encode an audio file.
+      tags:
+        - audio
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /audio/rtp:
+    post:
+      description: RTP encode an audio file.
+      tags:
+        - audio
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /audio/rtmp:
+    post:
+      description: RTMP encode an audio file.
+      tags:
+        - audio
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /audio/hls:
+    post:
+      description: HLS encode an audio file.
+      tags:
+        - audio
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /audio/metadata:
+    get:
+      description: Get the metadata in a median audio file.
+      tags:
+        - audios
+      produces:
+        - application/json
+      parameters:
+        - in: formData
+          name: file
+          type: string
+          description: The file including extension in the `./data/media` directory
+          required: false
+      responses:
+        "200":
+          description: Success
+  /audio/list:
+    get:
+      description: Gets a list of audio files in the "./data/media" folder.
+      tags:
+        - audio
+      produces:
+        - application/json
+      parameters:
+        - in: formData
+          name: extension
+          type: boolean
+          description: Includes the file extension in the returned name
+          required: false
+      responses:
+        "200":
+          description: Success
+  /audio:
+    get:
+      description: Download audio by name.
+      tags:
+        - audio
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
   /bars/decklink:
     post:
       description: Takes a set of test Bars as an input and outputs it to a decklink card.
       tags:
         - bars
-      schema:
-        type: object
-        properties:
-          input:
-            type: object
-            properties:
-              type:
-                type: string
-                description: The type of color bars outputed
-                example: testsrc2
-                required: false
-              freqeuncy:
-                type: number
-                description: The audio frequency of color bars outputed in hertz
-                example: 1000
-                required: false
-          output:
-            type: object
-            properties:
-              cardName:
-                type: string
-                description: The name of the BMD Decklink cards"
-                example: DeckLink SDI
-                required: true
-              duplexMode:
-                type: string
-                description: Duplex mode of the BMD Decklink card"
-                example: full
-                required: false
-              volume:
-                type: number
-                description: Volume output of the BMD Decklink card between 0 and 1"
-                example: 0.25
-                required: false
-          overlay:
-            type: object
-            properties:
-              font:
-                type: string
-                description: The name of the font file to use for text overlay. Must use the
-                  TrueType fonts
-                example: swansea-bold.ttf
-                required: false
-              timecode:
-                type: boolean
-                description: Show the timecode line
-                example: false
-                required: false
-              offset:
-                type: number
-                description: Offset for time in hours. E.g 3, -3
-                example: 0
-                required: false
-          thumbnail:
-            type: object
-            properties:
-              frequency:
-                type: number
-                description: Frequency a thumbnail is prodicd in frames.
-                example: 25
-                required: false
+      parameters:
+        - in: body
+          type: object
+          properties:
+            input:
+              type: object
+              properties:
+                type:
+                  type: string
+                  description: The type of color bars outputed
+                  example: testsrc2
+                  required: false
+                freqeuncy:
+                  type: number
+                  description: The audio frequency of color bars outputed in hertz
+                  example: 1000
+                  required: false
+            output:
+              type: object
+              properties:
+                cardName:
+                  type: string
+                  description: The name of the BMD Decklink cards"
+                  example: DeckLink SDI
+                  required: true
+                duplexMode:
+                  type: string
+                  description: Duplex mode of the BMD Decklink card"
+                  example: full
+                  required: false
+                volume:
+                  type: number
+                  description: Volume output of the BMD Decklink card between 0 and 1"
+                  example: 0.25
+                  required: false
+            overlay:
+              type: object
+              properties:
+                font:
+                  type: string
+                  description: The name of the font file to use for text overlay. Must use the
+                    TrueType fonts
+                  example: swansea-bold.ttf
+                  required: false
+                timecode:
+                  type: boolean
+                  description: Show the timecode line
+                  example: false
+                  required: false
+                offset:
+                  type: number
+                  description: Offset for time in hours. E.g 3, -3
+                  example: 0
+                  required: false
+            thumbnail:
+              type: object
+              properties:
+                frequency:
+                  type: number
+                  description: Frequency a thumbnail is prodicd in frames.
+                  example: 25
+                  required: false
       produces:
         - application/json
       responses:
@@ -239,7 +422,7 @@ paths:
         - file
       parameters:
         - in: formData
-          name: filename
+          name: file
           type: string
           description: Filename and extension of media to playout. E.g - test.mp4
           required: true
@@ -281,7 +464,7 @@ paths:
         - file
       parameters:
         - in: formData
-          name: filename
+          name: file
           type: string
           description: Filename and extension of media to playout. E.g - test.mp4.
             Relative to ./data/media/
@@ -381,7 +564,7 @@ paths:
         - application/json
       parameters:
         - in: formData
-          name: filename
+          name: file
           type: string
           description: The filename including extension in the `./data/media` directory
           required: false

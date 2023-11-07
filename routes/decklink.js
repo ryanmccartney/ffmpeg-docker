@@ -17,12 +17,12 @@ const decklinkConfigSet = require("@services/decklink-config-set");
 const overlayValidator = require("@validators/overlay");
 const thumbnailValidator = require("@validators/thumbnail");
 const decklinkValidator = require("@validators/decklink");
-const fileValidator = require("@validators/srt");
-const hlsValidator = require("@validators/srt");
+const fileValidator = require("@validators/file");
+const hlsValidator = require("@validators/hls");
 const srtValidator = require("@validators/srt");
 const rtmpValidator = require("@validators/rtmp");
 const udpValidator = require("@validators/udp");
-const rtpValidator = require("@validators/udp");
+const rtpValidator = require("@validators/rtp");
 
 /**
  * @swagger

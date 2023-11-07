@@ -22,6 +22,7 @@ const rtpRouter = require("@routes/rtp");
 const srtRouter = require("@routes/srt");
 const barsRouter = require("@routes/bars");
 const fileRouter = require("@routes/file");
+const audioRouter = require("@routes/audio");
 const vmafRouter = require("@routes/vmaf");
 const decklinkRouter = require("@routes/decklink");
 
@@ -68,6 +69,7 @@ app.use("/api/hls", express.static(path.join(__dirname, "..", "data", "hls")));
 //Input Routes /api/INPUT_FORMAT/OUTPUT_FORMAT
 app.use("/api/vmaf", vmafRouter);
 app.use("/api/decklink", decklinkRouter);
+app.use("/api/audio", audioRouter);
 app.use("/api/file", fileRouter);
 app.use("/api/udp", udpRouter);
 app.use("/api/srt", srtRouter);
