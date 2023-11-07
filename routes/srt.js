@@ -28,10 +28,10 @@ const srtValidator = require("@validators/srt");
 router.post(
     "/file",
     checkSchema({
-        ...srtValidator,
-        ...fileValidator,
-        ...thumbnailValidator,
-        ...overlayValidator,
+        ...srtValidator("input"),
+        ...fileValidator("output"),
+        ...thumbnailValidator(),
+        ...overlayValidator(),
     }),
     async (req, res, next) => {
         let response = {};
@@ -62,10 +62,10 @@ router.post(
 router.post(
     "/decklink",
     checkSchema({
-        ...srtValidator,
-        ...decklinkValidator,
-        ...thumbnailValidator,
-        ...overlayValidator,
+        ...srtValidator("input"),
+        ...decklinkValidator("output"),
+        ...thumbnailValidator(),
+        ...overlayValidator(),
     }),
     async (req, res, next) => {
         let response = {};
