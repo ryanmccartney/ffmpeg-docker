@@ -3,37 +3,37 @@
 const logger = require("@utils/logger")(module);
 const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
-const jobManager = require("@utils/jobManager");
 const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
+const jobManager = require("@utils/jobManager");
 const setCodec = require("@utils/set-codec");
 
 const process = async (options) => {
     const response = { options: options };
+    let repeat = "-stream_loop 0";
+    if (options?.input?.repeat) {
+        repeat = `-stream_loop -1`;
+    }
+
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
+
+    const audioFilePath = path.join(__dirname, "..", "data", "media", options?.input?.file);
 
     try {
         const job = jobManager.start(
-            `${options?.input?.cardName}in`,
-            `${options?.input?.cardName} to SRT srt://${options?.output?.address}:${options?.output?.port}`,
-            ["encode", "srt", "decklink"]
+            `${options?.output?.address}:${options?.output?.port}`,
+            `Audio file to srt://${options?.output?.address}:${options?.output?.port}`,
+            ["audio", "file", "srt"]
         );
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
-
         let command = ffmpeg({ logger: logger })
-            .input(options?.input?.cardName)
-            .inputFormat("decklink")
-            .inputOptions([
-                "-protocol_whitelist",
-                "srt,udp,rtp",
-                "-stats",
-                "-re",
-                "-flags low_delay",
-                "-async 1",
-                "-duplex_mode",
-                `${options?.input?.duplexMode || "unset"}`,
-            ])
+            .input(audioFilePath)
+            .inputOptions([`-re`, repeat])
+            .addInput(`${options?.input?.type || "smptehdbars"}=rate=25:size=1920x1080`)
+            .inputOptions(["-re", "-f lavfi"])
+            .outputOptions("-ar 48000")
+            .outputOptions("-shortest")
             .output(
                 `srt://${options?.output?.address}:${options?.output?.port}?pkt_size=${
                     options?.output?.packetSize || 1316
@@ -78,9 +78,10 @@ const process = async (options) => {
         }
 
         command.on("end", () => {
-            logger.info("Finished encoding decklink card to SRT");
+            logger.info("Finished processing");
             jobManager.end(job?.jobId, false);
         });
+
         command.on("start", (commandString) => {
             logger.debug(`Spawned FFmpeg with command: ${commandString}`);
             response.job = jobManager.update(job?.jobId, {
@@ -89,6 +90,11 @@ const process = async (options) => {
                 options: options,
             });
             return response;
+        });
+
+        command.on("progress", (progress) => {
+            logger.info("ffmpeg-progress: " + Math.floor(progress.percent) + "% done");
+            jobManager.update(job?.jobId, { progress: Math.floor(progress.percent) });
         });
 
         command.on("stderr", function (stderrLine) {
@@ -112,7 +118,7 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = await jobManager.get(options?.input?.cardName);
+    response.job = jobManager.get(`${options?.output?.address}:${options?.output?.port}`);
     return response;
 };
 

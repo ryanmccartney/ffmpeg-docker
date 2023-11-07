@@ -4,10 +4,10 @@ const encodePresets = require("@utils/encodePresets");
 
 module.exports = (direction = "input") => {
     return {
-        "output.address": {
+        [`${direction}.address`]: {
             exists: { errorMessage: "Must provide and address required." },
         },
-        "output.port": {
+        [`${direction}.port`]: {
             optional: true,
             exists: { errorMessage: "Must provide a port number as an integar" },
             isInt: {
@@ -17,14 +17,14 @@ module.exports = (direction = "input") => {
                 errorMessage: "Must be a valid port number between 1024 to 65535",
             },
         },
-        "output.key": {
+        [`${direction}.key`]: {
             optional: true,
             isString: {
                 default: "",
                 errorMessage: "RTMP key must be a string.",
             },
         },
-        "output.ttl": {
+        [`${direction}.ttl`]: {
             optional: true,
             isInt: {
                 min: 0,
@@ -33,18 +33,18 @@ module.exports = (direction = "input") => {
                 errorMessage: "Time to Live of SRT Packets must be between 0 and 255",
             },
         },
-        "output.tos": {
+        [`${direction}.tos`]: {
             optional: true,
             isInt: { min: 0, max: 255, default: 104, errorMessage: "ToS of SRT Packets must be between 0 and 255" },
         },
-        "output.bitrate": {
+        [`${direction}.bitrate`]: {
             optional: true,
             isString: {
                 default: "5000k",
                 errorMessage: "Bitrate must be a string.",
             },
         },
-        "output.encodePreset": {
+        [`${direction}.encodePreset`]: {
             optional: true,
             isIn: {
                 options: [encodePresets],

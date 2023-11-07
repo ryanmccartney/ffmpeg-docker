@@ -5,32 +5,32 @@ const { checkSchema, validationResult } = require("express-validator");
 const hashResponse = require("@utils/hash-response");
 const path = require("path");
 
-const fileDecklink = require("@services/file-decklink");
-const fileUdp = require("@services/file-udp");
-const fileRtp = require("@services/file-rtp");
-const fileSrt = require("@services/file-srt");
-const fileRtmp = require("@services/file-rtmp");
-const fileHls = require("@services/file-hls");
-
-const fileMetadata = require("@services/file-metadata");
-const fileList = require("@services/file-list");
+const audioDecklink = require("@services/audio-decklink");
+const audioUdp = require("@services/audio-udp");
+const audioRtp = require("@services/audio-rtp");
+const audioSrt = require("@services/audio-srt");
+const audioRtmp = require("@services/audio-rtmp");
+const audioHls = require("@services/audio-hls");
 
 const overlayValidator = require("@validators/overlay");
 const thumbnailValidator = require("@validators/thumbnail");
 const decklinkValidator = require("@validators/decklink");
-const fileValidator = require("@validators/file");
+const audioValidator = require("@validators/audio");
 const hlsValidator = require("@validators/hls");
 const srtValidator = require("@validators/srt");
 const rtmpValidator = require("@validators/rtmp");
 const udpValidator = require("@validators/udp");
 const rtpValidator = require("@validators/rtp");
 
+const fileMetadata = require("@services/file-metadata");
+const fileList = require("@services/file-list");
+
 /**
  * @swagger
- * /file/decklink:
+ * /audio/decklink:
  *    post:
- *      description: Takes a file as an input and outputs it to a decklink card.
- *      tags: [file]
+ *      description: Takes an audio file as an input and outputs it to a decklink card.
+ *      tags: [audio]
  *      parameters:
  *        - in: formData
  *          name: file
@@ -45,7 +45,7 @@ const rtpValidator = require("@validators/rtp");
  *        - in: formData
  *          name: font
  *          type: string
- *          description: The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf"
+ *          description: The name of the font audio to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf"
  *          required: font
  *        - in: formData
  *          name: offset
@@ -71,7 +71,7 @@ const rtpValidator = require("@validators/rtp");
 router.post(
     "/decklink",
     checkSchema({
-        ...fileValidator("input"),
+        ...audioValidator("input"),
         ...decklinkValidator("output"),
         ...thumbnailValidator(),
         ...overlayValidator(),
@@ -81,7 +81,7 @@ router.post(
         const errors = await validationResult(req);
 
         if (errors.isEmpty()) {
-            response = await fileDecklink(req.body);
+            response = await audioDecklink(req.body);
         } else {
             response.errors = errors.array();
         }
@@ -92,10 +92,10 @@ router.post(
 
 /**
  * @swagger
- * /file/srt:
+ * /audio/srt:
  *    post:
- *      description: SRT encode a file.
- *      tags: [file]
+ *      description: SRT encode an audio file.
+ *      tags: [audio]
  *      parameters:
  *       - in: formData
  *         name: file
@@ -125,7 +125,7 @@ router.post(
  *       - in: formData
  *         name: font
  *         type: string
- *         description: The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf"
+ *         description: The name of the font audio to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf"
  *         required: false
  *       - in: formData
  *         name: offset
@@ -151,7 +151,7 @@ router.post(
 router.post(
     "/srt",
     checkSchema({
-        ...fileValidator("input"),
+        ...audioValidator("input"),
         ...srtValidator("output"),
         ...thumbnailValidator(),
         ...overlayValidator(),
@@ -161,7 +161,7 @@ router.post(
         const errors = await validationResult(req);
 
         if (errors.isEmpty()) {
-            response = await fileSrt(req.body);
+            response = await audioSrt(req.body);
         } else {
             response.errors = errors.array();
         }
@@ -172,10 +172,10 @@ router.post(
 
 /**
  * @swagger
- * /file/udp:
+ * /audio/udp:
  *    post:
- *      description: UDP encode a file.
- *      tags: [file]
+ *      description: UDP encode an audio file.
+ *      tags: [audio]
  *      produces:
  *        - application/json
  *      responses:
@@ -185,7 +185,7 @@ router.post(
 router.post(
     "/udp",
     checkSchema({
-        ...fileValidator("input"),
+        ...audioValidator("input"),
         ...udpValidator("output"),
         ...thumbnailValidator(),
         ...overlayValidator(),
@@ -195,7 +195,7 @@ router.post(
         const errors = await validationResult(req);
 
         if (errors.isEmpty()) {
-            response = await fileUdp(req.body);
+            response = await audioUdp(req.body);
         } else {
             response.errors = errors.array();
         }
@@ -206,10 +206,10 @@ router.post(
 
 /**
  * @swagger
- * /file/rtp:
+ * /audio/rtp:
  *    post:
- *      description: RTP encode a file.
- *      tags: [file]
+ *      description: RTP encode an audio file.
+ *      tags: [audio]
  *      produces:
  *        - application/json
  *      responses:
@@ -219,7 +219,7 @@ router.post(
 router.post(
     "/rtp",
     checkSchema({
-        ...fileValidator("input"),
+        ...audioValidator("input"),
         ...rtpValidator("output"),
         ...thumbnailValidator(),
         ...overlayValidator(),
@@ -229,7 +229,7 @@ router.post(
         const errors = await validationResult(req);
 
         if (errors.isEmpty()) {
-            response = await fileRtp(req.body);
+            response = await audioRtp(req.body);
         } else {
             response.errors = errors.array();
         }
@@ -240,10 +240,10 @@ router.post(
 
 /**
  * @swagger
- * /file/rtmp:
+ * /audio/rtmp:
  *    post:
- *      description: RTMP encode a file.
- *      tags: [file]
+ *      description: RTMP encode an audio file.
+ *      tags: [audio]
  *      produces:
  *        - application/json
  *      responses:
@@ -253,7 +253,7 @@ router.post(
 router.post(
     "/rtmp",
     checkSchema({
-        ...fileValidator("input"),
+        ...audioValidator("input"),
         ...rtmpValidator("output"),
         ...thumbnailValidator(),
         ...overlayValidator(),
@@ -263,7 +263,7 @@ router.post(
         const errors = await validationResult(req);
 
         if (errors.isEmpty()) {
-            response = await fileRtmp(req.body);
+            response = await audioRtmp(req.body);
         } else {
             response.errors = errors.array();
         }
@@ -274,10 +274,10 @@ router.post(
 
 /**
  * @swagger
- * /file/hls:
+ * /audio/hls:
  *    post:
- *      description: HLS encode a file.
- *      tags: [file]
+ *      description: HLS encode an audio file.
+ *      tags: [audio]
  *      produces:
  *        - application/json
  *      responses:
@@ -287,7 +287,7 @@ router.post(
 router.post(
     "/hls",
     checkSchema({
-        ...fileValidator("input"),
+        ...audioValidator("input"),
         ...hlsValidator("output"),
         ...thumbnailValidator(),
         ...overlayValidator(),
@@ -297,7 +297,7 @@ router.post(
         const errors = await validationResult(req);
 
         if (errors.isEmpty()) {
-            response = await fileHls(req.body);
+            response = await audioHls(req.body);
         } else {
             response.errors = errors.array();
         }
@@ -308,33 +308,33 @@ router.post(
 
 /**
  * @swagger
- * /file/metadata:
+ * /audio/metadata:
  *    get:
- *      description: Get the metadata in a media file.
- *      tags: [files]
+ *      description: Get the metadata in a median audio file.
+ *      tags: [audios]
  *      produces:
  *        - application/json
  *      parameters:
  *        - in: formData
  *          name: file
  *          type: string
- *          description: The filename including extension in the `./data/media` directory
+ *          description: The file including extension in the `./data/media` directory
  *          required: false
  *      responses:
  *        '200':
  *          description: Success
  */
 router.get("/metadata", async (req, res, next) => {
-    const response = await fileMetadata(req.body.filename);
+    const response = await fileMetadata(req.body.file);
     hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
 });
 
 /**
  * @swagger
- * /file/list:
+ * /audio/list:
  *    get:
- *      description: Gets a list of files in the "./data/media" folder.
- *      tags: [file]
+ *      description: Gets a list of audio files in the "./data/media" folder.
+ *      tags: [audio]
  *      produces:
  *        - application/json
  *      parameters:
@@ -354,10 +354,10 @@ router.get("/list", async (req, res, next) => {
 
 /**
  * @swagger
- * /file:
+ * /audio:
  *    get:
- *      description: Download file by name.
- *      tags: [file]
+ *      description: Download audio by name.
+ *      tags: [audio]
  *      produces:
  *        - application/json
  *      responses:
@@ -365,8 +365,8 @@ router.get("/list", async (req, res, next) => {
  *          description: Success
  */
 router.get("/", async (req, res, next) => {
-    const filePath = path.join(__dirname, "..", "data", "media", req.query.filename);
-    res.download(filePath);
+    const audioPath = path.join(__dirname, "..", "data", "media", req.query.file);
+    res.download(audioPath);
 });
 
 module.exports = router;

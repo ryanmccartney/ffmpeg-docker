@@ -12,11 +12,178 @@ Common FFMPEG fucntions from a RESTful API
 ## Version: 0.1.0
 
 **Contact information:**  
-Ryan McCarntney  
+Ryan McCartney  
 <https://ryan.mccartney.info/ffmpeg-docker>  
 ryan@mccartney.info
 
 **License:** [GPLv3](https://www.gnu.org/licenses/gpl-3.0.en.html)
+
+---
+
+### /audio/decklink
+
+#### POST
+
+##### Description
+
+Takes an audio file as an input and outputs it to a decklink card.
+
+##### Parameters
+
+| Name     | Located in | Description                                                                                               | Required | Schema  |
+| -------- | ---------- | --------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| file     | formData   | Filename and extension of media to playout. E.g - test.mp4                                                | Yes      | string  |
+| cardName | formData   | The name of the BMD Decklink cards. E.g - "DeckLink SDI"                                                  | Yes      | string  |
+| font     | formData   | The name of the font audio to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes      | string  |
+| offset   | formData   | Offset for time in hours. E.g 3, -3                                                                       | No       | number  |
+| timecode | formData   | Show the timecode line - true,false                                                                       | No       | boolean |
+| repeat   | formData   | Decides whether the media loops or not                                                                    | No       | boolean |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /audio/srt
+
+#### POST
+
+##### Description
+
+SRT encode an audio file.
+
+##### Parameters
+
+| Name     | Located in | Description                                                                                               | Required | Schema  |
+| -------- | ---------- | --------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| file     | formData   | Filename and extension of media to playout. E.g - test.mp4. Relative to ./data/media/                     | Yes      | string  |
+| address  | formData   | Address to direct stream towards                                                                          | Yes      | string  |
+| port     | formData   | Port to direct stream towards                                                                             | Yes      | number  |
+| latency  | formData   | SRT latency in milliseconds, default is 250ms                                                             | No       | number  |
+| bitrate  | formData   | The bitrate of the encoded stream in kilobits per second                                                  | Yes      | number  |
+| font     | formData   | The name of the font audio to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | No       | string  |
+| offset   | formData   | Offset for time in hours. E.g 3, -3                                                                       | No       | number  |
+| timecode | formData   | Show the timecode line - true,false                                                                       | No       | boolean |
+| repeat   | formData   | Decides whether the media loops or not                                                                    | No       | boolean |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /audio/udp
+
+#### POST
+
+##### Description
+
+UDP encode an audio file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /audio/rtp
+
+#### POST
+
+##### Description
+
+RTP encode an audio file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /audio/rtmp
+
+#### POST
+
+##### Description
+
+RTMP encode an audio file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /audio/hls
+
+#### POST
+
+##### Description
+
+HLS encode an audio file.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /audio/list
+
+#### GET
+
+##### Description
+
+Gets a list of audio files in the "./data/media" folder.
+
+##### Parameters
+
+| Name      | Located in | Description                                      | Required | Schema  |
+| --------- | ---------- | ------------------------------------------------ | -------- | ------- |
+| extension | formData   | Includes the file extension in the returned name | No       | boolean |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /audio
+
+#### GET
+
+##### Description
+
+Download audio by name.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+---
+
+### /audio/metadata
+
+#### GET
+
+##### Description
+
+Get the metadata in a median audio file.
+
+##### Parameters
+
+| Name | Located in | Description                                                  | Required | Schema |
+| ---- | ---------- | ------------------------------------------------------------ | -------- | ------ |
+| file | formData   | The file including extension in the `./data/media` directory | No       | string |
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
 
 ---
 
@@ -27,6 +194,12 @@ ryan@mccartney.info
 ##### Description
 
 Takes a set of test Bars as an input and outputs it to a decklink card.
+
+##### Parameters
+
+| Name | Located in | Description | Required | Schema |
+| ---- | ---------- | ----------- | -------- | ------ |
+|      | body       |             | No       | object |
 
 ##### Responses
 
@@ -170,7 +343,7 @@ Takes a file as an input and outputs it to a decklink card.
 
 | Name     | Located in | Description                                                                                              | Required | Schema  |
 | -------- | ---------- | -------------------------------------------------------------------------------------------------------- | -------- | ------- |
-| filename | formData   | Filename and extension of media to playout. E.g - test.mp4                                               | Yes      | string  |
+| file     | formData   | Filename and extension of media to playout. E.g - test.mp4                                               | Yes      | string  |
 | cardName | formData   | The name of the BMD Decklink cards. E.g - "DeckLink SDI"                                                 | Yes      | string  |
 | font     | formData   | The name of the font file to use for text overlay. Must use the TrueType fonts. E.g - "swansea-bold.ttf" | Yes      | string  |
 | offset   | formData   | Offset for time in hours. E.g 3, -3                                                                      | No       | number  |
@@ -195,7 +368,7 @@ SRT encode a file.
 
 | Name     | Located in | Description                                                                                              | Required | Schema  |
 | -------- | ---------- | -------------------------------------------------------------------------------------------------------- | -------- | ------- |
-| filename | formData   | Filename and extension of media to playout. E.g - test.mp4. Relative to ./data/media/                    | Yes      | string  |
+| file     | formData   | Filename and extension of media to playout. E.g - test.mp4. Relative to ./data/media/                    | Yes      | string  |
 | address  | formData   | Address to direct stream towards                                                                         | Yes      | string  |
 | port     | formData   | Port to direct stream towards                                                                            | Yes      | number  |
 | latency  | formData   | SRT latency in milliseconds, default is 250ms                                                            | No       | number  |
@@ -411,9 +584,9 @@ Get the metadata in a media file.
 
 ##### Parameters
 
-| Name     | Located in | Description                                                      | Required | Schema |
-| -------- | ---------- | ---------------------------------------------------------------- | -------- | ------ |
-| filename | formData   | The filename including extension in the `./data/media` directory | No       | string |
+| Name | Located in | Description                                                      | Required | Schema |
+| ---- | ---------- | ---------------------------------------------------------------- | -------- | ------ |
+| file | formData   | The filename including extension in the `./data/media` directory | No       | string |
 
 ##### Responses
 

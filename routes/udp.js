@@ -10,7 +10,7 @@ const udpFile = require("@services/udp-file");
 const overlayValidator = require("@validators/overlay");
 const thumbnailValidator = require("@validators/thumbnail");
 const decklinkValidator = require("@validators/decklink");
-const fileValidator = require("@validators/srt");
+const fileValidator = require("@validators/file");
 const udpValidator = require("@validators/udp");
 
 /**

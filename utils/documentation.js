@@ -20,7 +20,7 @@ const swaggerOptions = {
                 url: "https://www.gnu.org/licenses/gpl-3.0.en.html",
             },
             contact: {
-                name: "Ryan McCarntney",
+                name: "Ryan McCartney",
                 url: "https://ryan.mccartney.info/ffmpeg-docker",
                 email: "ryan@mccartney.info",
             },
