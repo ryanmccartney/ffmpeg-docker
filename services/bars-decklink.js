@@ -81,7 +81,7 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = await jobManager.get(options.ouput?.cardName);
+    response.job = await jobManager.get(options?.output?.cardName);
     return response;
 };
 
