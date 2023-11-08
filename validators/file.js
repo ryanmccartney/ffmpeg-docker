@@ -16,10 +16,12 @@ module.exports = (direction = "input") => {
     };
 
     if (direction === "output") {
-        validator[`${direction}.file`].optional = true;
+        validator[`${direction}.file`] = {
+            optional: true,
+        };
     } else {
-        validator[`${direction}.file`].exists = {
-            errorMessage: "Input filename required.",
+        validator[`${direction}.file`] = {
+            exists: { errorMessage: "Input filename required." },
         };
     }
 
