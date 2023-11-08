@@ -100,7 +100,7 @@ router.post(
     "/decklink",
     checkSchema({
         ...barsValidator("input"),
-        ...decklinkValidator("outpu"),
+        ...decklinkValidator("output"),
         ...thumbnailValidator(),
         ...overlayValidator(),
     }),
