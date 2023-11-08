@@ -10,10 +10,11 @@ const setCodec = require("@utils/set-codec");
 const getFilePath = require("@utils/get-filepath");
 
 const process = async (options) => {
+    let filePath = "";
     const response = { options: options };
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
     try {
-        const filePath = await getFilePath({
+        filePath = await getFilePath({
             file: options?.output?.file || "test",
             format: options?.output?.format,
             chunks: options?.output?.chunkSize,
