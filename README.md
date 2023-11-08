@@ -1,10 +1,31 @@
-[![Docker Deploy](https://github.com/ryanmccartney/ffmpeg-docker/actions/workflows/docker.yml/badge.svg)](https://github.com/ryanmccartney/ffmpeg-docker/actions/workflows/docker.yml) [![Pages Deploy](https://github.com/ryanmccartney/ffmpeg-docker/actions/workflows/pages.yml/badge.svg)](https://github.com/ryanmccartney/ffmpeg-docker/actions/workflows/pages.yml)
+<h1 align="center">
+    FFmpeg in Docker
+</h1>
 
-# FFmpeg in Docker
+<p align="center">
+  <i align="center">Confiugrable FFmpeg in a docker container with a simple RESTful API</i>
+</p>
 
-FFmpeg compiled with additional libraries and running inside a Docker container. A RESTful API runs alongside written in Node.js utilsing `fluent-ffmpeg`.
+<h4 align="center">
+  <a href="https://github.com/ryanmccartney/ffmpeg-docker/actions/workflows/docker.yml">
+    <img src="https://github.com/ryanmccartney/ffmpeg-docker/actions/workflows/docker.yml/badge.svg" alt="continuous integration">
+  </a>
 
-For more informations read the [documentation](https://ryan.mccartney.info/ffmpeg-docker/).
+  <a href="https://github.com/ryanmccartney/ffmpeg-docker/actions/workflows/pages.yml">
+    <img src="https://github.com/ryanmccartney/ffmpeg-docker/actions/workflows/pages.yml/badge.svg" alt="continuous integration">
+  </a>
+
+  <a href="https://github.com/ryanmccartney/ffmpeg-docker/graphs/contributors">
+    <img src="https://img.shields.io/github/contributors-anon/ryanmccartney/ffmpeg-docker?color=yellow&style=plastic" alt="contributors">
+  </a>
+  <a href="https://opensource.org/license/gpl-3-0">
+    <img src="https://img.shields.io/badge/GNU%20GPL%20v3.0-blue.svg?style=plastic&label=license" alt="license">
+  </a>
+</h4>
+
+FFmpeg compilation made easy with additional libraries and runs inside a Docker container. A RESTful API runs alongside written in Node.js utilising `express` and `fluent-ffmpeg`.
+
+For more information read the [documentation](https://ryan.mccartney.info/ffmpeg-docker/).
 
 | :exclamation: This project is a work in progress, it is still in the early stages of development and functions may not work as expected. |
 | ---------------------------------------------------------------------------------------------------------------------------------------- |
