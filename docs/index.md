@@ -59,8 +59,8 @@ If this isn't a problem then you can get the image here;
 
 ## Future Work
 
--   SRT/RIST statistics - unavalible in FFMPEG, so dificult to report SRT information like, maxRTT, recovered packets, lost packets, jitter, etc.
--   SRT Bonding - SRT v1.5 supports bonding through socket groups, again this is not implemented in FFMPEG
+-   SRT/RIST statistics - unavalible in FFmpeg, so dificult to report SRT information like, maxRTT, recovered packets, lost packets, jitter, etc.
+-   SRT Bonding - SRT v1.5 supports bonding through socket groups, again this is not implemented in FFmpeg
 
 ## About
 

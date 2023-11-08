@@ -36,7 +36,7 @@ The image provides a RESTful API exposing a number of endpoints allowing you to 
 -   `bars`
 -   `rtmp`
 
-All commands that run FFMPEG processes in the container are POST requests. They have a common body format for passing arguments with specific variables that are aplicable to indicudual codecs and input/output types
+All commands that run FFmpeg processes in the container are POST requests. They have a common body format for passing arguments with specific variables that are aplicable to indicudual codecs and input/output types
 Common body options for all these media proccessing endpoints shown as follows;
 
 ```json

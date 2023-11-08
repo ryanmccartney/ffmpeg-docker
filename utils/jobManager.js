@@ -3,7 +3,7 @@ const crypto = require("crypto");
 let maxQueueSize = process.env.QUEUE_SZIE | 5;
 let jobs = {};
 
-const start = (output, name = "FFMPEG Process", type = ["default"]) => {
+const start = (output, name = "FFmpeg Process", type = ["default"]) => {
     const queueSize = Object.keys(jobs).length;
     if (queueSize < maxQueueSize) {
         const hash = crypto.createHash("md5").update(output).digest("hex");

@@ -9,13 +9,13 @@ has_children: false
 
 [VMAF](https://github.com/Netflix/vmaf) - Video Multi-Method Assessment Fusion is a [Netflix](https://github.com/Netflix) Open Source project for evaluating the quality of video files.
 
-FFMPEG-Docker provides build instructions for VMAF by default, and exposes an API endpoint for processing files with VMAF and generating results.
+FFmpeg-Docker provides build instructions for VMAF by default, and exposes an API endpoint for processing files with VMAF and generating results.
 
 Media files can be processes relative to the `media` directory and result exported to a `MY-VMAF-TEST.json` file.
 
 ## Endpoints
 
-* `api/vmaf`
+-   `api/vmaf`
 
 ## Running a VMAF test
 
@@ -56,12 +56,12 @@ Sending the above API command results in the following underlying command being 
 
 In the example above the parameter `output` was set to `test-output.json`. This means that all of the results are saved in text to this file.
 
-This can be directly downloaded as follows 
+This can be directly downloaded as follows
 
-* As a JSON object - `http://SERVER_IP:SERVER_PORT/api/vmaf/results/json?filename=test-output.json`
-* As a CSV object - `http://SERVER_IP:SERVER_PORT/api/vmaf/results/csv?filename=test-output.json`
-* As a JSON file - `http://SERVER_IP:SERVER_PORT/api/vmaf/results/download/json?filename=test-output.json`
-* As a CSV file - `http://SERVER_IP:SERVER_PORT/api/vmaf/results/download/csv?filename=test-output.json`
+-   As a JSON object - `http://SERVER_IP:SERVER_PORT/api/vmaf/results/json?filename=test-output.json`
+-   As a CSV object - `http://SERVER_IP:SERVER_PORT/api/vmaf/results/csv?filename=test-output.json`
+-   As a JSON file - `http://SERVER_IP:SERVER_PORT/api/vmaf/results/download/json?filename=test-output.json`
+-   As a CSV file - `http://SERVER_IP:SERVER_PORT/api/vmaf/results/download/csv?filename=test-output.json`
 
 A graph of the results can be generated here - `http://SERVER_IP:SERVER_PORT/html/chart.html?filename=test-output.json` using Chart.js.
 
@@ -79,7 +79,7 @@ RUN git -C libvmaf pull 2> /dev/null || git clone --depth 1 https://github.com/N
     ninja -vC build install
 ```
 
-Adding VMAF support to FFMPEG Build configuration
+Adding VMAF support to FFmpeg Build configuration
 
 ```
 RUN ./configure \
