@@ -3,33 +3,26 @@
 const logger = require("@utils/logger")(module);
 const path = require("path");
 const qr = require("@utils/qr");
+const imageFilter = require("@utils/filter-image");
 
-module.exports = async (command,qrData) => {
+module.exports = async (command, options) => {
     try {
-        if(qrData){
+        if (options.overlay.qr && options.overlay.qr.data) {
+            const data = await qr(options.overlay.qr);
 
-            const data = await qr(qrData);         
-            const QrType = qrData?.type || "png";
-            const qrCodePath = path.join(
-                __dirname,
-                "..",
-                "data",
-                "qr",
-                qrData?.file+"."+QrType);
+            options.overlay.image.file = path.join(__dirname, "..", "data", "qr", qrData?.file);
+            options.overlay.image.format = options.overlay.qr?.type || "png";
+            options.overlay.image.size = options.overlay.qr?.size || 20;
+            options.overlay.image.location = {
+                x: options?.overlay?.qr?.location?.x || 0,
+                y: options?.overlay?.qr?.location?.y || 0,
+            };
 
-            command.input(qrCodePath);
-            command.complexFilter([
-                {
-                  filter: 'overlay',
-                  options: { shortest: 1 },
-                  inputs: ['0:v', '1'],
-                  outputs: 'output',
-                },
-            ], 'output');
+            command = imageFilter(command, options);
         }
     } catch (error) {
         logger.warn("Cannot create QR code filter ");
-        logger.warn(error)
+        logger.warn(error);
     }
-    return command
+    return command;
 };

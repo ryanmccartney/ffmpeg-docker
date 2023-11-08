@@ -6,6 +6,7 @@ const path = require("path");
 const jobManager = require("@utils/jobManager");
 const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
+const filterImage = require("@utils/filter-image");
 const getRtmpAddress = require("@utils/rtmp-address");
 const setCodec = require("@utils/set-codec");
 

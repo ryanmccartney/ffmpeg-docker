@@ -13,5 +13,5 @@ module.exports = (format = "h264") => {
         return ".mov";
     }
 
-    return ".mov";
+    return `.${format}`;
 };
