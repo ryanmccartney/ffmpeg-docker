@@ -3,7 +3,7 @@
 </h1>
 
 <p align="center">
-  <i align="center">Confiugrable FFmpeg in a docker container with an simple RESTful API</i>
+  <i align="center">Confiugrable FFmpeg in a docker container with a simple RESTful API</i>
 </p>
 
 <h4 align="center">
@@ -16,10 +16,10 @@
   </a>
 
   <a href="https://github.com/ryanmccartney/ffmpeg-docker/graphs/contributors">
-    <img src="https://img.shields.io/github/contributors-anon/ryanmccartney/ffmpeg-docker?color=yellow&style=flat-square" alt="contributors">
+    <img src="https://img.shields.io/github/contributors-anon/ryanmccartney/ffmpeg-docker?color=yellow&style=plastic" alt="contributors">
   </a>
   <a href="https://opensource.org/license/gpl-3-0">
-    <img src="https://img.shields.io/badge/GNU%20GPL%20v3.0-blue.svg?style=flat-square&label=license" alt="license">
+    <img src="https://img.shields.io/badge/GNU%20GPL%20v3.0-blue.svg?style=plastic&label=license" alt="license">
   </a>
 </h4>
 
