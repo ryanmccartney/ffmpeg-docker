@@ -20,7 +20,7 @@ const process = async (options) => {
             ["decode", "srt"]
         );
 
-        const filePath = getFilePath({
+        const filePath = await getFilePath({
             file: options?.output?.file || job.jobId,
             format: options?.output?.format,
             chunks: options?.output?.chunkSize,
@@ -40,14 +40,14 @@ const process = async (options) => {
             )
             .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats"]);
 
+        command.output(filePath);
+
         if (options?.output?.chunkSize) {
             command
                 .outputOptions("-f", "segment")
                 .outputOptions("-segment_time", parseInt(options?.output?.chunkSize))
                 .outputOptions("-reset_timestamps", 1, "-y");
         }
-
-        command.output(filePath);
 
         command = setCodec(command, options?.output);
 

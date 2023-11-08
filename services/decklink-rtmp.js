@@ -32,7 +32,7 @@ const process = async (options) => {
             .outputOptions(["-f flv"])
             .outputOptions(`-b:v ${options?.output?.bitrate || "5M"}`);
 
-        command = setCodec(command, options);
+        command = setCodec(command, options?.output);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);

@@ -20,7 +20,7 @@ const process = async (options) => {
             ["decode", "file", "udp"]
         );
 
-        const filePath = getFilePath({
+        const filePath = await getFilePath({
             file: options?.output?.file || job.jobId,
             format: options?.output?.format,
             chunks: options?.output?.chunkSize,

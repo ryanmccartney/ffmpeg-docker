@@ -34,7 +34,7 @@ const process = async (options) => {
             .outputOptions([`-preset ${options?.output?.encodePreset || "ultrafast"}`, "-f mpegts"])
             .outputOptions(`-b:v ${options?.output?.bitrate || "5M"}`);
 
-        command = setCodec(command, options);
+        command = setCodec(command, options?.output);
 
         if (!options?.output?.vbr) {
             command.outputOptions([

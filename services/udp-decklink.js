@@ -48,7 +48,7 @@ const process = async (options) => {
             ])
             .output(options?.output?.cardName);
 
-        command = setCodec(command, options);
+        command = setCodec(command, options?.output);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);

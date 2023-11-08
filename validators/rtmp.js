@@ -1,11 +1,16 @@
 "use strict";
 
 const encodePresets = require("@utils/encodePresets");
+const isIPorFQDN = require("@utils/validator-isiporfqdn");
 
 module.exports = (direction = "input") => {
     return {
         [`${direction}.address`]: {
             exists: { errorMessage: "Must provide and address required." },
+            custom: {
+                options: isIPorFQDN,
+                errorMessage: "Address must be a valid IP Address or FQDN",
+            },
         },
         [`${direction}.port`]: {
             optional: true,
