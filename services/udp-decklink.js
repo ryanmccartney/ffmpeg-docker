@@ -13,15 +13,19 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(options.cardName, `UDP to ${options.cardName}`, ["decode", "udp", "decklink"]);
+        const job = jobManager.start(options?.output?.cardName, `UDP to ${options?.output?.cardName}`, [
+            "decode",
+            "udp",
+            "decklink",
+        ]);
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         let command = ffmpeg({ logger: logger })
             .input(
-                `udp://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&buffer_size=${
-                    options?.buffer || 65535
-                }`
+                `udp://${options?.input?.address}:${options?.input?.port}?pkt_size=${
+                    options?.input?.packetSize || 1316
+                }&buffer_size=${options?.input?.buffer || 65535}`
             )
             .inputOptions([
                 "-protocol_whitelist",
@@ -36,13 +40,13 @@ const process = async (options) => {
                 "-s 1920x1080",
                 "-ac 16",
                 "-f decklink",
-                `-af volume=${options?.volume || 0.25}`,
+                `-af volume=${options?.output?.volume || 0.25}`,
                 "-flags low_delay",
                 "-bufsize 0",
                 "-muxdelay 0",
                 "-async 1",
             ])
-            .output(options.cardName);
+            .output(options?.output?.cardName);
 
         command = setCodec(command, options);
 
@@ -96,7 +100,7 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = await jobManager.get(options.cardName);
+    response.job = await jobManager.get(options?.output?.cardName);
     return response;
 };
 

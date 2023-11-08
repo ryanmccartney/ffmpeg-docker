@@ -7,16 +7,19 @@ const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
 const jobManager = require("@utils/jobManager");
 const setCodec = require("@utils/set-codec");
+const getFilePath = require("@utils/get-filepath");
 
 const process = async (options) => {
     const response = { options: options };
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
     try {
-        const outputPath = path.join(__dirname, "..", "data", "media", `${options.output?.file || "test.mp4"}`);
-        const job = jobManager.start(outputPath, `Bars to File (${options.output?.file || "test.mp4"})`, [
-            "bars",
-            "file",
-        ]);
+        const filePath = getFilePath({
+            file: options?.output?.file || "test",
+            format: options?.output?.format,
+            chunks: options?.output?.chunkSize,
+        });
+
+        const job = jobManager.start(filePath, `Bars to File (${filePath})`, ["bars", "file"]);
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
@@ -26,8 +29,16 @@ const process = async (options) => {
             .addInput(`sine=frequency=${options.input?.frequency || "1000"}:sample_rate=48000`)
             .inputOptions(["-f lavfi"])
             .fps(25)
-            .output(outputPath)
             .outputOptions([`-t ${options.input?.duration || "10"}`]);
+
+        if (options?.output?.chunkSize) {
+            command
+                .outputOptions("-f", "segment")
+                .outputOptions("-segment_time", parseInt(options?.output?.chunkSize))
+                .outputOptions("-reset_timestamps", 1, "-y");
+        }
+
+        command.output(filePath);
 
         command = setCodec(command, options);
 
@@ -56,6 +67,7 @@ const process = async (options) => {
                 command: commandString,
                 pid: command.ffmpegProc.pid,
                 options: options,
+                file: filePath,
             });
             return response;
         });
@@ -80,7 +92,7 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = await jobManager.get(options.output?.file);
+    response.job = await jobManager.get(filePath);
     return response;
 };
 

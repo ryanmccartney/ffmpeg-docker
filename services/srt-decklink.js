@@ -13,7 +13,7 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(`${options.cardName}out`, `SRT to ${options.cardName}`, [
+        const job = jobManager.start(`${options?.output?.cardName}out`, `SRT to ${options?.output?.cardName}`, [
             "decode",
             "srt",
             "decklink",
@@ -23,13 +23,13 @@ const process = async (options) => {
 
         let command = ffmpeg({ logger: logger })
             .input(
-                `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&latency=${
-                    parseInt(options?.latency) * 1000 || "250000"
-                }&mode=${options?.mode || "caller"}&ipttl=${options?.ttl || "64"}&iptos=${
-                    options?.tos || "104"
-                }&transtype=${options?.transtype || "live"}${
-                    options.passphrase ? `&passphrase=${options.passphrase}` : ""
-                }`
+                `srt://${options?.input?.address}:${options?.input?.port}?pkt_size=${
+                    options?.input?.packetSize || 1316
+                }&latency=${parseInt(options?.input?.latency) * 1000 || "250000"}&mode=${
+                    options?.input?.mode || "caller"
+                }&ipttl=${options?.input?.ttl || "64"}&iptos=${options?.input?.tos || "104"}&transtype=${
+                    options?.input?.transtype || "live"
+                }${options?.input?.passphrase ? `&passphrase=${options?.input?.passphrase}` : ""}`
             )
             .inputOptions([
                 "-protocol_whitelist",
@@ -44,15 +44,15 @@ const process = async (options) => {
                 "-s 1920x1080",
                 "-ac 16",
                 "-f decklink",
-                `-af volume=${options?.volume || 0.25}`,
+                `-af volume=${options?.output?.volume || 0.25}`,
                 "-duplex_mode",
-                `${options?.duplexMode || "unset"}`,
+                `${options?.output?.duplexMode || "unset"}`,
                 "-flags low_delay",
                 "-bufsize 0",
                 "-muxdelay 0",
                 "-async 1",
             ])
-            .output(options.cardName);
+            .output(option?.output?.cardName);
 
         command = setCodec(command, options);
 
@@ -106,7 +106,7 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = await jobManager.get(options.cardName);
+    response.job = await jobManager.get(output?.output?.cardName);
     return response;
 };
 

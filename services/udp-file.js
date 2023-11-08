@@ -7,7 +7,7 @@ const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
 const setCodec = require("@utils/set-codec");
 const jobManager = require("@utils/jobManager");
-const getFileExtension = require("@utils/get-extension");
+const getFilePath = require("@utils/get-filepath");
 
 const process = async (options) => {
     const response = { options: options };
@@ -15,40 +15,35 @@ const process = async (options) => {
 
     try {
         const job = jobManager.start(
-            `${options.address}:${options.port}`,
-            `UDP to file udp://${options.address}:${options.port}`,
+            `${options?.input?.address}:${options?.input?.port}`,
+            `UDP to file udp://${options?.input?.address}:${options?.input?.port}`,
             ["decode", "file", "udp"]
         );
 
-        const fileName = `${options.file || job.jobId}${getFileExtension(options?.format)}`;
+        const filePath = getFilePath({
+            file: options?.output?.file || job.jobId,
+            format: options?.output?.format,
+            chunks: options?.output?.chunkSize,
+        });
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         let command = ffmpeg({ logger: logger })
             .input(
-                `udp://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&buffer_size=${
-                    options?.buffer || 65535
-                }`
+                `udp://${options?.input?.address}:${options?.input?.port}?pkt_size=${
+                    options?.input?.packetSize || 1316
+                }&buffer_size=${options?.input?.buffer || 65535}`
             )
             .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats"]);
 
-        if (options.chunkSize) {
+        if (options?.output?.chunkSize) {
             command
                 .outputOptions("-f", "segment")
-                .outputOptions("-segment_time", parseInt(options.chunkSize))
-                .outputOptions("-reset_timestamps", 1, "-y")
-                .output(
-                    `${path.join(
-                        __dirname,
-                        "..",
-                        "data",
-                        "media",
-                        `${fileName.split(".")[0]}-%03d.${fileName.split(".")[1]}`
-                    )}`
-                );
-        } else {
-            command.output(`${path.join(__dirname, "..", "data", "media", fileName)}`);
+                .outputOptions("-segment_time", parseInt(options?.output?.chunkSize))
+                .outputOptions("-reset_timestamps", 1, "-y");
         }
+
+        command.output(filePath);
 
         command = setCodec(command, options?.output);
 
@@ -77,6 +72,7 @@ const process = async (options) => {
                 command: commandString,
                 pid: command.ffmpegProc.pid,
                 options: options,
+                file: filePath,
             });
             return response;
         });
@@ -102,7 +98,7 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = jobManager.get(`${options.address}:${options.port}`);
+    response.job = jobManager.get(`${options?.input?.address}:${options?.input?.port}`);
     return response;
 };
 

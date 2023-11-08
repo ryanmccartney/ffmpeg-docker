@@ -7,7 +7,7 @@ const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
 const setCodec = require("@utils/set-codec");
 const jobManager = require("@utils/jobManager");
-const getFileExtension = require("@utils/get-extension");
+const getFilePath = require("@utils/get-filepath");
 
 const process = async (options) => {
     const response = { options: options };
@@ -20,39 +20,34 @@ const process = async (options) => {
             ["decode", "srt"]
         );
 
-        const fileName = `${options.file || job.jobId}${getFileExtension(options?.format)}`;
+        const filePath = getFilePath({
+            file: options?.output?.file || job.jobId,
+            format: options?.output?.format,
+            chunks: options?.output?.chunkSize,
+        });
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
         let command = ffmpeg({ logger: logger })
             .input(
-                `srt://${options.address}:${options.port}?pkt_size=${options?.packetSize || 1316}&latency=${
-                    parseInt(options?.latency) * 1000 || "250000"
-                }&mode=${options?.mode || "caller"}&ipttl=${options?.ttl || "64"}&iptos=${
-                    options?.tos || "104"
-                }&transtype=${options?.transtype || "live"}${
-                    options.passphrase ? `&passphrase=${options.passphrase}` : ""
-                }`
+                `srt://${options?.input?.address}:${options?.input?.port}?pkt_size=${
+                    options?.input?.packetSize || 1316
+                }&latency=${parseInt(options?.input?.latency) * 1000 || "250000"}&mode=${
+                    options?.input?.mode || "caller"
+                }&ipttl=${options?.input?.ttl || "64"}&iptos=${options?.input?.tos || "104"}&transtype=${
+                    options?.input?.transtype || "live"
+                }${options.input?.passphrase ? `&passphrase=${options?.input?.passphrase}` : ""}`
             )
             .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats"]);
 
-        if (options.chunkSize) {
+        if (options?.output?.chunkSize) {
             command
                 .outputOptions("-f", "segment")
-                .outputOptions("-segment_time", parseInt(options.chunkSize))
-                .outputOptions("-reset_timestamps", 1, "-y")
-                .output(
-                    `${path.join(
-                        __dirname,
-                        "..",
-                        "data",
-                        "media",
-                        `${fileName.split(".")[0]}-%03d.${fileName.split(".")[1]}`
-                    )}`
-                );
-        } else {
-            command.output(`${path.join(__dirname, "..", "data", "media", fileName)}`);
+                .outputOptions("-segment_time", parseInt(options?.output?.chunkSize))
+                .outputOptions("-reset_timestamps", 1, "-y");
         }
+
+        command.output(filePath);
 
         command = setCodec(command, options?.output);
 
@@ -81,6 +76,7 @@ const process = async (options) => {
                 command: commandString,
                 pid: command.ffmpegProc.pid,
                 options: options,
+                file: filePath,
             });
             return response;
         });
