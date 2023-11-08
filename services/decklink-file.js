@@ -7,7 +7,7 @@ const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
 const setCodec = require("@utils/set-codec");
 const jobManager = require("@utils/jobManager");
-const getFileExtension = require("@utils/get-extension");
+const getFilePath = require("@utils/get-filepath");
 
 const process = async (options) => {
     const response = { options: options };
@@ -20,11 +20,11 @@ const process = async (options) => {
             "decklink",
         ]);
 
-        // DD-MM-YYYY-HH-MM
-        // ./dir/filemap
-        const fileName = `${options?.output?.file || job.jobId}${
-            options?.output?.timestamp ? `-DD-MM-YY-HH-MM` : ``
-        }${getFileExtension(options?.output?.format)}`;
+        const filePath = getFilePath({
+            file: options?.output?.file || job.jobId,
+            format: options?.output?.format,
+            chunks: options?.output?.chunkSize,
+        });
 
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 
@@ -40,23 +40,14 @@ const process = async (options) => {
                 `${options?.input?.duplexMode || "unset"}`,
             ]);
 
-        if (options.chunkSize) {
+        if (options?.output?.chunkSize) {
             command
                 .outputOptions("-f", "segment")
                 .outputOptions("-segment_time", parseInt(options?.output?.chunkSize))
-                .outputOptions("-reset_timestamps", 1, "-y")
-                .output(
-                    `${path.join(
-                        __dirname,
-                        "..",
-                        "data",
-                        "media",
-                        `${fileName.split(".")[0]}-%03d.${fileName.split(".")[1]}`
-                    )}`
-                );
-        } else {
-            command.output(`${path.join(__dirname, "..", "data", "media", fileName)}`);
+                .outputOptions("-reset_timestamps", 1, "-y");
         }
+
+        command.output(filePath);
 
         command = setCodec(command, options?.output);
 
@@ -85,7 +76,7 @@ const process = async (options) => {
                 command: commandString,
                 pid: command.ffmpegProc.pid,
                 options: options,
-                output: { file: fileName },
+                file: filePath,
             });
             return response;
         });
