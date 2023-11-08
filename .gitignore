@@ -2,6 +2,9 @@
 /node_modules
 .DS_Store
 
+# Exclude FFmpeg logs
+/*.temp
+
 # Media
 /data/media/*
 !/data/media/.gitkeep

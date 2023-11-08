@@ -6,17 +6,16 @@ const path = require("path");
 
 let command;
 
-module.exports = async (cardIndex,options) => {
-    
-    logger.info(`Stopping the output on Decklink Device ${cardIndex}.`)
-    let status = true
+module.exports = async (cardIndex, options) => {
+    logger.info(`Stopping the output on Decklink Device ${cardIndex}.`);
+    let status = true;
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
-    command = ffmpeg({ logger: logger })
-    command.kill()
+    command = ffmpeg({ logger: logger });
+    command.kill();
 
     command.on("error", () => {
-        logger.info("FFMPEG process killed");
+        logger.info("FFmpeg process killed");
     });
 
     command.on("stderr", function (stderrLine) {

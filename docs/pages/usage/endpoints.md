@@ -7,7 +7,7 @@ nav_order: 2
 
 # FFmpeg Docker API
 
-Common FFMPEG fucntions from a RESTful API
+Common FFmpeg functions from a RESTful API
 
 ## Version: 0.1.0
 

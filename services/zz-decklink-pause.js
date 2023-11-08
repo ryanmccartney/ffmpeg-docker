@@ -22,7 +22,7 @@ module.exports = async (cardIndex, options) => {
     }
 
     if (command) {
-        logger.info("Killing already running FFMPEG process");
+        logger.info("Killing already running FFmpeg process");
         await command.kill();
     }
     command = ffmpeg({ logger: logger })
@@ -61,7 +61,7 @@ module.exports = async (cardIndex, options) => {
     });
 
     command.on("error", () => {
-        logger.info("FFMPEG process killed");
+        logger.info("FFmpeg process killed");
     });
 
     command.on("start", (commandString) => {

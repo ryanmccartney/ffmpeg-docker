@@ -23,7 +23,7 @@ Check the status of firmware using the following command
 
 `BlackmagicFirmwareUpdater status`
 
-## FFMPEG Commands
+## FFmpeg Commands
 
 ### List Decklink devices
 
@@ -43,7 +43,7 @@ Check the status of firmware using the following command
 
 Bars Types
 
-From the FFMPEG documentation;
+From the FFmpeg documentation;
 
 -   The `allrgb` source returns frames of size 4096x4096 of all rgb colors.
 -   The `allyuv` source returns frames of size 4096x4096 of all yuv colors.
@@ -87,7 +87,7 @@ Initially, file playback appeared to be significantly delayed. When timecode was
 
 Channging the following arguments, `-probesize 1M` and `-analyzeduration 1M` significantly helped this issue.
 
-This comment on the [FFMPEG Forum](http://ffmpeg.org/pipermail/ffmpeg-user/2020-May/048639.html) sheds some more light on the issue.
+This comment on the [FFmpeg Forum](http://ffmpeg.org/pipermail/ffmpeg-user/2020-May/048639.html) sheds some more light on the issue.
 
 ###
 

@@ -9,7 +9,7 @@ nav_order: 2
 
 There are two reasons to Build this project.
 
-1. You'd like to use the Non Free FFMPEG library options
+1. You'd like to use the Non Free FFmpeg library options
 2. If you want to contribute to this project or you'd like some of the above features
 
 In order to do either you'll need to build a copy of this image yourself which will compile FFmpeg locally.
@@ -33,7 +33,7 @@ In order to do either you'll need to build a copy of this image yourself which w
 
 ## Non Free Options
 
-To stay compliant with FFMPEG licensing the following libraries are not included in the distrubuted version of FFMPEG;
+To stay compliant with FFmpeg licensing the following libraries are not included in the distrubuted version of FFmpeg;
 
 -   `--enable-nonfree`
 -   `--enable-libndi_newtek`

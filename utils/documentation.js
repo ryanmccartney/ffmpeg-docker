@@ -14,7 +14,7 @@ const swaggerOptions = {
         info: {
             title: "FFmpeg Docker API",
             version: "0.1.0",
-            description: "Common FFMPEG fucntions from a RESTful API",
+            description: "Common FFmpeg functions from a RESTful API",
             license: {
                 name: "GPLv3",
                 url: "https://www.gnu.org/licenses/gpl-3.0.en.html",
