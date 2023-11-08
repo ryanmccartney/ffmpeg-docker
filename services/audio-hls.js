@@ -49,7 +49,7 @@ const process = async (options) => {
                 "-hls_flags independent_segments",
             ]);
 
-        command = setCodec(command, options);
+        command = setCodec(command, options?.output);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);

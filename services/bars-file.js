@@ -13,7 +13,7 @@ const process = async (options) => {
     const response = { options: options };
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
     try {
-        const filePath = getFilePath({
+        const filePath = await getFilePath({
             file: options?.output?.file || "test",
             format: options?.output?.format,
             chunks: options?.output?.chunkSize,
@@ -40,7 +40,7 @@ const process = async (options) => {
 
         command.output(filePath);
 
-        command = setCodec(command, options);
+        command = setCodec(command, options?.output);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
