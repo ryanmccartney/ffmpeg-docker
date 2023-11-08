@@ -30,6 +30,27 @@ module.exports = (direction = "input") => {
             optional: true,
             isBoolean: { default: false, errorMessage: "Scrolling must be a boolean type" },
         },
+        "overlay.image.file": {
+            optional: true,
+            isString: { default: "", errorMessage: "Image file must be a string" },
+        },
+        "overlay.image.size": {
+            optional: true,
+            isInt: {
+                min: 0,
+                max: 100,
+                default: 50,
+                errorMessage: "Size between 0 and 100, relative to view height",
+            },
+        },
+        "overlay.image.location.x": {
+            optional: true,
+            isInt: { min: -100, max: 100, default: 0, errorMessage: "X-axis location between -100 and 100" },
+        },
+        "overlay.image.location.y": {
+            optional: true,
+            isInt: { min: -100, max: 100, default: 0, errorMessage: "Y-axis location between -100 and 100" },
+        },
     };
 };
 

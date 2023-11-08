@@ -5,6 +5,7 @@ const ffmpeg = require("fluent-ffmpeg");
 const path = require("path");
 const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
+const filterImage = require("@utils/filter-image");
 const jobManager = require("@utils/jobManager");
 const getRtmpAddress = require("@utils/rtmp-address");
 const setCodec = require("@utils/set-codec");
