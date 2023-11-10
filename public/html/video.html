@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <script language="javascript" src="/public/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/public/bootstrap/css/bootstrap.min.css" />
+
+    <link href="/public/video.js/video-js.min.css" rel="stylesheet" />
+    <script src="/public/video.js/video.min.js"></script>
+
+    <title>FFmpeg Docker</title>
+    <body class="bg-light">
+        <nav class="navbar bg-light fixed-top">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/">
+                    <img
+                        src="/public/images/favicon.ico"
+                        alt="Logo"
+                        width="30"
+                        height="24"
+                        class="d-inline-block align-text-top"
+                    />
+                    FFmpeg Docker
+                </a>
+            </div>
+        </nav>
+        <div class="container" style="margin-top: 80px">
+            <video id="video-player" class="video-js" controls preload="auto" data-setup="{}">
+                <p class="vjs-no-js">
+                    To view this video please enable JavaScript, and consider upgrading to a web browser that
+                    <a href="https://videojs.com/html5-video-support/" target="_blank"> supports HTML5 video </a>
+                </p>
+            </video>
+        </div>
+
+        <script>
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const file = urlParams.get("file");
+            const filePath = `/api/hls/${file}.m3u8`;
+
+            const options = {
+                sources: [
+                    {
+                        src: filePath,
+                        type: "application/x-mpegURL",
+                    },
+                ],
+                fluid: true,
+            };
+
+            const player = videojs("video-player", options, function onPlayerReady() {
+                videojs.log("Video player is ready.");
+                this.play();
+            });
+        </script>
+    </body>
+</html>

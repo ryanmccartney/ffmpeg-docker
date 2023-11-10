@@ -42,9 +42,6 @@ const process = async (options) => {
             ])
             .output(`${path.join(__dirname, "..", "data", "hls", options?.output?.file || job.jobId)}.m3u8`)
             .outputOptions([
-                "-c:v libx264",
-                `-preset ${options?.output?.encodePreset || "ultrafast"}`,
-                "-tune zerolatency",
                 "-g 30",
                 "-c:a aac",
                 "-strict experimental",
