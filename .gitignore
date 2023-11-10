@@ -4,6 +4,7 @@
 
 # Exclude FFmpeg logs
 /*.temp
+/*.log
 
 # Media
 /data/media/*
