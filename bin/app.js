@@ -17,6 +17,7 @@ const pageRouter = require("@routes/page");
 const systemRouter = require("@routes/system");
 const playlistRouter = require("@routes/playlist");
 
+const hlsRouter = require("@routes/hls");
 const udpRouter = require("@routes/udp");
 const rtpRouter = require("@routes/rtp");
 const srtRouter = require("@routes/srt");
@@ -64,7 +65,7 @@ app.use(cookieParser());
 app.use("/documentation", documentation);
 app.use("/api/system", systemRouter);
 app.use("/api/playlist", playlistRouter);
-app.use("/api/hls", express.static(path.join(__dirname, "..", "data", "hls")));
+app.use("/api/hls", hlsRouter);
 
 //Input Routes /api/INPUT_FORMAT/OUTPUT_FORMAT
 app.use("/api/vmaf", vmafRouter);
