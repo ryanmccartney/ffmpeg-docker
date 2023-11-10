@@ -597,6 +597,16 @@ paths:
       responses:
         "200":
           description: Success
+  /:
+    get:
+      description: Index page if web GUI option is enabled
+      tags:
+        - page
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
   /clock:
     get:
       description: An HTML page with a live clock showing server time - suitable for
@@ -621,6 +631,16 @@ paths:
   /chart:
     get:
       description: An HTML page showing VMAF test results as a chart
+      tags:
+        - page
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /video:
+    get:
+      description: An HTML page with a video player for hls streams
       tags:
         - page
       produces:
