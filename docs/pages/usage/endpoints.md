@@ -650,6 +650,22 @@ Add a single file to the playlist.
 
 ---
 
+### /hls
+
+#### GET
+
+##### Description
+
+Servers the HLS manifest files.
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+---
+
 ### /clock
 
 #### GET
