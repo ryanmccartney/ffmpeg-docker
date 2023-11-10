@@ -666,6 +666,20 @@ Servers the HLS manifest files.
 
 ---
 
+### /
+
+#### GET
+
+##### Description
+
+Index page if web GUI option is enabled
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
 ### /clock
 
 #### GET
@@ -701,6 +715,20 @@ An HTML page showing a simple job manager
 ##### Description
 
 An HTML page showing VMAF test results as a chart
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /video
+
+#### GET
+
+##### Description
+
+An HTML page with a video player for hls streams
 
 ##### Responses
 
