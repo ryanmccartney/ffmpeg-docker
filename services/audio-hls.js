@@ -8,6 +8,7 @@ const filterText = require("@utils/filter-text");
 const filterImage = require("@utils/filter-image");
 const jobManager = require("@utils/jobManager");
 const setCodec = require("@utils/set-codec");
+const fileDelete = require("@utils/file-delete");
 
 const process = async (options) => {
     const response = { options: options };
@@ -21,7 +22,7 @@ const process = async (options) => {
     const audioFilePath = path.join(__dirname, "..", "data", "media", options?.input?.file);
 
     try {
-        const job = jobManager.start(
+        let job = jobManager.start(
             options?.output?.file || options?.input?.file,
             `File to ${options?.output?.file}.m3u8`,
             ["audio", "file", "hls"]
@@ -81,6 +82,16 @@ const process = async (options) => {
 
         command.on("stderr", function (stderrLine) {
             logger.info("ffmpeg: " + stderrLine);
+
+            //If new TS file writing
+            if (stderrLine.includes(`.ts' for writing`)) {
+                job = jobManager.update(job?.jobId, { chunks: (job.chunks || 0) + 1 });
+                const totalChunks = options?.output?.chunks || 5;
+
+                if (job.chunks > totalChunks + 1) {
+                    fileDelete(`data/hls/${options?.output?.file || job.jobId}${job.chunks - 7}.ts`);
+                }
+            }
         });
 
         command.on("error", function (error) {

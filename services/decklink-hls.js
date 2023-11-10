@@ -8,13 +8,14 @@ const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
 const filterImage = require("@utils/filter-image");
 const setCodec = require("@utils/set-codec");
+const fileDelete = require("@utils/file-delete");
 
 const process = async (options) => {
     const response = { options: options };
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = await jobManager.start(
+        let job = await jobManager.start(
             options?.input?.cardName,
             `Decklink to HLS (${options?.output?.file || "JobID"}.m3u8)`,
             ["encode", "hls", "decklink"]
@@ -77,14 +78,17 @@ const process = async (options) => {
             logger.info("ffmpeg: " + stderrLine);
         });
 
-        command.on("error", function (error) {
-            logger.error(error);
-            jobManager.end(job?.jobId, false);
+        command.on("stderr", function (stderrLine) {
+            logger.info("ffmpeg: " + stderrLine);
 
-            //If IO Error (Network error, restart)
-            if (error.toString().includes("Input/output error") || error.toString().includes("Conversion failed!")) {
-                logger.info("Restarting due to IO error");
-                process(options);
+            //If new TS file writing
+            if (stderrLine.includes(`.ts' for writing`)) {
+                job = jobManager.update(job?.jobId, { chunks: (job.chunks || 0) + 1 });
+                const totalChunks = options?.output?.chunks || 5;
+
+                if (job.chunks > totalChunks + 1) {
+                    fileDelete(`data/hls/${options?.output?.file || job.jobId}${job.chunks - 7}.ts`);
+                }
             }
         });
 
