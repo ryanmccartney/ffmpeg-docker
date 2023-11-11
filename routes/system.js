@@ -74,7 +74,7 @@ router.get("/time", async (req, res, next) => {
 
 /**
  * @swagger
- * /system/stas:
+ * /system/stats:
  *    get:
  *      description: Get system stats; CPU, memory, etc.
  *      tags: [system]

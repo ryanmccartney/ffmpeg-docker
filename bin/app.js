@@ -89,6 +89,7 @@ if (process.env.WEB_GUI) {
     app.use("/public/bootstrap", express.static(path.join(__dirname, "..", "node_modules", "bootstrap", "dist")));
     app.use("/public/chart.js", express.static(path.join(__dirname, "..", "node_modules", "chart.js", "dist")));
     app.use("/public/video.js", express.static(path.join(__dirname, "..", "node_modules", "video.js", "dist")));
+    app.use("/public/gauge.js", express.static(path.join(__dirname, "..", "node_modules", "gaugeJS", "dist")));
 }
 
 // catch 404 and forward to error handler

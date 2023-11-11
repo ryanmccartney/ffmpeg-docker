@@ -15,8 +15,8 @@ const process = async (options) => {
 
     try {
         const job = jobManager.start(
-            `${options?.input?.address}:${options?.input?.port}`,
-            `Bars to SRT srt://${options?.input?.address}:${options?.input?.port}`,
+            `${options?.output?.address}:${options?.output?.port}`,
+            `Bars to SRT srt://${options?.output?.address}:${options?.output?.port}`,
             ["encode", "srt", "bars"]
         );
         const filters = await filterCombine(await filterText({ ...options, ...job }));
