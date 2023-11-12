@@ -62,7 +62,6 @@ const add = async (playlist="playlist",item) => {
         }
 
         const items = await parse(data);
-        console.log(item)
         const setData = await set(playlist,items);
 
         return {data:{raw:data,items:items}}

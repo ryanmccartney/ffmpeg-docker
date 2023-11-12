@@ -6,7 +6,6 @@ const jobManager = require("@utils/jobManager");
 module.exports = async () => {
     try {
         const jobs = await jobManager.getAll();
-        console.log(jobs);
         return { jobs: jobs };
     } catch (error) {
         logger.warn(error.message);
