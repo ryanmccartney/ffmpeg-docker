@@ -3,16 +3,19 @@
 const logger = require("@utils/logger")(module);
 const checkDiskSpace = require("check-disk-space").default;
 const os = require("os");
+const jobLoad = require("@utils/job-load");
 const path = require("path");
 
 const interval = 1000;
 let load = 0;
 let cpus = {};
 let cpusPrevious = os.cpus();
+let jobs = {};
 
-setInterval(() => {
+setInterval(async () => {
     cpus = os.cpus();
     let loadTotal = 0;
+    jobs = await jobLoad();
 
     for (let i in cpus) {
         const usagePrevious = cpusPrevious[i].times?.user + cpusPrevious[i].times?.sys + cpusPrevious[i].times?.irq;
@@ -39,6 +42,8 @@ module.exports = async () => {
             cores: cpus.length,
             load: load,
             cpu: cpus,
+            env: process.env,
+            jobs: jobs,
             memory: {
                 total: os.totalmem(),
                 free: os.freemem(),
