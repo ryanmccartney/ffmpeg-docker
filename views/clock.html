@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    {{> head}}
+
+    <head>
+        <style>
+            #clock {
+                font-family: Arial, sans-serif;
+                font-size: 4.5em;
+                text-align: center;
+            }
+
+            #time {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-family: Arial, sans-serif;
+                font-size: 4em;
+                text-align: center;
+            }
+
+            #milliseconds {
+                padding-top: 0.8em;
+                font-size: 2em;
+                text-align: center;
+            }
+
+            #title {
+                font-family: Arial, sans-serif;
+                font-size: 4em;
+                margin-top: 0em;
+                text-align: center;
+            }
+
+            #subtitle {
+                font-family: Arial, sans-serif;
+                font-size: 2em;
+                margin-top: 1em;
+                text-align: center;
+            }
+        </style>
+    </head>
+
+    <body>
+        {{> header }}
+
+        <main role="main" class="container">
+            <div id="time">
+                <h1 id="clock"></h1>
+                <h1 id="milliseconds"></h1>
+            </div>
+            <h2 id="title">FFmpeg Server Time</h2>
+            <h4 id="subtitle"></h4>
+        </main>
+
+        {{> footer }}
+
+        <script language="javascript" src="/public/js/clock.js"></script>
+    </body>
+</html>

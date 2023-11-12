@@ -16,7 +16,7 @@ const path = require("path");
  *          description: Success
  */
 router.get("/", async (req, res, next) => {
-    res.sendFile(path.join(__dirname, "..", "public", "html", "index.html"));
+    res.render("index", { title: "Home" });
 });
 
 /**
@@ -32,7 +32,7 @@ router.get("/", async (req, res, next) => {
  *          description: Success
  */
 router.get("/clock", async (req, res, next) => {
-    res.sendFile(path.join(__dirname, "..", "public", "html", "clock.html"));
+    res.render("clock", { title: "Clock" });
 });
 
 /**
@@ -48,7 +48,7 @@ router.get("/clock", async (req, res, next) => {
  *          description: Success
  */
 router.get("/jobs", async (req, res, next) => {
-    res.sendFile(path.join(__dirname, "..", "public", "html", "jobs.html"));
+    res.render("jobs", { title: "Jobs" });
 });
 
 /**
@@ -64,7 +64,7 @@ router.get("/jobs", async (req, res, next) => {
  *          description: Success
  */
 router.get("/chart", async (req, res, next) => {
-    res.sendFile(path.join(__dirname, "..", "public", "html", "chart.html"));
+    res.render("chart", { title: "Chart" });
 });
 
 /**
@@ -80,7 +80,7 @@ router.get("/chart", async (req, res, next) => {
  *          description: Success
  */
 router.get("/video", async (req, res, next) => {
-    res.sendFile(path.join(__dirname, "..", "public", "html", "video.html"));
+    res.render("video", { title: "Video" });
 });
 
 module.exports = router;

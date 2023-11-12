@@ -7,6 +7,7 @@ const cors = require("cors");
 const favicon = require("serve-favicon");
 const helmet = require("helmet");
 const httpLogger = require("@utils/http-logger");
+const mustacheExpress = require("mustache-express");
 
 // get environment
 const nodeEnv = process.env.NODE_ENV || "production";
@@ -28,6 +29,11 @@ const vmafRouter = require("@routes/vmaf");
 const decklinkRouter = require("@routes/decklink");
 
 const app = express();
+
+app.engine("html", mustacheExpress(path.join(__dirname, "..", "views", "partials"), ".html"));
+app.set("view engine", "html");
+app.set("views", path.join(__dirname, "..", "views"));
+app.disable("view cache");
 
 app.set("json spaces", 2);
 app.use(httpLogger);
@@ -87,6 +93,7 @@ if (process.env.WEB_GUI) {
     app.use("/", pageRouter);
     app.use("/public", express.static(path.join(__dirname, "..", "public")));
     app.use("/public/bootstrap", express.static(path.join(__dirname, "..", "node_modules", "bootstrap", "dist")));
+    app.use("/public/bootstrap-icons", express.static(path.join(__dirname, "..", "node_modules", "bootstrap-icons")));
     app.use("/public/chart.js", express.static(path.join(__dirname, "..", "node_modules", "chart.js", "dist")));
     app.use("/public/video.js", express.static(path.join(__dirname, "..", "node_modules", "video.js", "dist")));
     app.use("/public/gauge.js", express.static(path.join(__dirname, "..", "node_modules", "gaugeJS", "dist")));
