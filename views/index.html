@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    {{> head}}
+
+    <script language="javascript" src="/public/gauge.js/gauge.min.js"></script>
+
+    <body class="bg-light">
+        {{> header }}
+
+        <main role="main" class="container">
+            <div class="row justify-content-md-center">
+                <div class="col-md-auto">
+                    <div width="100%" class="h5 text-center">CPU Usage</div>
+                    <canvas id="gaugeCpu"></canvas>
+                    <br />
+                    <div width="100%" class="font-weight-light text-center" id="textCpu"></div>
+                </div>
+                <div class="col-md-auto">
+                    <div width="100%" class="h5 text-center">Memory Usage</div>
+                    <canvas id="gaugeMemory"></canvas>
+                    <br />
+                    <div width="100%" class="font-weight-light text-center" id="textMemory"></div>
+                </div>
+                <div class="col-md-auto">
+                    <div width="100%" class="h5 text-center">Disk Usage</div>
+                    <canvas id="gaugeDisk"></canvas>
+                    <br />
+                    <div width="100%" class="font-weight-light text-center" id="textDisk"></div>
+                </div>
+            </div>
+        </main>
+        {{> footer }}
+        <script language="javascript" src="/public/js/index.js"></script>
+    </body>
+</html>

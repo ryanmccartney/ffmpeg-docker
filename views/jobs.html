@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+    {{> head}}
+
+    <style>
+        .img-thumbnail {
+            width: 200px;
+            height: 100px;
+            overflow: hidden;
+            margin: auto;
+        }
+    </style>
+
+    <body class="bg-light">
+        {{> header }}
+
+        <main role="main" class="container">
+            <table id="jobTable" class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Job Name</th>
+                        <th scope="col">Job ID</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Started</th>
+                        <th scope="col">Load</th>
+                        <th scope="col">Progress</th>
+                        <th scope="col">Thumbnail</th>
+                        <th scope="col">
+                            <button onclick="killAll()" type="button" class="btn btn-danger">Kill All</button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </main>
+
+        {{> footer }}
+
+        <script language="javascript" src="/public/js/jobs.js"></script>
+    </body>
+</html>

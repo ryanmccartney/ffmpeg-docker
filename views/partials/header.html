@@ -1,0 +1,68 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+<style>
+    html {
+        position: relative;
+        min-height: 100%;
+    }
+    body {
+        margin-bottom: 60px; /* Margin bottom by footer height */
+        margin-top: 80px;
+        width: 100%;
+    }
+    .footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 60px; /* Set the fixed height of the footer here */
+        line-height: 60px; /* Vertically center the text there */
+        background-color: #e8e5e5;
+    }
+</style>
+
+<nav class="navbar navbar-light fixed-top" style="background-color: #e8e5e5;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <img
+                    src="/public/images/favicon.ico"
+                    alt="Logo"
+                    width="30"
+                    height="24"
+                    class="d-inline-block align-text-top"
+                />
+                <b>FFmpeg Docker </b> | {{title}}
+            </a>
+
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarNav"
+                aria-controls="navbarNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
+            >
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/jobs">Jobs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/video">Video</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/clock">Clock</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/chart">VMAF Chart</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</nav>
