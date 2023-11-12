@@ -69,6 +69,7 @@
                         <th scope="col">Job ID</th>
                         <th scope="col">Type</th>
                         <th scope="col">Started</th>
+                        <th scope="col">Load</th>
                         <th scope="col">Progress</th>
                         <th scope="col">Thumbnail</th>
                         <th scope="col">
@@ -123,6 +124,7 @@
                     const cell6 = await row.insertCell(5);
                     const cell7 = await row.insertCell(6);
                     const cell8 = await row.insertCell(7);
+                    const cell9 = await row.insertCell(8);
 
                     // Add some text to the new cells:
                     cell1.innerHTML = job?.jobNumber || "-";
@@ -130,9 +132,9 @@
                     cell3.innerHTML = job?.jobId || "-";
 
                     for (let tag of job?.type) {
-                        if (tag === "encode") {
+                        if (tag === "file") {
                             cell4.innerHTML += `<span class="badge badge-pill bg-danger">${tag}</span>`;
-                        } else if (tag === "decode") {
+                        } else if (tag === "bars") {
                             cell4.innerHTML += `<span class="badge badge-pill bg-success">${tag}</span>`;
                         } else if (tag === "decklink") {
                             cell4.innerHTML += `<span class="badge badge-pill bg-warning">${tag}</span>`;
@@ -142,13 +144,14 @@
                     }
 
                     cell5.innerHTML = job?.started || "-";
-                    cell6.innerHTML = job?.progress
+                    cell6.innerHTML = `${Math.round(job?.load?.cpu * 100)}%`;
+                    cell7.innerHTML = job?.progress
                         ? `<div class="progress">
                         <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar" style="width: 25%" aria-valuenow="${job?.progress}" aria-valuemin="0" aria-valuemax="100"></div>${job?.progress}%
                     </div>`
                         : "-";
-                    cell7.innerHTML = `<a href="/api/system/job/thumbnail/${jobId}"><img src="/api/system/job/thumbnail/${jobId}?cahce=${Math.random()}" alt="No Image" class="img-thumbnail"></a>`;
-                    cell8.innerHTML = `<button onclick="killJob('${jobId}')" type="button" class="btn btn-danger">Kill</button>`;
+                    cell8.innerHTML = `<a href="/api/system/job/thumbnail/${jobId}"><img src="/api/system/job/thumbnail/${jobId}?cahce=${Math.random()}" alt="No Image" class="img-thumbnail"></a>`;
+                    cell9.innerHTML = `<button onclick="killJob('${jobId}')" type="button" class="btn btn-danger">Kill</button>`;
                 }
             }
 

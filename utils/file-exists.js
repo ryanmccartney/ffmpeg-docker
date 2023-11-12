@@ -1,6 +1,6 @@
 "use strict";
 
-const fs = require('fs')
+const fs = require("fs");
 const path = require("path");
 const logger = require("@utils/logger")(module);
 
@@ -11,13 +11,8 @@ module.exports = async (relativePath) => {
             return true;
         }
         return false;
-      } catch(error) {
+    } catch (error) {
         logger.warn(error);
         return false;
-      }
+    }
 };
-
-
-
-
-
