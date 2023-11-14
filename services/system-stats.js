@@ -13,22 +13,24 @@ let cpusPrevious = os.cpus();
 let jobs = {};
 
 setInterval(async () => {
-    cpus = os.cpus();
-    let loadTotal = 0;
-    jobs = await jobLoad();
+    try {
+        cpus = os.cpus();
+        let loadTotal = 0;
+        jobs = await jobLoad();
 
-    for (let i in cpus) {
-        const usagePrevious = cpusPrevious[i].times?.user + cpusPrevious[i].times?.sys + cpusPrevious[i].times?.irq;
-        const usage = cpus[i].times?.user + cpus[i].times?.sys + cpus[i].times?.irq;
+        for (let i in cpus) {
+            const usagePrevious = cpusPrevious[i].times?.user + cpusPrevious[i].times?.sys + cpusPrevious[i].times?.irq;
+            const usage = cpus[i].times?.user + cpus[i].times?.sys + cpus[i].times?.irq;
 
-        const load = (usage - usagePrevious) / interval;
-        cpus[i].load = Math.round(load * 100) / 100;
+            const load = (usage - usagePrevious) / interval;
+            cpus[i].load = Math.round(load * 100) / 100;
 
-        loadTotal += load;
-    }
+            loadTotal += load;
+        }
 
-    load = Math.round((loadTotal / cpus.length) * 100) / 100;
-    cpusPrevious = cpus;
+        load = Math.round((loadTotal / cpus.length) * 100) / 100;
+        cpusPrevious = cpus;
+    } catch (error) {}
 }, interval);
 
 module.exports = async () => {

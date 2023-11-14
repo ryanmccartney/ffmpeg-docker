@@ -7,7 +7,6 @@ const filterCombine = require("@utils/filter-combine");
 const filterText = require("@utils/filter-text");
 const filterImage = require("@utils/filter-image");
 const jobManager = require("@utils/jobManager");
-const setCodec = require("@utils/set-codec");
 
 const process = async (options) => {
     const response = { options: options };
@@ -53,9 +52,7 @@ const process = async (options) => {
                 "-muxdelay 0",
                 "-async 1",
             ])
-            .output(option?.output?.cardName);
-
-        command = setCodec(command, options?.output);
+            .output(options?.output?.cardName);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
@@ -107,7 +104,7 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = await jobManager.get(output?.output?.cardName);
+    response.job = await jobManager.get(options?.output?.cardName);
     return response;
 };
 
