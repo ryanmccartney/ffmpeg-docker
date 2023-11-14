@@ -13,7 +13,7 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(`${options?.output?.cardName}out`, `RTP to ${options?.output?.cardName}`, [
+        const job = jobManager.start(`${options?.output?.cardName}-out`, `RTP to ${options?.output?.cardName}`, [
             "decode",
             "rtp",
             "decklink",
@@ -100,7 +100,7 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = await jobManager.get(options?.output?.cardName);
+    response.job = await jobManager.get(`${options?.input?.cardName}-out`);
     return response;
 };
 

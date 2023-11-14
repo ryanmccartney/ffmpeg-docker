@@ -16,7 +16,7 @@ const process = async (options) => {
 
     try {
         let job = await jobManager.start(
-            options?.input?.cardName,
+            `${options?.input?.cardName}-in`,
             `Decklink to HLS (${options?.output?.file || "JobID"}.m3u8)`,
             ["encode", "hls", "decklink"]
         );
@@ -98,7 +98,7 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = await jobManager.get(options?.input?.cardName);
+    response.job = await jobManager.get(`${options?.input?.cardName}-in`);
     return response;
 };
 

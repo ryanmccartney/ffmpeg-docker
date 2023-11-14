@@ -14,7 +14,7 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const job = jobManager.start(`${options?.output?.cardName}`, `Bars to ${options?.output?.cardName}`, [
+        const job = jobManager.start(`${options?.output?.cardName}-out`, `Bars to ${options?.output?.cardName}`, [
             "bars",
             "decklink",
         ]);
@@ -82,7 +82,7 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = await jobManager.get(options?.output?.cardName);
+    response.job = await jobManager.get(`${options?.input?.cardName}-out`);
     return response;
 };
 

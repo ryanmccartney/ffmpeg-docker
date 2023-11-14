@@ -15,7 +15,7 @@ const process = async (options) => {
 
     try {
         const job = jobManager.start(
-            `${options?.input?.cardName}in`,
+            `${options?.input?.cardName}-in`,
             `${options?.input?.cardName} to SRT srt://${options?.output?.address}:${options?.output?.port}`,
             ["encode", "srt", "decklink"]
         );
@@ -113,7 +113,7 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = await jobManager.get(options?.input?.cardName);
+    response.job = await jobManager.get(`${options?.input?.cardName}-in`);
     return response;
 };
 

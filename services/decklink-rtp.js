@@ -15,7 +15,7 @@ const process = async (options) => {
 
     try {
         const job = jobManager.start(
-            options?.input?.cardName,
+            `${options?.input?.cardName}-in`,
             `${options?.input?.cardName} to RTP rtp://${options?.output?.address}:${options?.output?.port}`,
             ["encode", "rtp", "decklink"]
         );
@@ -107,7 +107,7 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = await jobManager.get(options?.input?.cardName);
+    response.job = await jobManager.get(`${options?.input?.cardName}-in`);
     return response;
 };
 

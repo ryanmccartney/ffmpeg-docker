@@ -17,7 +17,7 @@ const process = async (options) => {
     try {
         const rtmpAddress = getRtmpAddress(options?.output?.address, options?.output?.key);
 
-        const job = jobManager.start(options?.input?.cardName, `Decklink to RTMP ${rtmpAddress}`, [
+        const job = jobManager.start(`${options?.input?.cardName}-in`, `Decklink to RTMP ${rtmpAddress}`, [
             "encode",
             "rtmp",
             "decklink",
@@ -84,6 +84,6 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = await jobManager.get(options?.input?.cardName);
+    response.job = await jobManager.get(`${options?.input?.cardName}-in`);
     return response;
 };
