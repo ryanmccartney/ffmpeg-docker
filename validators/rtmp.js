@@ -12,6 +12,10 @@ module.exports = (direction = "input") => {
                 errorMessage: "Address must be a valid IP Address or FQDN",
             },
         },
+        [`${direction}.path`]: {
+            optional: true,
+            isString: { default: "", errorMessage: "Path must be a valid string" },
+        },
         [`${direction}.port`]: {
             optional: true,
             exists: { errorMessage: "Must provide a port number as an integar" },

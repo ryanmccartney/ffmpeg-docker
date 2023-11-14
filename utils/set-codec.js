@@ -15,7 +15,7 @@ module.exports = (command, output = {}) => {
             .outputOptions("-crf", "23")
             .outputOptions("-preset", output?.encodePreset || "ultrafast")
             .outputOptions("-pass", "1")
-            .outputOptions("-profile:v", "baseline")
+            //.outputOptions("-profile:v", "baseline")
             .outputOptions("-tune zerolatency")
             .outputOptions("-max_interleave_delta", "500")
             .outputOptions("-max_delay", "100");

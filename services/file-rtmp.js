@@ -20,7 +20,7 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const rtmpAddress = getRtmpAddress(options?.output?.address, options?.output?.key);
+        const rtmpAddress = getRtmpAddress(options?.output?.address, options?.output?.path, options?.output?.key);
         const job = jobManager.start(rtmpAddress, `File to RTMP ${rtmpAddress}`, ["encode", "rtmp", "file"]);
         const filters = await filterCombine(await filterText({ ...options, ...job }));
 

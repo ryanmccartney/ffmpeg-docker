@@ -15,7 +15,7 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     try {
-        const rtmpAddress = getRtmpAddress(options?.output?.address, options?.output?.key);
+        const rtmpAddress = getRtmpAddress(options?.output?.address, options?.output?.path, options?.output?.key);
 
         const job = jobManager.start(`${options?.input?.cardName}-in`, `Decklink to RTMP ${rtmpAddress}`, [
             "encode",
@@ -87,3 +87,5 @@ const process = async (options) => {
     response.job = await jobManager.get(`${options?.input?.cardName}-in`);
     return response;
 };
+
+module.exports = process;

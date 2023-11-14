@@ -20,7 +20,7 @@ const process = async (options) => {
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
     const audioFilePath = path.join(__dirname, "..", "data", "media", options?.input?.file);
-    const rtmpAddress = getRtmpAddress(options?.output?.address, options?.output?.key);
+    const rtmpAddress = getRtmpAddress(options?.output?.address, options?.output?.path, options?.output?.key);
 
     try {
         const job = jobManager.start(

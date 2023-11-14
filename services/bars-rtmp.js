@@ -14,7 +14,7 @@ const process = async (options) => {
     const response = { options: options };
     ffmpeg.setFfmpegPath("/root/bin/ffmpeg");
 
-    const rtmpAddress = getRtmpAddress(options?.output?.address, options?.output?.key);
+    const rtmpAddress = getRtmpAddress(options?.output?.address, options?.output?.path, options?.output?.key);
 
     try {
         const job = jobManager.start(rtmpAddress, `Bars to RTMP ${rtmpAddress}`, ["encode", "rtmp"]);
