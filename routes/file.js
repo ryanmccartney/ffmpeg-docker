@@ -14,6 +14,7 @@ const fileHls = require("@services/file-hls");
 
 const fileMetadata = require("@services/file-metadata");
 const fileList = require("@services/file-list");
+const fileUpload = require("@utils/file-upload");
 
 const overlayValidator = require("@validators/overlay");
 const thumbnailValidator = require("@validators/thumbnail");
@@ -24,6 +25,7 @@ const srtValidator = require("@validators/srt");
 const rtmpValidator = require("@validators/rtmp");
 const udpValidator = require("@validators/udp");
 const rtpValidator = require("@validators/rtp");
+const { response } = require("express");
 
 /**
  * @swagger
@@ -367,6 +369,31 @@ router.get("/list", async (req, res, next) => {
 router.get("/", async (req, res, next) => {
     const filePath = path.join(__dirname, "..", "data", "media", req.query.filename);
     res.download(filePath);
+});
+
+/**
+ * @swagger
+ * /file:
+ *    post:
+ *      description: Upload a media file.
+ *      tags: [file]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.post("/", async (req, res, next) => {
+    let response = { status: "success", errors: [] };
+    fileUpload(req, res, (error) => {
+        if (error) {
+            response.errors[0] = error;
+            response.status = "error";
+        } else {
+            response.file = req?.file;
+        }
+        hashResponse(res, req, response);
+    });
 });
 
 module.exports = router;

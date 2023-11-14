@@ -1,5 +1,4 @@
 const express = require("express");
-const fileUpload = require("express-fileupload");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
@@ -57,12 +56,6 @@ app.use(
 );
 
 app.use(favicon(path.join(__dirname, "..", "public", "images", "favicon.ico")));
-app.use(
-    fileUpload({
-        useTempFiles: true,
-        tempFileDir: "./data/upload",
-    })
-);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

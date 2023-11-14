@@ -8,26 +8,59 @@
         {{> header }}
 
         <main role="main" class="container">
+            <h4>System Information</h4>
+            <br />
+
             <div class="row justify-content-md-center">
                 <div class="col-md-auto">
-                    <div width="100%" class="h5 text-center">CPU Usage</div>
+                    <div width="100%" class="h6 text-center">CPU Usage</div>
                     <canvas id="gaugeCpu"></canvas>
                     <br />
                     <div width="100%" class="font-weight-light text-center" id="textCpu"></div>
                 </div>
                 <div class="col-md-auto">
-                    <div width="100%" class="h5 text-center">Memory Usage</div>
+                    <div width="100%" class="h6 text-center">Memory Usage</div>
                     <canvas id="gaugeMemory"></canvas>
                     <br />
                     <div width="100%" class="font-weight-light text-center" id="textMemory"></div>
                 </div>
                 <div class="col-md-auto">
-                    <div width="100%" class="h5 text-center">Disk Usage</div>
+                    <div width="100%" class="h6 text-center">Disk Usage</div>
                     <canvas id="gaugeDisk"></canvas>
                     <br />
                     <div width="100%" class="font-weight-light text-center" id="textDisk"></div>
                 </div>
             </div>
+
+            <br />
+
+            <hr class="mt-12 mb-12" />
+
+            <h4>Media Upload</h4>
+            <br />
+
+            <form action="/api/file" enctype="multipart/form-data" method="post">
+                <div class="mb-3">
+                    <input
+                        id="mediaFile"
+                        type="file"
+                        class="form-control form-control-sm"
+                        name="media"
+                        accept="image/png, image/jpeg, video/mp4, video/mov, video/mpg, video/mkv, audio/mp3"
+                    />
+                </div>
+
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </div>
+            </form>
+
+            <script>
+                $(".custom-file-input").on("change", function () {
+                    var fileName = $(this).val().split("\\").pop();
+                    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+                });
+            </script>
         </main>
         {{> footer }}
         <script language="javascript" src="/public/js/index.js"></script>
