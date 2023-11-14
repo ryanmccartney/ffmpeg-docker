@@ -16,8 +16,8 @@ const process = async (options) => {
 
     try {
         const job = jobManager.start(
-            `${options.address}:${options.port}`,
-            `SRT to file srt://${options.address}:${options.port}`,
+            `${options?.input?.address}:${options?.input?.port}`,
+            `SRT to file srt://${options?.input?.address}:${options?.input?.port}`,
             ["decode", "srt"]
         );
 
@@ -103,7 +103,7 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = jobManager.get(`${options.address}:${options.port}`);
+    response.job = jobManager.get(`${options?.input?.address}:${options?.input?.port}`);
     return response;
 };
 

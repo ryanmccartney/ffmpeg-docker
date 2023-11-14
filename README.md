@@ -27,8 +27,7 @@ FFmpeg compilation made easy with additional libraries and runs inside a Docker 
 
 For more information read the [documentation](https://ryan.mccartney.info/ffmpeg-docker/).
 
-| :exclamation: This project is a work in progress, it is still in the early stages of development and functions may not work as expected. |
-| ---------------------------------------------------------------------------------------------------------------------------------------- |
+:exclamation: This project is a work in progress, it is still in the early stages of development and functions may not work as expected.
 
 ## Pre-built Image
 
