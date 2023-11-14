@@ -367,7 +367,7 @@ router.get("/list", async (req, res, next) => {
  *          description: Success
  */
 router.get("/", async (req, res, next) => {
-    const filePath = path.join(__dirname, "..", "data", "media", req.query.filename);
+    const filePath = path.join(__dirname, "..", "data", "media", req.query.file);
     res.download(filePath);
 });
 
