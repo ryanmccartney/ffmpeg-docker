@@ -40,7 +40,7 @@ const process = async (options) => {
             .outputOptions([
                 "-pix_fmt uyvy422",
                 "-s 1920x1080",
-                "-ac 16",
+                "-ac 2",
                 "-f decklink",
                 `-af volume=${options?.output?.volume || 0.25}`,
                 "-flags low_delay",
@@ -54,7 +54,7 @@ const process = async (options) => {
             command.videoFilters(filters);
         }
 
-        if (options?.thumbnail) {
+        if (options?.thumbnail !== false) {
             command
                 .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
                 .outputOptions([`-r ${options?.thumbnail?.frequency || 1}`, "-update 1"]);

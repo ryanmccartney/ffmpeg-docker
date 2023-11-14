@@ -7,10 +7,10 @@ const util = require("util");
 
 const readdir = util.promisify(fs.readdir);
 
-module.exports = async (options = { extensions: true }) => {
+module.exports = async (options) => {
     try {
         const directoryPath = path.join(process.cwd(), "data", "media");
-        const files = await readdir(directoryPath, { withFileTypes: options?.extensions });
+        const files = await readdir(directoryPath, { withFileTypes: options?.extensions || true });
         const filesDetail = [];
 
         for (let file of files) {

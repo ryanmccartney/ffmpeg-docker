@@ -55,7 +55,7 @@ const process = async (options) => {
                 "null"
             );
 
-        if (options?.thumbnail) {
+        if (options?.thumbnail !== false) {
             command
                 .output(path.join(__dirname, "..", "data", "thumbnail", `${job?.jobId}.png`))
                 .outputOptions([`-r ${options?.thumbnail?.frequency || 1}`, "-update 1"]);
