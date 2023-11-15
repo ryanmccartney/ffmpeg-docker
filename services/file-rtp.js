@@ -55,6 +55,12 @@ const process = async (options) => {
                 `-b:v ${options?.output?.bitrate || "5M"}`,
             ]);
 
+        if (options?.output?.fec) {
+            command.outputOptions([
+                `-fec prompeg=l=${options?.output?.fec?.columns || 4}:d=${options?.output?.fec?.rows || 4}`,
+            ]);
+        }
+
         command = setCodec(command, options?.output);
 
         if (options?.output?.vbr) {
