@@ -13,8 +13,8 @@ To use the decklink device you'll need to have the correct drivers installed on 
 
 You can use the script in this repository to do this;
 
-* `chmod +x setup.sh`
-* `./setup.sh`
+-   `chmod +x setup.sh`
+-   `./setup.sh`
 
 If your Decklink card required an update during this process you'll need to reboot the host machine.
 
@@ -24,7 +24,7 @@ Before building you'll need to set the build argument variable `DECKLINK_SUPPORT
 
 Additionally, you'll need to get a download link for the Blackmagic Design SDK from the [Blackmagic Website](https://www.blackmagicdesign.com/support/download/2438c76b9f734f69b4a914505e50a5ab/Linux).
 
-It'll come in the form `https://sw.blackmagicdesign.com/DeckLink/v12.x.x/Blackmagic_DeckLink_SDK_12.x.x.zip?Key-Pair-Id=VALUE==&Expires=VALUE`
+It'll come in the form `https://swr.cloud.blackmagicdesign.com/DeckLink/v12.X.X/Blackmagic_DeckLink_SDK_12.X.X.zip?verify=VALUE`
 
 Then set the build argument variable `DEKSTOP_VIDEO_SDK_URL` to this url.
 
