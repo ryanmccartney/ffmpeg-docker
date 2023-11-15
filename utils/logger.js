@@ -44,19 +44,14 @@ const loggerInstance = winston.createLogger({
             maxSize: "100m",
             maxFiles: "1d",
         }),
-    ],
-});
-
-if (process.env.NODE_ENV !== "production") {
-    loggerInstance.add(
         new winston.transports.Console({
             level: logLevel,
             handleExceptions: true,
             colorize: true,
             format: winston.format.combine(customLogFormat, winston.format.colorize({ all: true })),
-        })
-    );
-}
+        }),
+    ],
+});
 
 const logger = (module) => {
     const filename = path.basename(module.filename);
