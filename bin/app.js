@@ -12,7 +12,7 @@ const rateLimit = require("express-rate-limit");
 // rate limiting
 const apiLimiter = rateLimit({
     windowMs: 5 * 60 * 1000,
-    max: process.env.RATE_LIMIT || 100,
+    max: process.env.RATE_LIMIT || 1000,
 });
 
 // get environment
