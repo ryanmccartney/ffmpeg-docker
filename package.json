@@ -9,7 +9,7 @@
     "docs": "node ./utils/markdown && swagger-markdown --force-version 2 -i ./docs/assets/api-spec.yml  -o ./docs/pages/usage/endpoints.md"
   },
   "author": "Ryan McCartney",
-  "license": "MIT",
+  "license": "GPLv3",
   "dependencies": {
     "bootstrap": "^5.3.2",
     "bootstrap-icons": "^1.11.1",

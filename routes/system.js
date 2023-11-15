@@ -7,6 +7,7 @@ const hashResponse = require("@utils/hash-response");
 
 const setTime = require("@services/system-time-set");
 const systemStats = require("@services/system-stats");
+const systemInfo = require("@services/system-info");
 
 const jobKill = require("@services/system-job-kill");
 const jobGet = require("@services/system-job-get");
@@ -70,6 +71,23 @@ router.get("/time", async (req, res, next) => {
         },
     };
     hashResponse(res, req, response);
+});
+
+/**
+ * @swagger
+ * /system/info:
+ *    get:
+ *      description: Get system information, versions, options, etc
+ *      tags: [system]
+ *      produces:
+ *        - application/json
+ *      responses:
+ *        '200':
+ *          description: Success
+ */
+router.get("/info", async (req, res, next) => {
+    const response = await systemInfo();
+    hashResponse(res, req, { ...response, ...{ status: response.error ? "error" : "success" } });
 });
 
 /**
