@@ -3,7 +3,7 @@ const path = require("path");
 require("winston-daily-rotate-file");
 const logFolder = process.env.LOG_FOLDER || "logs";
 const logName = process.env.LOG_NAME || "ffmpeg";
-const logLevel = process.env.LOG_LEVEL || "debug";
+const logLevel = process.env.LOG_LEVEL || "info";
 
 const customLevels = {
     levels: {
