@@ -33,7 +33,7 @@ const process = async (options) => {
 
         command = setCodec(command, options?.output);
 
-        if (!options.output.vbr) {
+        if (options?.output?.vbr) {
             command.outputOptions([
                 `-minrate ${options?.output?.bitrate || "5M"}`,
                 `-maxrate ${options?.output?.bitrate || "5M"}`,

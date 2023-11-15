@@ -37,17 +37,11 @@ const process = async (options) => {
 
         command = setCodec(command, options?.output);
 
-        if (!options?.output?.vbr) {
-            command.outputOptions([
-                `-minrate ${options?.output?.bitrate || "5M"}`,
-                `-maxrate ${options?.output?.bitrate || "5M"}`,
-                `-muxrate ${options?.output?.bitrate || "5M"}`,
-                `-bufsize 500K`,
-            ]);
-        } else {
+        if (options?.output?.vbr) {
             command.outputOptions([
                 `-minrate ${options?.output?.minBitrate || "5M"}`,
                 `-maxrate ${options?.output?.maxBitrate || "5M"}`,
+                `-muxrate ${options?.output?.bitrate || "5M"}`,
                 `-bufsize 500K`,
             ]);
         }
