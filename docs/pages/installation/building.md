@@ -16,7 +16,7 @@ In order to do either you'll need to build a copy of this image yourself which w
 
 1. Clone the repository `git clone https://github.com/ryanmccartney/ffmpeg-docker`
 2. Change directory to the repository `cd ./ffmpeg-docker`
-3. Build the image using `docker compose build`, adjusting the Build Arguements in the `docker-compose.yml` as neccessary or build using the docker build command directly. For example, `docker --build-arg FFMPEG_VERSION=5.0 --build-arg NON_FREE=true --build-arg DECKLINK_SUPPORT=true --build-arg DECLINK_SDK_URL=https://urlhere --build-arg DECKLINK_DRIVER_URL=https://urlhere --build-arg DECKLINK_DRIVER_VERSION=12.4.1 .`
+3. Build the image using `docker compose build`, adjusting the Build Arguements in the `docker-compose.yml` as neccessary or build using the docker build command directly. For example, `docker --build-arg FFMPEG_VERSION=5.0 --build-arg NON_FREE=true --build-arg DECKLINK_SUPPORT=true --build-arg DECKLINK_SDK_URL=https://urlhere --build-arg DECKLINK_DRIVER_URL=https://urlhere --build-arg DECKLINK_DRIVER_VERSION=12.4.1 .`
 
 ## Build Arguments
 
@@ -25,7 +25,7 @@ In order to do either you'll need to build a copy of this image yourself which w
 | FFMPEG_VERSION          | 5.0     | String  | Version of FFMPEG to Checkout and compile image with        |
 | NON_FREE                | false   | Boolean | Build the image with Non Free options, not for distrubution |
 | DECKLINK_SUPPORT        | false   | Boolean | Build the image with Decklink Support                       |
-| DECLINK_SDK_URL         | N/A     | String  | If Decklink support is required, this URL must be passed    |
+| DECKLINK_SDK_URL        | N/A     | String  | If Decklink support is required, this URL must be passed    |
 | DECKLINK_DRIVER_URL     | N/A     | String  | If Decklink support is required, this URL must be passed    |
 | DECKLINK_DRIVER_VERSION | 12.4.1  | String  | Version should match that of the URLs aboved                |
 | NDI_SUPPORT             | false   | Boolean | Build the image with NDI Support                            |
@@ -69,7 +69,7 @@ services:
             context: "."
             args:
                 DECKLINK_SUPPORT: "true"
-                DECLINK_SDK_URL: "decklinkurlhere"
+                DECKLINK_SDK_URL: "decklinkurlhere"
                 DECKLINK_DRIVER_URL: "decklinkurlhere"
                 DECKLINK_DRIVER_VERSION: "12.4.1"
                 NON_FREE: "true"

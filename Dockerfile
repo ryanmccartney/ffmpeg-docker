@@ -9,7 +9,7 @@ ARG FFMPEG_VERSION="5.0"
 ARG NON_FREE="false"
 
 ARG DECKLINK_SUPPORT="false"
-ARG DECLINK_SDK_URL="https://swr.cloud.blackmagicdesign.com/DeckLink/v12.4.1/Blackmagic_DeckLink_SDK_12.4.1.zip?verify="
+ARG DECKLINK_SDK_URL="https://swr.cloud.blackmagicdesign.com/DeckLink/v12.4.1/Blackmagic_DeckLink_SDK_12.4.1.zip?verify="
 ARG DECKLINK_DRIVER_URL="https://swr.cloud.blackmagicdesign.com/DesktopVideo/v12.4.1/Blackmagic_Desktop_Video_Linux_12.4.1.tar.gz?verify="
 ARG DECKLINK_DRIVER_VERSION="12.4.1"
 
@@ -101,7 +101,7 @@ RUN if [ "$DECKLINK_SUPPORT" = "true" ];\
         #Decklink Driver: Cleanup files and folder
         rm -r "./Blackmagic_Desktop_Video_Linux_$DECKLINK_DRIVER_VERSION" &&\
         #Decklink SDK: Get SDK, extract and copy
-        wget -O "desktop-video-sdk.zip" "$DECLINK_SDK_URL" &&\
+        wget -O "desktop-video-sdk.zip" "$DECKLINK_SDK_URL" &&\
         bsdtar -xf desktop-video-sdk.zip -s'|[^/]*/|./desktopvideoSDK/|' &&\
         cp -r ./desktopvideoSDK/Linux/ $HOME/ffmpeg_sources/BMD_SDK &&\
         rm -r "./desktopvideoSDK";\
