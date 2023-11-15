@@ -74,7 +74,7 @@ module.exports = async (cardIndex, options) => {
         logger.info("ffmpeg-progress: " + Math.floor(progress.percent) + "% done");
     });
 
-    command.on("stderr", function (stderrLine) {
+    command.on("stderr", (stderrLine) => {
         logger.info("ffmpeg: " + stderrLine);
     });
 

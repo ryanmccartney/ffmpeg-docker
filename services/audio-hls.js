@@ -80,7 +80,7 @@ const process = async (options) => {
             jobManager.update(job?.jobId, { progress: Math.floor(progress.percent) });
         });
 
-        command.on("stderr", function (stderrLine) {
+        command.on("stderr", (stderrLine) => {
             logger.info("ffmpeg: " + stderrLine);
 
             //If new TS file writing
@@ -94,7 +94,7 @@ const process = async (options) => {
             }
         });
 
-        command.on("error", function (error) {
+        command.on("error", (error) => {
             logger.error(error);
             jobManager.end(job?.jobId, false);
         });

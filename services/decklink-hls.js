@@ -71,11 +71,11 @@ const process = async (options) => {
             return response;
         });
 
-        command.on("stderr", function (stderrLine) {
+        command.on("stderr", (stderrLine) => {
             logger.info("ffmpeg: " + stderrLine);
         });
 
-        command.on("stderr", function (stderrLine) {
+        command.on("stderr", (stderrLine) => {
             logger.info("ffmpeg: " + stderrLine);
 
             //If new TS file writing

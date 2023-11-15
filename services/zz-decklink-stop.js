@@ -18,7 +18,7 @@ module.exports = async (cardIndex, options) => {
         logger.info("FFmpeg process killed");
     });
 
-    command.on("stderr", function (stderrLine) {
+    command.on("stderr", (stderrLine) => {
         logger.debug("Stderr output: " + stderrLine);
     });
 
