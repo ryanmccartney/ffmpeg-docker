@@ -27,14 +27,7 @@ const process = async (options) => {
                     options?.input?.packetSize || 1316
                 }&buffer_size=${options?.input?.buffer || 65535}`
             )
-            .inputOptions([
-                "-protocol_whitelist",
-                "srt,udp,rtp",
-                "-stats",
-                "-re",
-                "-probesize 1M",
-                "-analyzeduration 1M",
-            ])
+            .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats", "-re"])
             .outputOptions([
                 "-pix_fmt uyvy422",
                 "-s 1920x1080",

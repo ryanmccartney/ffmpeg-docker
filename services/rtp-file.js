@@ -35,7 +35,7 @@ const process = async (options) => {
                     options?.input?.packetSize || 1316
                 }&buffer_size=${options?.input?.buffer || 65535}`
             )
-            .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats"]);
+            .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats", "-re"]);
 
         if (options?.output?.chunkSize) {
             command
@@ -46,7 +46,7 @@ const process = async (options) => {
 
         command.output(filePath);
 
-        command = setCodec(command, options?.output);
+        //command = setCodec(command, options?.output);
 
         if (Array.isArray(filters)) {
             command.videoFilters(filters);
