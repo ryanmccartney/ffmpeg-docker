@@ -100,7 +100,7 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = await jobManager.get(`${options?.input?.cardName}-out`);
+    response.job = await jobManager.get(`${options?.output?.cardName}-out`);
     return response;
 };
 
