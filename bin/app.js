@@ -7,6 +7,13 @@ const favicon = require("serve-favicon");
 const helmet = require("helmet");
 const httpLogger = require("@utils/http-logger");
 const mustacheExpress = require("mustache-express");
+const rateLimit = require("express-rate-limit");
+
+// rate limiting
+const apiLimiter = rateLimit({
+    windowMs: 5 * 60 * 1000,
+    max: process.env.RATE_LIMIT || 100,
+});
 
 // get environment
 const nodeEnv = process.env.NODE_ENV || "production";
@@ -17,6 +24,7 @@ const pageRouter = require("@routes/page");
 const systemRouter = require("@routes/system");
 const playlistRouter = require("@routes/playlist");
 
+const authRouter = require("@routes/auth");
 const hlsRouter = require("@routes/hls");
 const udpRouter = require("@routes/udp");
 const rtpRouter = require("@routes/rtp");
@@ -61,10 +69,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+app.use("/", apiLimiter);
 app.use("/documentation", documentation);
 app.use("/api/system", systemRouter);
 app.use("/api/playlist", playlistRouter);
 app.use("/api/hls", hlsRouter);
+app.use("/api/auth", authRouter);
 
 //Input Routes /api/INPUT_FORMAT/OUTPUT_FORMAT
 app.use("/api/vmaf", vmafRouter);
@@ -77,7 +87,7 @@ app.use("/api/rtp", rtpRouter);
 app.use("/api/bars", barsRouter);
 
 // Redirect /api to /documentation
-app.use("/api", function (req, res, next) {
+app.use("/api", (req, res, next) => {
     res.redirect("/documentation");
 });
 
@@ -94,14 +104,14 @@ if (process.env.WEB_GUI) {
 }
 
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
     const err = new Error("File Not Found");
     err.status = 404;
     next(err);
 });
 
 // error handler
-app.use(function (error, req, res, next) {
+app.use((error, req, res, next) => {
     res.status(error.status || 500).json({
         status: error.status,
         message: error.message,

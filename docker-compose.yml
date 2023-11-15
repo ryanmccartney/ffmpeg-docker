@@ -29,5 +29,8 @@ services:
             PORT: 80
             HOST: "localhost"
             WEB_GUI: "true"
+            AUTH_KEY: "averysecretkey"
+            AUTH_USER: admin
+            AUTH_PASSWORD: admin
         ports:
             - 80:80
