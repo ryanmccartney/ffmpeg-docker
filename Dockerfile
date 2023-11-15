@@ -23,14 +23,14 @@ ENV NODE_MAJOR=18
 RUN mkdir $HOME/ffmpeg_sources
 RUN mkdir $HOME/bin
 
-RUN LINUX_KERNAL_PACKAGES="" && \
+RUN LINUX_KERNEL_PACKAGES="" && \
     # Detect Linux OS and add kernel packages
     if [[ "$OSTYPE" == "linux-gnu"* ]];\
     then \
-        LINUX_KERNAL_PACKAGES="linux-oem-22.04c linux-tools-oem-22.04c"; \
+        LINUX_KERNEL_PACKAGES="linux-oem-22.04c linux-tools-oem-22.04c"; \
     fi && \
     # Print any extra packages being added
-    echo "Extra Packages: $LINUX_KERNAL_PACKAGES" && \
+    echo "Extra Packages: $LINUX_KERNEL_PACKAGES" && \
     # Install additional dependencies
     apt update && \
     apt -y install \
@@ -72,7 +72,7 @@ RUN LINUX_KERNAL_PACKAGES="" && \
         libdav1d-dev \
         libopus-dev \
         libarchive-tools \
-        $LINUX_KERNAL_PACKAGES
+        $LINUX_KERNEL_PACKAGES
 
 WORKDIR $HOME/decklink
 

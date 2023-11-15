@@ -207,32 +207,6 @@ Takes a set of test Bars as an input and outputs it to a decklink card.
 | ---- | ----------- |
 | 200  | Success     |
 
-### /file
-
-#### POST
-
-##### Description
-
-Generate custom ident bars.
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
-#### GET
-
-##### Description
-
-Download file by name.
-
-##### Responses
-
-| Code | Description |
-| ---- | ----------- |
-| 200  | Success     |
-
 ### /bars/srt
 
 #### POST
@@ -311,7 +285,7 @@ HLS encode test bars.
 
 ##### Description
 
-Generate custom ident bars.
+Upload a media file.
 
 ##### Responses
 
@@ -838,7 +812,21 @@ Get server time.
 | ---- | ----------- |
 | 200  | Success     |
 
-### /system/stas
+### /system/info
+
+#### GET
+
+##### Description
+
+Get system information, versions, options, etc
+
+##### Responses
+
+| Code | Description |
+| ---- | ----------- |
+| 200  | Success     |
+
+### /system/stats
 
 #### GET
 

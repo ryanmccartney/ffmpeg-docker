@@ -269,9 +269,9 @@ paths:
           description: Success
   /file:
     post:
-      description: Generate custom ident bars.
+      description: Upload a media file.
       tags:
-        - bars
+        - file
       produces:
         - application/json
       responses:
@@ -756,7 +756,17 @@ paths:
       responses:
         "200":
           description: Success
-  /system/stas:
+  /system/info:
+    get:
+      description: Get system information, versions, options, etc
+      tags:
+        - system
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: Success
+  /system/stats:
     get:
       description: Get system stats; CPU, memory, etc.
       tags:
