@@ -20,7 +20,7 @@ const process = async (options) => {
     const audioFilePath = path.join(__dirname, "..", "data", "media", options?.input?.file);
 
     try {
-        const job = jobManager.start(`${options?.input?.cardName}-out`, `File to ${options?.output?.cardName}`, [
+        const job = jobManager.start(`${options?.output?.cardName}-out`, `File to ${options?.output?.cardName}`, [
             "audio",
             "file",
             "decklink",

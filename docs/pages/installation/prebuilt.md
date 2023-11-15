@@ -24,7 +24,13 @@ For production you should make sure that the source code is not mounted into the
 You can run the container with the prebuilt image just pulled using the following commands;
 
 ```
-docker run -d --network host --volume ffmpeg-docker-data:/home/node/app/data -e PORT=80 -e WEB_GUI=true -e NODE_ENV=production ghcr.io/ryanmccartney/ffmpeg-docker:latest
+docker run -d\
+ --network host\
+ --volume ffmpeg-docker-data:/home/node/app/data\
+ --env PORT=80\
+ --env WEB_GUI=true\
+ --env NODE_ENV=production\
+ ghcr.io/ryanmccartney/ffmpeg-docker:latest
 ```
 
 ### Docker Compose
@@ -48,6 +54,7 @@ services:
         environment:
             PORT: 80
             WEB_GUI: "true"
+            NODE_ENV: "production"
         network_mode: "host"
 ```
 
