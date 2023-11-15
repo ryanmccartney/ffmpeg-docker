@@ -42,31 +42,26 @@ const process = async (options) => {
                 "-probesize 32",
                 "-analyzeduration 0",
             ])
+            .outputFormat("rtp_mpegts")
             .output(
                 `rtp://${options?.output?.address}:${options?.output?.port}?pkt_size=${
                     options?.output?.packetSize || 1316
                 }&buffer_size=${options?.output?.buffer || 65535}`
             )
             .outputOptions([
-                "-f rtp",
                 `-reorder_queue_size ${options?.output?.jitterBuffer || "25"}`,
-                "-flags low_delay",
-                "-muxdelay 0",
-            ])
-            .outputOptions(`-b:v ${options?.output?.bitrate || "5M"}`);
+                `-flags low_delay`,
+                `-muxdelay 0`,
+                `-b:v ${options?.output?.bitrate || "5M"}`,
+            ]);
 
         command = setCodec(command, options?.output);
 
-        if (!options?.output?.vbr) {
-            command.outputOptions([
-                `-minrate ${options?.output?.bitrate || "5M"}`,
-                `-maxrate ${options?.output?.bitrate || "5M"}`,
-                `-bufsize 500K`,
-            ]);
-        } else {
+        if (options?.output?.vbr) {
             command.outputOptions([
                 `-minrate ${options?.output?.minBitrate || "5M"}`,
                 `-maxrate ${options?.output?.maxBitrate || "5M"}`,
+                `-muxrate ${options?.output?.bitrate || "5M"}`,
                 `-bufsize 500K`,
             ]);
         }

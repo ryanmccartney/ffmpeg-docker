@@ -26,31 +26,26 @@ const process = async (options) => {
             .input(options?.input?.cardName)
             .inputFormat("decklink")
             .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats", "-re"])
+            .outputFormat("rtp_mpegts")
             .output(
                 `rtp://${options?.output?.address}:${options?.output?.port}?pkt_size=${
                     options?.output?.packetSize || 1316
                 }&buffer_size=${options?.output?.buffer || 65535}`
             )
             .outputOptions([
-                "-f rtp",
                 `-reorder_queue_size ${options?.output?.jitterBuffer || "25"}`,
-                "-flags low_delay",
-                "-muxdelay 0",
+                `-flags low_delay`,
+                `-muxdelay 0`,
                 `-b:v ${options?.output?.bitrate || "5M"}`,
             ]);
 
         command = setCodec(command, options?.output);
 
-        if (!options?.output?.vbr) {
-            command.outputOptions([
-                `-minrate ${options?.output?.bitrate || "5M"}`,
-                `-maxrate ${options?.output?.bitrate || "5M"}`,
-                `-bufsize 500K`,
-            ]);
-        } else {
+        if (options?.output?.vbr) {
             command.outputOptions([
                 `-minrate ${options?.output?.minBitrate || "5M"}`,
                 `-maxrate ${options?.output?.maxBitrate || "5M"}`,
+                `-muxrate ${options?.output?.bitrate || "5M"}`,
                 `-bufsize 500K`,
             ]);
         }

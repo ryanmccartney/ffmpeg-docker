@@ -27,23 +27,26 @@ const process = async (options) => {
             .inputOptions(["-re", "-f lavfi"])
             .addInput(`sine=frequency=${options?.input?.frequency || 1000}:sample_rate=48000`)
             .inputOptions(["-f lavfi"])
-            .output(`rtp://${options?.output?.address}:${options?.output?.port}`)
-            .outputOptions(["-f rtp"])
-            .outputOptions(`-b:v ${options?.output?.bitrate || "5M"}`);
+            .outputFormat("rtp_mpegts")
+            .output(
+                `rtp://${options?.output?.address}:${options?.output?.port}?pkt_size=${
+                    options?.output?.packetSize || 1316
+                }&buffer_size=${options?.output?.buffer || 65535}`
+            )
+            .outputOptions([
+                `-reorder_queue_size ${options?.output?.jitterBuffer || "25"}`,
+                `-flags low_delay`,
+                `-muxdelay 0`,
+                `-b:v ${options?.output?.bitrate || "5M"}`,
+            ]);
 
         command = setCodec(command, options?.output);
 
         if (options?.output?.vbr) {
             command.outputOptions([
-                `-minrate ${options?.output?.bitrate || "5M"}`,
-                `-maxrate ${options?.output?.bitrate || "5M"}`,
-                `-muxrate ${options?.output?.bitrate || "5M"}`,
-                `-bufsize 500K`,
-            ]);
-        } else {
-            command.outputOptions([
                 `-minrate ${options?.output?.minBitrate || "5M"}`,
                 `-maxrate ${options?.output?.maxBitrate || "5M"}`,
+                `-muxrate ${options?.output?.bitrate || "5M"}`,
                 `-bufsize 500K`,
             ]);
         }
