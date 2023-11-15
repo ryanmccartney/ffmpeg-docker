@@ -9,7 +9,6 @@ module.exports = async () => {
 
     if (decklink) {
         const items = decklink.split("        ");
-        console.log(items);
         decklinkObject.version = items[2].trim();
         decklinkObject.arch = items[5].trim();
         decklinkObject.name = items[6].trim();
