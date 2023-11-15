@@ -74,6 +74,8 @@ RUN LINUX_KERNAL_PACKAGES="" && \
         libarchive-tools \
         $LINUX_KERNAL_PACKAGES
 
+WORKDIR $HOME/decklink
+
 # Get Blackmagic Desktop Video SDK (Link expires... You'll need to get a new one)
 RUN if [ "$DECKLINK_SUPPORT" = "true" ];\
     then \
@@ -98,11 +100,11 @@ RUN if [ "$DECKLINK_SUPPORT" = "true" ];\
         dpkg --install $DECKLINK_DRIVER_DEB || true &&\
         #Decklink Driver: Cleanup files and folder
         rm -r "./Blackmagic_Desktop_Video_Linux_$DECKLINK_DRIVER_VERSION" &&\
-        rm "desktop-video-driver.tar.gz" &&\
         #Decklink SDK: Get SDK, extract and copy
-        wget -O "desktopvideoSDK.zip" "$DECLINK_SDK_URL" &&\
-        bsdtar -xf desktopvideoSDK.zip -s'|[^/]*/|./desktopvideoSDK/|' &&\
-        cp -r ./desktopvideoSDK/Linux/ $HOME/ffmpeg_sources/BMD_SDK;\
+        wget -O "desktop-video-sdk.zip" "$DECLINK_SDK_URL" &&\
+        bsdtar -xf desktop-video-sdk.zip -s'|[^/]*/|./desktopvideoSDK/|' &&\
+        cp -r ./desktopvideoSDK/Linux/ $HOME/ffmpeg_sources/BMD_SDK &&\
+        rm -r "./desktopvideoSDK";\
     else \
        echo "Decklink flag not set"; \
     fi
