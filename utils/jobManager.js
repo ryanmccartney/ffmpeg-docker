@@ -1,6 +1,7 @@
 const crypto = require("crypto");
+const fileDelete = require("@utils/file-delete");
 
-let maxQueueSize = process.env.QUEUE_SZIE || 5;
+let maxQueueSize = process.env.QUEUE_SIZE || 5;
 let jobs = {};
 
 const start = (output, name = "FFmpeg Process", type = ["default"]) => {
@@ -36,12 +37,17 @@ const update = (hash, update) => {
 const end = (hash, kill = true) => {
     if (jobs[hash]) {
         const job = jobs[hash];
+
         if (kill) {
             process.kill(jobs[hash].pid, "SIGINT");
         }
+
         job.ended = new Date();
         job.duration = job.ended - job.started;
         delete jobs[hash];
+
+        fileDelete(`data/thumbnail/${job.jobId}.png`);
+
         return job;
     } else {
         return { error: "Job does not exist." };

@@ -21,7 +21,7 @@ Docker image environment variables are given below
 | AUTH_PASSWORD | ffmp3gap1      | No       | String  | Auth password for login                                                            |
 | AUTH_KEY      | averysecretkey | No       | String  | Private key for generating JWT tokens. Change this if you're using authentication  |
 | MEDIA_PATH    | ./data/media   | No       | String  | Directory to keep media in. Useful to change if media is stored in a network share |
-| QUEUE_SZIE    | 5              | No       | Integer | Number of FFMpeg processes that can run simultaneously                             |
+| QUEUE_SIZE    | 5              | No       | Integer | Number of FFMpeg processes that can run simultaneously                             |
 | LOG_FOLDER    | logs           | No       | String  | Folder that logs are stored in                                                     |
 | LOG_NAME      | ffmpeg         | No       | String  | Log file names                                                                     |
 | LOG_LEVEL     | info           | No       | String  | Logging level "debug", "error", "info", "http" or "warning"                        |
