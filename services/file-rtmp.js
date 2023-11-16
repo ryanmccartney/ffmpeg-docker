@@ -84,7 +84,7 @@ const process = async (options) => {
         response.errors = [error];
     }
 
-    response.job = jobManager.get(`${options?.output?.address}:${options?.output?.port}`);
+    response.job = jobManager.get(rtmpAddress);
     return response;
 };
 

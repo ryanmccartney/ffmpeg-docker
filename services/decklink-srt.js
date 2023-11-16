@@ -29,7 +29,7 @@ const process = async (options) => {
                 "-stats",
                 "-re",
                 "-flags low_delay",
-                "-async 1",
+                "-async 20",
                 "-duplex_mode",
                 `${options?.input?.duplexMode || "unset"}`,
             ])
@@ -49,8 +49,8 @@ const process = async (options) => {
 
         if (options?.output?.vbr) {
             command.outputOptions([
-                `-minrate ${options?.output?.minBitrate || "5M"}`,
-                `-maxrate ${options?.output?.maxBitrate || "5M"}`,
+                `-minrate ${options?.output?.vbr?.minBitrate || "5M"}`,
+                `-maxrate ${options?.output?.vbr?.maxBitrate || "5M"}`,
                 `-muxrate ${options?.output?.bitrate || "5M"}`,
                 `-bufsize 500K`,
             ]);

@@ -1,5 +1,6 @@
 const crypto = require("crypto");
 const fileDelete = require("@utils/file-delete");
+const thumbnailCache = require("@utils/thumbnail-cache");
 
 let maxQueueSize = process.env.QUEUE_SIZE || 5;
 let jobs = {};
@@ -47,6 +48,7 @@ const end = (hash, kill = true) => {
         delete jobs[hash];
 
         fileDelete(`data/thumbnail/${job.jobId}.png`);
+        thumbnailCache.del(job.jobId);
 
         return job;
     } else {

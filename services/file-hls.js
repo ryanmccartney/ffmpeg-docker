@@ -23,7 +23,7 @@ const process = async (options) => {
         let job = jobManager.start(
             `${options?.output?.file || options.toString()}`,
             `File to HLS (${options?.output?.file || "JobID"}.m3u8)`,
-            ["encode", "hls"]
+            ["file", "hls"]
         );
 
         response.hls = `/api/hls/${options?.output?.file || job.jobId}.m3u8`;

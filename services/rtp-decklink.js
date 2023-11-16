@@ -23,11 +23,16 @@ const process = async (options) => {
 
         let command = ffmpeg({ logger: logger })
             .input(
-                `rtp://${options?.input?.address}:${options?.input?.port}?pkt_size=${
-                    options?.input?.packetSize || 1316
-                }&buffer_size=${options?.input?.buffer || 65535}`
+                `rtp://${options?.input?.address}:${options?.input?.port}
+                ?pkt_size=${options?.input?.packetSize || 1316}&buffer_size=${options?.input?.buffer || 65535}`
             )
-            .inputOptions(["-protocol_whitelist", "srt,udp,rtp", "-stats", "-re"])
+            .inputOptions([
+                `-buffer_size ${options?.input?.buffer || 65535}`,
+                "-protocol_whitelist",
+                "srt,udp,rtp",
+                "-stats",
+                "-re",
+            ])
             .outputOptions([
                 "-pix_fmt uyvy422",
                 "-s 1920x1080",
