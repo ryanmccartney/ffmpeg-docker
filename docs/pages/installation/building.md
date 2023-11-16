@@ -51,6 +51,14 @@ If you believe a library has been included in the build distrubuted version in e
 
 For production you should make sure that the source code is not mounted into the container. If the NODE_ENV option is set it should be set to `production`. This is the default if it is not set.
 
+### Command Line
+
+```
+docker buildx build --build-arg NON_FREE=true --platform=linux/amd64 -t ffmpeg-docker:latest .
+```
+
+### Docker Compose
+
 A sample `docker-compose.yml` file for production is shown below;
 
 ```
