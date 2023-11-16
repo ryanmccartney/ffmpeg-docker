@@ -29,7 +29,7 @@ const update = (hash, update) => {
         jobs[hash] = { ...jobs[hash], ...update };
         return jobs[hash];
     } else {
-        throw new Error("Job does not exist.");
+        return { error: "Job does not exist." };
     }
 };
 
