@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 
-let maxQueueSize = process.env.QUEUE_SZIE | 5;
+let maxQueueSize = process.env.QUEUE_SZIE || 5;
 let jobs = {};
 
 const start = (output, name = "FFmpeg Process", type = ["default"]) => {
