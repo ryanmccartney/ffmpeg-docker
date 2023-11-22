@@ -16,6 +16,7 @@ on:
 
 jobs:
     docker:
+        if: github.repository == 'ryanmccartney/ffmpeg-docker'
         runs-on: ubuntu-latest
         strategy:
             matrix:
