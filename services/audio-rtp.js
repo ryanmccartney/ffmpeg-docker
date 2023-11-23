@@ -60,7 +60,7 @@ const process = async (options) => {
             .output(
                 `rtp://${options?.output?.address}:${options?.output?.port}?pkt_size=${
                     options?.output?.packetSize || 1316
-                }&buffer_size=${options?.output?.buffer || 65535}`
+                }&buffer_size=${options?.output?.buffer || 65535}&ttl=${options?.output?.ttl || 64}`
             )
             .outputOptions([
                 `-reorder_queue_size ${options?.output?.jitterBuffer || "25"}`,
@@ -85,8 +85,8 @@ const process = async (options) => {
             ]);
         } else {
             command.outputOptions([
-                `-minrate ${options?.output?.minBitrate || "5M"}`,
-                `-maxrate ${options?.output?.maxBitrate || "5M"}`,
+                `-minrate ${options?.output?.vbr?.minBitrate || "5M"}`,
+                `-maxrate ${options?.output?.vbr?.maxBitrate || "5M"}`,
                 `-bufsize 500K`,
             ]);
         }

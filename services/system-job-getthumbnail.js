@@ -24,8 +24,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 const logger = require("@utils/logger")(module);
 const sharp = require("sharp");
 const path = require("path");
-const NodeCache = require("node-cache");
-const thumbnailCache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
+const thumbnailCache = require("@utils/thumbnail-cache");
 
 module.exports = async (jobId, resize = 0.2) => {
     try {

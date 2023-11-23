@@ -23,6 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 const crypto = require("crypto");
 const fileDelete = require("@utils/file-delete");
+const thumbnailCache = require("@utils/thumbnail-cache");
 
 let maxQueueSize = process.env.QUEUE_SIZE || 5;
 let jobs = {};
@@ -53,7 +54,7 @@ const update = (hash, update) => {
         jobs[hash] = { ...jobs[hash], ...update };
         return jobs[hash];
     } else {
-        throw new Error("Job does not exist.");
+        return { error: "Job does not exist." };
     }
 };
 
@@ -70,6 +71,7 @@ const end = (hash, kill = true) => {
         delete jobs[hash];
 
         fileDelete(`data/thumbnail/${job.jobId}.png`);
+        thumbnailCache.del(job.jobId);
 
         return job;
     } else {
