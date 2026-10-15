@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Buidling
+title: Building
 parent: Installation
 nav_order: 2
 ---
