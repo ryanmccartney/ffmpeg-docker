@@ -89,8 +89,6 @@ Channging the following arguments, `-probesize 1M` and `-analyzeduration 1M` sig
 
 This comment on the [FFmpeg Forum](http://ffmpeg.org/pipermail/ffmpeg-user/2020-May/048639.html) sheds some more light on the issue.
 
-###
-
-Audio playback with visualisations
+## Audio playback with visualisations
 
 `ffmpeg  -re -i input.mp3 -filter_complex "showwavespic=s=1920x1080:colors=white" -pix_fmt uyvy422 s 1920x1080 -f decklink DeckLink SDI`
